@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 // Lazy load admin components with error boundaries
+
 import dynamic from "next/dynamic"
 
 const HeroManager = dynamic(() => import("@/components/admin/hero-manager"), {
