@@ -190,7 +190,6 @@ function AdminContent() {
     )
   }
 
-  const currentTab = adminTabs.find((tab) => tab.id === activeTab)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
@@ -247,125 +246,84 @@ function AdminContent() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 flex-shrink-0">
-            <Card className="bg-slate-800/60 border-slate-600/50 backdrop-blur-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
-                    <Database className="w-4 h-4 text-cyan-400" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-white">9</div>
-                    <div className="text-xs text-slate-400">Sections</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800/60 border-slate-600/50 backdrop-blur-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Briefcase className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-white">12</div>
-                    <div className="text-xs text-slate-400">Projects</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800/60 border-slate-600/50 backdrop-blur-sm col-span-2 sm:col-span-1">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <Code className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-white">15</div>
-                    <div className="text-xs text-slate-400">Skills</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+        <div className="max-w-5xl mx-auto px-2 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col w-full">
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-            <div className="flex-shrink-0 mb-6">
-              <TabsList className="flex flex-wrap justify-center sm:grid sm:grid-cols-3 lg:grid-cols-9 gap-2 bg-slate-800/60 p-2 rounded-xl backdrop-blur-sm">
-                {adminTabs.map((tab) => (
-                  <TabsTrigger
-                    key={tab.id}
-                    value={tab.id}
-                    className="px-3 py-2 rounded-lg bg-slate-800/60 text-white hover:bg-slate-700/60 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 transition-all duration-200"
-                  >
-                    <tab.icon className="w-4 h-4 mr-2" />
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-
-            <div className="flex-1 min-h-[600px]">
-              <AnimatePresence mode="wait">
-                {adminTabs.map((tab) => (
-                  <TabsContent key={tab.id} value={tab.id} className="h-full m-0">
-                    <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="h-full"
+          <div className="relative z-10">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col w-full">
+              <div className="sticky top-20 bg-transparent pb-2 z-20 w-full">
+                <TabsList
+                  className="flex flex-row justify-center items-center gap-3 sm:gap-4 bg-slate-800/60 p-3 sm:p-4 rounded-xl backdrop-blur-sm w-full min-h-[70px]"
+                  style={{ width: '100%' }}
+                >
+                  {adminTabs.map((tab) => (
+                    <TabsTrigger
+                      key={tab.id}
+                      value={tab.id}
+                      className="flex flex-col items-center justify-center px-3 py-2 sm:px-4 sm:py-3 rounded-lg bg-slate-800/60 text-white hover:bg-slate-700/60 data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 transition-all duration-200 min-w-[90px] sm:min-w-[110px]"
                     >
-                      <Card className="bg-slate-800/60 border-slate-600/50 backdrop-blur-sm h-full">
-                        <CardHeader className="pb-4">
-                          <div className="flex items-center space-x-4">
-                            <div
-                              className={`w-10 h-10 bg-gradient-to-r ${tab.color} rounded-lg flex items-center justify-center`}
-                            >
-                              <tab.icon className={`w-5 h-5 ${tab.iconColor}`} />
-                            </div>
-                            <div>
-                              <CardTitle className="text-xl text-white">{tab.label} Management</CardTitle>
-                              <p className="text-slate-400">{tab.description}</p>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="p-6 pt-0 h-[calc(100%-120px)] overflow-y-auto">
-                          <ErrorBoundary
-                            fallback={
-                              <div className="flex items-center justify-center h-full">
-                                <div className="text-center">
-                                  <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-                                  <h3 className="text-lg font-semibold text-white mb-2">Component Error</h3>
-                                  <p className="text-slate-400 mb-4">
-                                    There was an error loading the {tab.label} manager.
-                                  </p>
-                                  <Button
-                                    onClick={() => window.location.reload()}
-                                    variant="outline"
-                                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                                  >
-                                    Reload Page
-                                  </Button>
-                                </div>
+                      <tab.icon className="w-6 h-6 mb-1" />
+                      <span className="text-xs sm:text-sm font-medium text-center">{tab.label}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+              <div className="flex-1 min-h-[600px] pt-2 w-full">
+                <AnimatePresence mode="wait">
+                  {adminTabs.map((tab) => (
+                    <TabsContent key={tab.id} value={tab.id} className="h-full m-0 w-full">
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full w-full"
+                      >
+                        <Card className="bg-slate-800/60 border-slate-600/50 backdrop-blur-sm h-full w-full">
+                          <CardHeader className="pb-4">
+                            <div className="flex items-center space-x-4">
+                              <div
+                                className={`w-10 h-10 bg-gradient-to-r ${tab.color} rounded-lg flex items-center justify-center`}
+                              >
+                                <tab.icon className={`w-5 h-5 ${tab.iconColor}`} />
                               </div>
-                            }
-                          >
-                            <tab.component />
-                          </ErrorBoundary>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </TabsContent>
-                ))}
-              </AnimatePresence>
-            </div>
-          </Tabs>
+                              <div>
+                                <CardTitle className="text-xl text-white">{tab.label} Management</CardTitle>
+                                <p className="text-slate-400">{tab.description}</p>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-6 pt-0 h-[calc(100%-120px)] overflow-y-auto w-full">
+                            <ErrorBoundary
+                              fallback={
+                                <div className="flex items-center justify-center h-full">
+                                  <div className="text-center">
+                                    <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                                    <h3 className="text-lg font-semibold text-white mb-2">Component Error</h3>
+                                    <p className="text-slate-400 mb-4">
+                                      There was an error loading the {tab.label} manager.
+                                    </p>
+                                    <Button
+                                      onClick={() => window.location.reload()}
+                                      variant="outline"
+                                      className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                                    >
+                                      Reload Page
+                                    </Button>
+                                  </div>
+                                </div>
+                              }
+                            >
+                              <tab.component />
+                            </ErrorBoundary>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    </TabsContent>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </Tabs>
+          </div>
         </div>
       </div>
     </div>

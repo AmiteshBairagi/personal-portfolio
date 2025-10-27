@@ -8,8 +8,6 @@ import Image from "next/image"
 
 export default function EducationSection() {
 
-  
-
   const educationData = [
     {
       idx: 0,

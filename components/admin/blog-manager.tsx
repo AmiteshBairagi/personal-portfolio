@@ -577,14 +577,15 @@ export default function BlogManager() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refreshData()} disabled={isLoading}>
+          <Button variant="outline" size="sm" onClick={() => refreshData()} disabled={isLoading} className="border-slate-600 text-slate-300 bg-transparent">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button onClick={() => setIsCreateModalOpen(true)} disabled={isLoading}>
+          <Button variant="outline" onClick={() => setIsCreateModalOpen(true)} disabled={isLoading}  className="border-slate-600 text-slate-300 bg-transparent">
             <Plus className="h-4 w-4 mr-2" />
             Add Post
           </Button>
+          
         </div>
       </div>
 
@@ -617,7 +618,7 @@ export default function BlogManager() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card  className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -626,7 +627,7 @@ export default function BlogManager() {
             <div className="text-2xl font-bold">{posts.length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card  className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Published</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
@@ -635,7 +636,7 @@ export default function BlogManager() {
             <div className="text-2xl font-bold">{posts.filter((post) => post.published).length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card  className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Featured</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
@@ -644,7 +645,7 @@ export default function BlogManager() {
             <div className="text-2xl font-bold">{posts.filter((post) => post.featured).length}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card  className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Drafts</CardTitle>
             <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -656,44 +657,54 @@ export default function BlogManager() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card  className="bg-slate-700 border-slate-600 text-white">
         <CardHeader>
           <CardTitle className="text-lg">Filters & Search</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
+            <div className="flex-1bg-slate-700 border-slate-600 text-white">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search posts by title, excerpt, or tags..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 bg-slate-700 border-slate-600 text-white"
                 />
               </div>
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full sm:w-[200px]">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory} >
+              <SelectTrigger className="w-full sm:w-[200px] bg-slate-700 border-slate-600 text-white" >
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-slate-700 border-slate-600 text-white">
                 {blogCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
+                  <SelectItem key={category} value={category} >
                     {category}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Switch id="featured-filter" checked={showOnlyFeatured} onCheckedChange={setShowOnlyFeatured} />
+              <div className="flex items-center space-x-2 ">
+                <Switch 
+                  id="featured-filter" 
+                  checked={showOnlyFeatured} 
+                  onCheckedChange={setShowOnlyFeatured} 
+                  className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
+                />
                 <Label htmlFor="featured-filter" className="text-sm">
                   Featured Only
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Switch id="published-filter" checked={showOnlyPublished} onCheckedChange={setShowOnlyPublished} />
+                <Switch 
+                  id="published-filter" 
+                  checked={showOnlyPublished} 
+                  onCheckedChange={setShowOnlyPublished} 
+                  className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
+                />
                 <Label htmlFor="published-filter" className="text-sm">
                   Published Only
                 </Label>
@@ -715,7 +726,7 @@ export default function BlogManager() {
         )}
 
         {!isLoading && filteredPosts.length === 0 && (
-          <Card>
+          <Card  >
             <CardContent className="flex flex-col items-center justify-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts found</h3>
@@ -736,7 +747,7 @@ export default function BlogManager() {
 
         {!isLoading &&
           filteredPosts.map((post, index) => (
-            <Card key={post.id} className="overflow-hidden">
+            <Card key={post.id} className="overflow-hidden bg-slate-700 border-slate-600 text-white">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Post Image */}
@@ -834,7 +845,7 @@ export default function BlogManager() {
                         {post.published ? "Published" : "Publish"}
                       </Button>
 
-                      <Button variant="outline" size="sm" onClick={() => openEditModal(post)}>
+                      <Button variant="outline" size="sm" onClick={() => openEditModal(post)} className="bg-slate-700 border-slate-600 text-white">
                         <Edit className="h-3 w-3 mr-1" />
                         Edit
                       </Button>
@@ -843,7 +854,8 @@ export default function BlogManager() {
                         variant="outline"
                         size="sm"
                         onClick={() => openDeleteDialog(post.id)}
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive bg-slate-700 border-slate-600 text-white"
+                        
                       >
                         <Trash2 className="h-3 w-3 mr-1" />
                         Delete
