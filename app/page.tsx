@@ -20,6 +20,7 @@ export default function Home() {
         <main>
           <HeroSection />
 
+          {/* <UpdatedHero/> */}
           {/* Wrap sections in OptimizedAnimation for better performance */}
           <OptimizedAnimation tag="section" id="about">
             <AboutSection />

@@ -6,6 +6,7 @@ import { useTheme } from "@/contexts/theme-context"
 import { Button } from "@/components/ui/button"
 import { Moon, Sun, Menu, X, Code } from "lucide-react"
 import { useSmoothScroll } from "@/hooks/use-smooth-scroll"
+import { readFileSync } from "fs"
 
 // Memoize the nav items to prevent unnecessary re-renders
 const navItems = [

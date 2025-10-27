@@ -62,6 +62,7 @@
     "react-hook-form": "^7.54.1",
     "react-markdown": "latest",
     "react-resizable-panels": "^2.1.7",
+    "react-typed": "^2.0.12",
     "recharts": "2.15.0",
     "sonner": "latest",
     "tailwind-merge": "^2.5.5",
