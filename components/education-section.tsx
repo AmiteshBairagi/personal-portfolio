@@ -5,46 +5,54 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Award } from "lucide-react"
 import Image from "next/image"
-import { useEducationData } from "@/hooks/use-education-data"
 
 export default function EducationSection() {
-  const { data: educationData, loading, error } = useEducationData()
 
-  if (loading) {
-    return (
-      <section id="education" className="py-20 bg-gray-50 dark:bg-dark-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  
 
-  if (error) {
-    return (
-      <section id="education" className="py-20 bg-gray-50 dark:bg-dark-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-20">
-            <p className="text-red-500 dark:text-red-400">Failed to load education data</p>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  const educationData = [
+    {
+      idx: 0,
+      id: "1",
+      degree: "Master of Computer Applications",
+      institution: "Sister Nivedita University",
+      duration: "2023 - 2024",
+      grade: "CGPA: 8.54 / 10",
+      description:
+        "Premier technical university known for its industry-oriented curriculum and strong placement record. Focusing on advanced software development, AI/ML, and emerging technologies.",
+      type: "Masters",
+      image: "/images/snu-logo.png", 
+      display_order: 1,
+    },
+    {
+      idx: 1,
+      id: "2",
+      degree: "Bachelor of Science",
+      institution: "Taki Government College",
+      duration: "2020 - 2023",
+      grade: "Percentage: 85%",
+      description:
+        "Well-established institution with strong focus on practical learning and industry exposure. Gained foundation in Physics, Chemistry, and Mathematics.",
+      type: "Bachelor",
+      image: "/images/tgc-logo.png", 
+      display_order: 2,
+    },
+    {
+      idx: 2,
+      id: "3",
+      degree: "Higher Secondary (12th)",
+      institution: "Katiahat BKAP Institution",
+      duration: "2016 - 2018",
+      grade: "Percentage: 88.6%",
+      description:
+        "Completed higher secondary education with Science stream focusing on Mathematics and Computer Science. Developed strong analytical thinking and problem-solving skills during this foundational period.",
+      type: "Secondary",
+      image: "/images/katiahat-logo.png", 
+      display_order: 3,
+    },
+  ];
 
-  if (!educationData || educationData.length === 0) {
-    return (
-      <section id="education" className="py-20 bg-gray-50 dark:bg-dark-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-20">
-            <p className="text-gray-600 dark:text-gray-400">No education data available</p>
-          </div>
-        </div>
-      </section>
-    )
-  }
+
 
   return (
     <section id="education" className="py-20 bg-gray-50 dark:bg-dark-950">
