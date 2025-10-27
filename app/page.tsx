@@ -22,32 +22,46 @@ export default function Home() {
 
           {/* <UpdatedHero/> */}
           {/* Wrap sections in OptimizedAnimation for better performance */}
-          <OptimizedAnimation tag="section" id="about">
-            <AboutSection />
+          <OptimizedAnimation>
+            <section id="about">
+              <AboutSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="education" delay={0.1}>
-            <EducationSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="education">
+              <EducationSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="projects" delay={0.1}>
-            <ProjectsSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="projects">
+              <ProjectsSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="skills" delay={0.1}>
-            <SkillsSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="skills">
+              <SkillsSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="certifications" delay={0.1}>
-            <CertificationsSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="certifications">
+              <CertificationsSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="blog" delay={0.1}>
-            <FeaturedBlogSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="blog">
+              <FeaturedBlogSection />
+            </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation tag="section" id="contact" delay={0.1}>
-            <ContactSection />
+          <OptimizedAnimation delay={0.1}>
+            <section id="contact">
+              <ContactSection />
+            </section>
           </OptimizedAnimation>
         </main>
         <Footer />
