@@ -18,13 +18,6 @@ import {
   Loader2,
   CheckCircle,
   AlertCircle,
-  Clock,
-  ArrowUp,
-  ArrowDown,
-  Wifi,
-  WifiOff,
-  Eye,
-  EyeOff,
 } from "lucide-react"
 import type { SkillItem } from "@/lib/data/skills-data"
 
@@ -34,13 +27,9 @@ export default function SkillsManager() {
     isLoading,
     isSaving,
     error,
-    lastUpdated,
-    isOnline,
     addSkill,
     updateSkill,
     deleteSkill,
-    moveSkillUp,
-    moveSkillDown,
     getCategories,
   } = useSkillsData()
 
@@ -174,30 +163,6 @@ export default function SkillsManager() {
     setEditForm((prev) => ({ ...prev, projects }))
   }
 
-  const handleMoveUp = async (skillId: string, category: string) => {
-    const result = await moveSkillUp(skillId, category)
-    if (result.success) {
-      setSuccessMessage("Skill moved up!")
-      setTimeout(() => setSuccessMessage(""), 2000)
-    }
-  }
-
-  const handleMoveDown = async (skillId: string, category: string) => {
-    const result = await moveSkillDown(skillId, category)
-    if (result.success) {
-      setSuccessMessage("Skill moved down!")
-      setTimeout(() => setSuccessMessage(""), 2000)
-    }
-  }
-
-  const toggleActive = async (skill: SkillItem) => {
-    const result = await updateSkill(skill.id, { is_active: !skill.is_active })
-    if (result.success) {
-      setSuccessMessage(`Skill ${skill.is_active ? "hidden" : "shown"}!`)
-      setTimeout(() => setSuccessMessage(""), 2000)
-    }
-  }
-
   const getTotalSkills = () => {
     return allSkills.length
   }
@@ -226,35 +191,9 @@ export default function SkillsManager() {
             <h3 className="text-lg font-semibold text-white">
               Skills ({getActiveSkills()}/{getTotalSkills()})
             </h3>
-            {isOnline ? (
-              <div className="flex items-center space-x-1 text-green-400">
-                <Wifi className="w-4 h-4" />
-                <span className="text-sm">Live</span>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-1 text-amber-400">
-                <WifiOff className="w-4 h-4" />
-                <span className="text-sm">Offline</span>
-              </div>
-            )}
           </div>
-          {lastUpdated && (
-            <div className="flex items-center space-x-2 text-sm text-slate-400 mt-1">
-              <Clock className="w-4 h-4" />
-              <span>Last updated: {lastUpdated}</span>
-            </div>
-          )}
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            onClick={() => setShowInactive(!showInactive)}
-            variant="outline"
-            size="sm"
-            className="border-slate-600"
-          >
-            {showInactive ? <Eye className="w-4 h-4 mr-2" /> : <EyeOff className="w-4 h-4 mr-2" />}
-            {showInactive ? "Hide Inactive" : "Show Inactive"}
-          </Button>
           <Button onClick={handleAdd} className="bg-cyan-500 hover:bg-cyan-600" disabled={isSaving}>
             <Plus className="w-4 h-4 mr-2" />
             Add Skill
@@ -343,41 +282,8 @@ export default function SkillsManager() {
                           <p className="text-cyan-400">{item.experience} experience</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-purple-400">{item.level}%</div>
-                          <div className="text-xs text-slate-400">Proficiency</div>
-                        </div>
-                        <div className="flex flex-col space-y-1">
-                          <Button
-                            onClick={() => handleMoveUp(item.id, item.category)}
-                            size="sm"
-                            variant="outline"
-                            className="border-slate-600 p-1 h-8 w-8"
-                            disabled={isSaving}
-                          >
-                            <ArrowUp className="w-3 h-3" />
-                          </Button>
-                          <Button
-                            onClick={() => handleMoveDown(item.id, item.category)}
-                            size="sm"
-                            variant="outline"
-                            className="border-slate-600 p-1 h-8 w-8"
-                            disabled={isSaving}
-                          >
-                            <ArrowDown className="w-3 h-3" />
-                          </Button>
-                        </div>
+                      <div className="flex items-center space-x-4">                        
                         <div className="flex space-x-2">
-                          <Button
-                            onClick={() => toggleActive(item)}
-                            size="sm"
-                            variant="outline"
-                            className={`border-slate-600 ${item.is_active ? "text-green-400" : "text-red-400"}`}
-                            disabled={isSaving}
-                          >
-                            {item.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                          </Button>
                           <Button
                             onClick={() => handleEdit(item)}
                             size="sm"
@@ -400,12 +306,6 @@ export default function SkillsManager() {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="w-full bg-slate-600 rounded-full h-2">
-                        <div
-                          className="bg-gradient-to-r from-cyan-500 to-purple-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${item.level}%` }}
-                        ></div>
-                      </div>
                       <div>
                         <p className="text-sm text-slate-400 mb-2">Used in {item.projects?.length || 0} projects:</p>
                         <div className="flex flex-wrap gap-2">
@@ -479,19 +379,6 @@ export default function SkillsManager() {
                 <option value="Mobile">Mobile</option>
                 <option value="DevOps">DevOps</option>
               </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">
-                Proficiency Level ({editForm.level || 0}%) *
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={editForm.level || 0}
-                onChange={(e) => handleInputChange("level", Number.parseInt(e.target.value))}
-                className="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer slider"
-              />
             </div>
             <div>
               <label className="text-sm font-medium text-slate-300 mb-2 block">Experience *</label>

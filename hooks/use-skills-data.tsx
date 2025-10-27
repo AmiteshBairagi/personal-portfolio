@@ -9,9 +9,6 @@ export function useSkillsData() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<string>("")
-  const [isOnline, setIsOnline] = useState(true)
-
   // Load skills data
   const loadData = useCallback(async () => {
     try {
@@ -19,7 +16,6 @@ export function useSkillsData() {
       setError(null)
       const data = await skillsDataService.getSkillsData()
       setSkillsData(data || {})
-      setLastUpdated(skillsDataService.getLastUpdated())
     } catch (err) {
       console.error("Error loading skills data:", err)
       setError("Failed to load skills data")
@@ -44,27 +40,12 @@ export function useSkillsData() {
   useEffect(() => {
     const cleanup = skillsDataService.initializeRealtime((newData) => {
       setSkillsData(newData)
-      setLastUpdated(skillsDataService.getLastUpdated())
       // Also reload all skills for admin
       loadAllSkills()
     })
 
     return cleanup
   }, [loadAllSkills])
-
-  // Network status monitoring
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
-
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
-
-    return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-    }
-  }, [])
 
   // Initial data load
   useEffect(() => {
@@ -135,48 +116,6 @@ export function useSkillsData() {
     [loadData, loadAllSkills],
   )
 
-  // Move skill up
-  const moveSkillUp = useCallback(
-    async (skillId: string, category: string) => {
-      try {
-        setIsSaving(true)
-        setError(null)
-        await skillsDataService.moveSkillUp(skillId, category)
-        await loadData()
-        await loadAllSkills()
-        return { success: true }
-      } catch (err) {
-        console.error("Error moving skill up:", err)
-        setError("Failed to move skill")
-        return { success: false, error: "Failed to move skill" }
-      } finally {
-        setIsSaving(false)
-      }
-    },
-    [loadData, loadAllSkills],
-  )
-
-  // Move skill down
-  const moveSkillDown = useCallback(
-    async (skillId: string, category: string) => {
-      try {
-        setIsSaving(true)
-        setError(null)
-        await skillsDataService.moveSkillDown(skillId, category)
-        await loadData()
-        await loadAllSkills()
-        return { success: true }
-      } catch (err) {
-        console.error("Error moving skill down:", err)
-        setError("Failed to move skill")
-        return { success: false, error: "Failed to move skill" }
-      } finally {
-        setIsSaving(false)
-      }
-    },
-    [loadData, loadAllSkills],
-  )
-
   // Get categories
   const getCategories = useCallback(async () => {
     try {
@@ -193,15 +132,11 @@ export function useSkillsData() {
     isLoading,
     isSaving,
     error,
-    lastUpdated,
-    isOnline,
     loadSkillsData: loadData,
     loadAllSkills,
     addSkill,
     updateSkill,
     deleteSkill,
-    moveSkillUp,
-    moveSkillDown,
     getCategories,
   }
 }
