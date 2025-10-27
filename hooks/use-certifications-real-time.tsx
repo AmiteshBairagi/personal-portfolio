@@ -7,8 +7,8 @@ export function useCertificationsRealTime() {
   const [data, setData] = useState<CertificationItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isOnline, setIsOnline] = useState(true)
-  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
+  // const [isOnline, setIsOnline] = useState(true)
+  // const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
 
   // Load data function
   const loadData = useCallback(async () => {
@@ -17,7 +17,7 @@ export function useCertificationsRealTime() {
       setError(null)
       const certifications = await certificationsDataManager.getData()
       setData(certifications)
-      setLastSyncTime(new Date())
+      // setLastSyncTime(new Date())
     } catch (err) {
       console.error("Error loading certifications:", err)
       setError("Failed to load certifications")
@@ -30,37 +30,10 @@ export function useCertificationsRealTime() {
   useEffect(() => {
     // Initial load
     loadData()
-
-    // Set up real-time subscription
-    const unsubscribe = certificationsDataManager.subscribe(() => {
-      loadData()
-    })
-
-    // Set up online/offline detection
-    const handleOnline = () => {
-      setIsOnline(true)
-      loadData() // Refresh data when coming back online
-    }
-
-    const handleOffline = () => {
-      setIsOnline(false)
-    }
-
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
-
-    // Check initial online status
-    setIsOnline(navigator.onLine)
-
-    // Cleanup
     return () => {
-      unsubscribe()
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
     }
   }, [loadData])
 
-  // CRUD operations
   const addCertification = useCallback(
     async (certification: Omit<CertificationItem, "id" | "created_at" | "updated_at">) => {
       try {
@@ -209,8 +182,8 @@ export function useCertificationsRealTime() {
     data,
     loading,
     error,
-    isOnline,
-    lastSyncTime,
+    // isOnline,
+    // lastSyncTime,
 
     // CRUD operations
     addCertification,

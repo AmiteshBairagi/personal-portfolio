@@ -21,12 +21,8 @@ import {
   ExternalLink,
   Upload,
   ImageIcon,
-  ArrowUp,
-  ArrowDown,
   Search,
   Filter,
-  Wifi,
-  WifiOff,
   RefreshCw,
 } from "lucide-react"
 import { useCertificationsRealTime } from "@/hooks/use-certifications-real-time"
@@ -37,13 +33,9 @@ export default function CertificationsManager() {
     data: certificationsData,
     loading: isLoading,
     error,
-    isOnline,
-    lastSyncTime,
     addCertification,
     updateCertification,
     deleteCertification,
-    moveCertificationUp,
-    moveCertificationDown,
     searchCertifications,
     refresh,
     clearError,
@@ -137,19 +129,6 @@ export default function CertificationsManager() {
     }
   }
 
-  const handleMoveUp = async (id: string) => {
-    const result = await moveCertificationUp(id)
-    if (!result.success && result.error) {
-      alert(result.error)
-    }
-  }
-
-  const handleMoveDown = async (id: string) => {
-    const result = await moveCertificationDown(id)
-    if (!result.success && result.error) {
-      alert(result.error)
-    }
-  }
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -266,26 +245,6 @@ export default function CertificationsManager() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center space-x-4">
           <h3 className="text-lg font-semibold text-white">Certifications ({certificationsData.length})</h3>
-
-          {/* Connection Status */}
-          <div className="flex items-center space-x-2">
-            {isOnline ? (
-              <div className="flex items-center text-green-400" title="Connected - Real-time updates enabled">
-                <Wifi className="w-4 h-4 mr-1" />
-                <span className="text-xs">Live</span>
-              </div>
-            ) : (
-              <div className="flex items-center text-red-400" title="Offline - Using cached data">
-                <WifiOff className="w-4 h-4 mr-1" />
-                <span className="text-xs">Offline</span>
-              </div>
-            )}
-            {lastSyncTime && (
-              <span className="text-xs text-slate-400" title={`Last synced: ${lastSyncTime.toLocaleString()}`}>
-                {lastSyncTime.toLocaleTimeString()}
-              </span>
-            )}
-          </div>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -418,26 +377,7 @@ export default function CertificationsManager() {
                 </div>
                 <div className="flex items-center space-x-2">
                   {/* Reorder buttons */}
-                  <Button
-                    onClick={() => handleMoveUp(item.id)}
-                    size="sm"
-                    variant="outline"
-                    className="border-slate-600 text-slate-300"
-                    disabled={isLoading || index === 0}
-                    title="Move up"
-                  >
-                    <ArrowUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={() => handleMoveDown(item.id)}
-                    size="sm"
-                    variant="outline"
-                    className="border-slate-600 text-slate-300"
-                    disabled={isLoading || index === filteredData.length - 1}
-                    title="Move down"
-                  >
-                    <ArrowDown className="w-4 h-4" />
-                  </Button>
+                 
                   <Button
                     onClick={() => handleEdit(item)}
                     size="sm"
