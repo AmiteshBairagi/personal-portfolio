@@ -24,7 +24,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 
-export default function ProjectsManager() {
+const ProjectManager = () => {
   const {
     data: projectsData,
     isLoading,
@@ -689,3 +689,5 @@ export default function ProjectsManager() {
     </div>
   )
 }
+
+export default ProjectManager

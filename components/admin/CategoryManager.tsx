@@ -47,7 +47,7 @@ const iconOptions = [
   "📚",
 ]
 
-const CategoriesManager = () => {
+const CategoryManager = () => {
   const {
     data: categoriesData,
     isLoading,
@@ -338,4 +338,4 @@ const CategoriesManager = () => {
   )
 }
 
-export default CategoriesManager
+export default CategoryManager

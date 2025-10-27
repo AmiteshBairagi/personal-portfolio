@@ -1,15 +1,15 @@
 import { ThemeProvider } from "@/contexts/theme-context"
 import OptimizedNavbar from "@/components/optimized-navbar"
-import HeroSection from "@/components/hero-section"
-import AboutSection from "@/components/about-section"
-import EducationSection from "@/components/education-section"
+import HeroSection from "@/components/HeroSection"
+import AboutSection from "@/components/AboutSection"
+import EducationSection from "@/components/EducationSection"
 import ProjectsSection from "@/components/projects-section"
-import SkillsSection from "@/components/skills-section"
-import CertificationsSection from "@/components/certifications-section"
-import ContactSection from "@/components/contact-section"
-import Footer from "@/components/footer"
+import SkillsSection from "@/components/SkillsSection"
+import CertificationsSection from "@/components/CertificationsSection"
+import ContactSection from "@/components/ContactSection"
 import OptimizedAnimation from "@/components/optimized-animation"
-import FeaturedBlogSection from "@/components/featured-blog-section"
+import FeaturedBlogSection from "@/components/FeaturedBlogSection"
+import Footer from "@/components/footer"
 
 export default function Home() {
   return (

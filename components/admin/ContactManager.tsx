@@ -26,7 +26,7 @@ import {
 import { useContactRealTime } from "@/hooks/use-contact-real-time"
 import type { ContactFormData } from "@/lib/data/contact-data-manager"
 
-export default function ContactManager() {
+const ContactManager = () => {
   const {
     contactData,
     loading,
@@ -469,3 +469,5 @@ export default function ContactManager() {
     </div>
   )
 }
+
+export default ContactManager

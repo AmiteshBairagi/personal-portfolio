@@ -34,32 +34,32 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 import dynamic from "next/dynamic"
 
-const ProjectsManager = dynamic(() => import("@/components/admin/projects-manager"), {
+const ProjectsManager = dynamic(() => import("@/components/admin/ProjectManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Projects Manager...</div>,
   ssr: false,
 })
 
-const CategoriesManager = dynamic(() => import("@/components/admin/categories-manager"), {
+const CategoriesManager = dynamic(() => import("@/components/admin/CategoryManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Categories Manager...</div>,
   ssr: false,
 })
 
-const SkillsManager = dynamic(() => import("@/components/admin/skills-manager"), {
+const SkillsManager = dynamic(() => import("@/components/admin/SkillsManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Skills Manager...</div>,
   ssr: false,
 })
 
-const CertificationsManager = dynamic(() => import("@/components/admin/certifications-manager"), {
+const CertificationsManager = dynamic(() => import("@/components/admin/CertificationManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Certifications Manager...</div>,
   ssr: false,
 })
 
-const BlogManager = dynamic(() => import("@/components/admin/blog-manager"), {
+const BlogManager = dynamic(() => import("@/components/admin/BlogManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Blog Manager...</div>,
   ssr: false,
 })
 
-const ContactManager = dynamic(() => import("@/components/admin/contact-manager"), {
+const ContactManager = dynamic(() => import("@/components/admin/ContactManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Contact Manager...</div>,
   ssr: false,
 })

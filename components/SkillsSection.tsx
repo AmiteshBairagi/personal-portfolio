@@ -8,8 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { useSkillsData } from "@/hooks/use-skills-data"
 import { Loader2, Wifi, WifiOff } from "lucide-react"
 
-export default function SkillsSection() {
-  const { skillsData, isLoading, error, isOnline } = useSkillsData()
+const SkillsSection = () => {
+  const { skillsData, isLoading, error } = useSkillsData()
   const [selectedCategory, setSelectedCategory] = useState("Frontend")
   const [selectedSkill, setSelectedSkill] = useState<any>(null)
 
@@ -79,18 +79,7 @@ export default function SkillsSection() {
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
               My <span className="gradient-text">Skills</span>
             </h2>
-            {!isOnline && (
-              <div className="flex items-center space-x-1 text-amber-500">
-                <WifiOff className="w-5 h-5" />
-                <span className="text-sm">Offline</span>
-              </div>
-            )}
-            {isOnline && (
-              <div className="flex items-center space-x-1 text-green-500">
-                <Wifi className="w-5 h-5" />
-                <span className="text-sm">Live</span>
-              </div>
-            )}
+            
           </div>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Technologies I've mastered and the projects where I've applied them
@@ -231,3 +220,6 @@ export default function SkillsSection() {
     </section>
   )
 }
+
+
+export default SkillsSection

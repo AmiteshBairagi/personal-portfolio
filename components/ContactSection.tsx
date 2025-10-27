@@ -24,8 +24,8 @@ import {
 } from "lucide-react"
 import { useContactRealTime } from "@/hooks/use-contact-real-time"
 
-export default function ContactSection() {
-  const { contactData, loading, error, isOnline, lastSyncTime } = useContactRealTime()
+const ContactSection = () => {
+  const { contactData, loading, error} = useContactRealTime()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -157,26 +157,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="py-20 bg-gray-50 dark:bg-dark-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Connection Status */}
-        <div className="flex justify-center mb-4">
-          <div
-            className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
-              isOnline
-                ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-            }`}
-          >
-            {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-            <span>{isOnline ? "Connected" : "Offline"}</span>
-            {lastSyncTime && (
-              <>
-                <Clock className="w-3 h-3" />
-                <span>Last sync: {lastSyncTime.toLocaleTimeString()}</span>
-              </>
-            )}
-          </div>
-        </div>
-
+        
         {/* Error Display */}
         {error && (
           <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-lg">
@@ -434,3 +415,5 @@ export default function ContactSection() {
     </section>
   )
 }
+
+export default ContactSection

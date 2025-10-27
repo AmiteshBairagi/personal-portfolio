@@ -28,7 +28,7 @@ import {
 import { useCertificationsRealTime } from "@/hooks/use-certifications-real-time"
 import type { CertificationItem } from "@/lib/data/certifications-data-manager"
 
-export default function CertificationsManager() {
+const CertificationManager = () => {
   const {
     data: certificationsData,
     loading: isLoading,
@@ -670,3 +670,6 @@ export default function CertificationsManager() {
     </div>
   )
 }
+
+
+export default CertificationManager

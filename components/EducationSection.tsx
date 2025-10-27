@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Award } from "lucide-react"
 import Image from "next/image"
 
-export default function EducationSection() {
+const EducationSection = () => {
 
   const educationData = [
     {
@@ -134,3 +134,5 @@ export default function EducationSection() {
     </section>
   )
 }
+
+export default EducationSection

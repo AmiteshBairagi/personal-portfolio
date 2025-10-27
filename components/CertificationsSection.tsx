@@ -12,8 +12,8 @@ import { useDynamicModalPosition } from "@/hooks/use-dynamic-modal-position"
 import { useCertificationsRealTime } from "@/hooks/use-certifications-real-time"
 import type { CertificationItem } from "@/lib/data/certifications-data-manager"
 
-export default function CertificationsSection() {
-  const { data: certificationsData, loading, error, isOnline, lastSyncTime } = useCertificationsRealTime()
+const CertificationsSection = () => {
+  const { data: certificationsData, loading, error } = useCertificationsRealTime()
 
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null)
   const [showAll, setShowAll] = useState(false)
@@ -99,27 +99,6 @@ export default function CertificationsSection() {
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
               My <span className="gradient-text">Certifications</span>
             </h2>
-
-            {/* Connection Status Indicator */}
-            <div className="ml-4 flex items-center space-x-2">
-              {isOnline ? (
-                <div className="flex items-center text-green-500" title="Connected - Real-time updates enabled">
-                  <Wifi className="w-4 h-4" />
-                </div>
-              ) : (
-                <div className="flex items-center text-red-500" title="Offline - Using cached data">
-                  <WifiOff className="w-4 h-4" />
-                </div>
-              )}
-              {lastSyncTime && (
-                <span
-                  className="text-xs text-gray-500 dark:text-gray-400"
-                  title={`Last synced: ${lastSyncTime.toLocaleString()}`}
-                >
-                  {isOnline ? "Live" : "Cached"}
-                </span>
-              )}
-            </div>
           </div>
 
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -443,3 +422,6 @@ export default function CertificationsSection() {
     </section>
   )
 }
+
+
+export default CertificationsSection

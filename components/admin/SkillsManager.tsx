@@ -21,7 +21,7 @@ import {
 } from "lucide-react"
 import type { SkillItem } from "@/lib/data/skills-data"
 
-export default function SkillsManager() {
+const SkillsManager = () => {
   const {
     allSkills,
     isLoading,
@@ -420,3 +420,5 @@ export default function SkillsManager() {
     </div>
   )
 }
+
+export default SkillsManager

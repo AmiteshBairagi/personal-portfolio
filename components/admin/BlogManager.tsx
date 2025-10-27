@@ -74,7 +74,7 @@ const initialFormData: BlogFormData = {
   published: true,
 }
 
-export default function BlogManager() {
+const BlogManager = () => {
   const { toast } = useToast()
   const {
     posts,
@@ -954,3 +954,5 @@ export default function BlogManager() {
     </div>
   )
 }
+
+export default BlogManager

@@ -20,7 +20,7 @@ const quickLinks = [
   { name: "Contact", href: "#contact" },
 ]
 
-export default function Footer() {
+const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
@@ -147,3 +147,5 @@ export default function Footer() {
     </footer>
   )
 }
+
+export default Footer

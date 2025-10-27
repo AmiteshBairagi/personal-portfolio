@@ -9,7 +9,7 @@ import Link from "next/link"
 import { useBlogRealTime } from "@/hooks/use-blog-real-time"
 import OptimizedImage from "./optimized-image"
 
-export default function FeaturedBlogSection() {
+const FeaturedBlogSection = () => {
   const { posts, isLoading, error, isOnline, lastSyncTime, getFeaturedPosts } = useBlogRealTime()
 
   if (isLoading) {
@@ -186,3 +186,5 @@ export default function FeaturedBlogSection() {
     </section>
   )
 }
+
+export default FeaturedBlogSection
