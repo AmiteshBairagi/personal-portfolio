@@ -9,7 +9,7 @@ import CertificationsSection from "@/components/CertificationsSection"
 import ContactSection from "@/components/ContactSection"
 import OptimizedAnimation from "@/components/optimized-animation"
 import FeaturedBlogSection from "@/components/FeaturedBlogSection"
-import Footer from "@/components/footer"
+import Footer from "@/components/Footer"
 
 export default function Home() {
   return (
