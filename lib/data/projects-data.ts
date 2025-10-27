@@ -13,7 +13,6 @@ export interface ProjectData {
   category: string
   featured: boolean
   duration: string
-  team_size: string
   image?: string
   problem_statement?: string
   solution?: string
@@ -29,12 +28,10 @@ export interface ProjectData {
     challenges: string
     technologies: string[]
     duration: string
-    teamSize: string
     features: string[]
   }
 }
 
-// Data service for managing projects data with Supabase
 class ProjectsDataService {
   private static instance: ProjectsDataService
   private cache: { data: ProjectData[]; timestamp: number } | null = null
@@ -80,14 +77,13 @@ class ProjectsDataService {
       id: dbData.id,
       title: dbData.title,
       description: dbData.description,
-      shortDescription: dbData.short_description,
+      short_description: dbData.short_description,
       technologies: dbData.technologies || [],
-      githubUrl: dbData.github_url || "",
-      liveUrl: dbData.live_url || "",
+      github_url: dbData.github_url || "",
+      live_url: dbData.live_url || "",
       category: dbData.category,
       featured: dbData.featured || false,
       duration: dbData.duration || "",
-      teamSize: dbData.team_size || "",
       image: dbData.image,
       published: dbData.published !== false,
       details: {
@@ -96,7 +92,6 @@ class ProjectsDataService {
         challenges: dbData.challenges || "",
         technologies: dbData.technologies || [],
         duration: dbData.duration || "",
-        teamSize: dbData.team_size || "",
         features: dbData.features || [],
       },
     }
@@ -106,20 +101,18 @@ class ProjectsDataService {
     return {
       title: projectData.title,
       description: projectData.description,
-      short_description: projectData.shortDescription,
+      short_description: projectData.short_description,
       technologies: projectData.technologies || [],
-      github_url: projectData.githubUrl || "",
-      live_url: projectData.liveUrl || "",
+      github_url: projectData.github_url || "",
+      live_url: projectData.live_url || "",
       category: projectData.category,
       featured: projectData.featured || false,
       duration: projectData.duration || "",
-      team_size: projectData.teamSize || "",
       image: projectData.image,
       problem_statement: projectData.details?.problem || "",
       solution: projectData.details?.solution || "",
       challenges: projectData.details?.challenges || "",
       features: projectData.details?.features || [],
-      published: projectData.published !== false,
     }
   }
 

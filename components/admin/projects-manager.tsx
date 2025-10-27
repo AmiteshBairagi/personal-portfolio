@@ -20,11 +20,6 @@ import {
   Briefcase,
   ExternalLink,
   Github,
-  Wifi,
-  WifiOff,
-  Clock,
-  ChevronUp,
-  ChevronDown,
   RefreshCw,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -34,12 +29,9 @@ export default function ProjectsManager() {
     data: projectsData,
     isLoading,
     error,
-    lastSync,
-    isOnline,
     addProject,
     updateProject,
     deleteProject,
-    reorderProject,
     refresh,
   } = useProjectsData()
 
@@ -52,14 +44,13 @@ export default function ProjectsManager() {
   const [editForm, setEditForm] = useState<Partial<ProjectData>>({
     title: "",
     description: "",
-    shortDescription: "",
+    short_description: "",
     technologies: [],
-    githubUrl: "",
-    liveUrl: "",
+    github_url: "",
+    live_url: "",
     category: "",
     featured: false,
     duration: "",
-    teamSize: "",
     image: "",
     details: {
       problem: "",
@@ -67,10 +58,8 @@ export default function ProjectsManager() {
       challenges: "",
       technologies: [],
       duration: "",
-      teamSize: "",
       features: [],
     },
-    published: true,
   })
 
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -105,14 +94,14 @@ export default function ProjectsManager() {
     setEditForm({
       title: "",
       description: "",
-      shortDescription: "",
+      short_description: "",
       technologies: [],
-      githubUrl: "",
-      liveUrl: "",
+      github_url: "",
+      live_url: "",
       category: "",
-      featured: false,
+      // featured: false,
       duration: "",
-      teamSize: "",
+      // teamSize: "",
       image: "",
       details: {
         problem: "",
@@ -120,10 +109,10 @@ export default function ProjectsManager() {
         challenges: "",
         technologies: [],
         duration: "",
-        teamSize: "",
+        // teamSize: "",
         features: [],
       },
-      published: true,
+      // published: true,
     })
     setImagePreview("")
     setImageFile(null)
@@ -139,7 +128,7 @@ export default function ProjectsManager() {
         challenges: item.details?.challenges || "",
         technologies: item.technologies || [],
         duration: item.duration || "",
-        teamSize: item.teamSize || "",
+        // teamSize: item.teamSize || "",
         features: item.details?.features || [],
       },
     })
@@ -158,15 +147,6 @@ export default function ProjectsManager() {
       } catch (error) {
         toast.error("Failed to delete project. Please try again.")
       }
-    }
-  }
-
-  const handleReorder = async (id: string, direction: "up" | "down") => {
-    try {
-      await reorderProject(id, direction)
-      toast.success(`Project moved ${direction} successfully!`)
-    } catch (error) {
-      toast.error(`Failed to move project ${direction}. Please try again.`)
     }
   }
 
@@ -189,7 +169,7 @@ export default function ProjectsManager() {
           challenges: editForm.details?.challenges || "",
           technologies: editForm.technologies || [],
           duration: editForm.duration || "",
-          teamSize: editForm.teamSize || "",
+          // teamSize: editForm.teamSize || "",
           features: editForm.details?.features || [],
         },
       }
@@ -213,14 +193,14 @@ export default function ProjectsManager() {
     setEditForm({
       title: "",
       description: "",
-      shortDescription: "",
+      short_description: "",
       technologies: [],
-      githubUrl: "",
-      liveUrl: "",
+      github_url: "",
+      live_url: "",
       category: "",
-      featured: false,
+      // featured: false,
       duration: "",
-      teamSize: "",
+      // teamSize: "",
       image: "",
       details: {
         problem: "",
@@ -228,10 +208,10 @@ export default function ProjectsManager() {
         challenges: "",
         technologies: [],
         duration: "",
-        teamSize: "",
+        // teamSize: "",
         features: [],
       },
-      published: true,
+      // published: true,
     })
     setEditingItem(null)
     setImageFile(null)
@@ -310,22 +290,11 @@ export default function ProjectsManager() {
 
   return (
     <div className="space-y-6">
-      {/* Header with Sync Status */}
+
+      {/* header */}
       <div className="flex justify-between items-center">
         <div className="space-y-1">
           <h3 className="text-lg font-semibold text-white">Projects ({projectsData.length})</h3>
-          <div className="flex items-center space-x-4 text-sm text-slate-400">
-            <div className="flex items-center space-x-1">
-              {isOnline ? <Wifi className="w-4 h-4 text-green-400" /> : <WifiOff className="w-4 h-4 text-red-400" />}
-              <span>{isOnline ? "Online" : "Offline"}</span>
-            </div>
-            {lastSync && (
-              <div className="flex items-center space-x-1">
-                <Clock className="w-4 h-4" />
-                <span>Last sync: {lastSync.toLocaleTimeString()}</span>
-              </div>
-            )}
-          </div>
         </div>
         <div className="flex space-x-2">
           <Button onClick={refresh} variant="outline" className="border-slate-600 bg-transparent">
@@ -359,8 +328,6 @@ export default function ProjectsManager() {
                     <div>
                       <div className="flex items-center space-x-2">
                         <CardTitle className="text-lg text-white">{item.title}</CardTitle>
-                        {item.featured && <Badge className="bg-purple-500/20 text-purple-300">Featured</Badge>}
-                        {item.published && <Badge className="bg-green-500/20 text-green-300">Published</Badge>}
                       </div>
                       <div className="flex items-center space-x-1">
                         {category ? (
@@ -377,7 +344,7 @@ export default function ProjectsManager() {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button
+                    {/* <Button    
                       onClick={() => handleReorder(item.id, "up")}
                       size="sm"
                       variant="outline"
@@ -396,8 +363,9 @@ export default function ProjectsManager() {
                       title="Move down"
                     >
                       <ChevronDown className="w-4 h-4" />
-                    </Button>
-                    <Button
+                    </Button> */}
+
+                    <Button   // Edit Button
                       onClick={() => handleEdit(item)}
                       size="sm"
                       variant="outline"
@@ -406,7 +374,7 @@ export default function ProjectsManager() {
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button
+                    <Button   // Delete Button
                       onClick={() => handleDelete(item.id)}
                       size="sm"
                       variant="outline"
@@ -415,9 +383,13 @@ export default function ProjectsManager() {
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
+
                   </div>
                 </CardHeader>
+
                 <CardContent className="space-y-4">
+
+                  {/* Project Image */}
                   {item.image && (
                     <div className="w-full h-32 bg-slate-800 rounded-lg overflow-hidden mb-3">
                       <img
@@ -428,7 +400,7 @@ export default function ProjectsManager() {
                     </div>
                   )}
                   <p className="text-slate-400 text-sm leading-relaxed">
-                    {item.shortDescription || item.short_description}
+                    {item.short_description || item.short_description}
                   </p>
 
                   <div className="flex flex-wrap gap-2">
@@ -456,18 +428,17 @@ export default function ProjectsManager() {
 
                   <div className="flex items-center space-x-4 text-sm text-slate-400">
                     <span>Duration: {item.duration}</span>
-                    <span>Team: {item.teamSize || item.team_size}</span>
                   </div>
 
                   <div className="flex space-x-3">
                     <Button size="sm" variant="outline" className="border-slate-600 bg-transparent" asChild>
-                      <a href={item.githubUrl || item.github_url} target="_blank" rel="noopener noreferrer">
+                      <a href={item.github_url || item.github_url} target="_blank" rel="noopener noreferrer">
                         <Github className="w-3 h-3 mr-1" />
                         Code
                       </a>
                     </Button>
                     <Button size="sm" variant="outline" className="border-slate-600 bg-transparent" asChild>
-                      <a href={item.liveUrl || item.live_url} target="_blank" rel="noopener noreferrer">
+                      <a href={item.live_url || item.live_url} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-3 h-3 mr-1" />
                         Live Demo
                       </a>
@@ -479,6 +450,8 @@ export default function ProjectsManager() {
           )
         })}
       </div>
+
+
 
       {/* Add/Edit Modal */}
       <EnhancedModal
@@ -540,20 +513,12 @@ export default function ProjectsManager() {
                 placeholder="e.g., 3 months"
               />
             </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Team Size</label>
-              <Input
-                value={editForm.teamSize || ""}
-                onChange={(e) => handleInputChange("teamSize", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="e.g., Solo Project, 3 developers"
-              />
-            </div>
+            
             <div>
               <label className="text-sm font-medium text-slate-300 mb-2 block">GitHub URL</label>
               <Input
-                value={editForm.githubUrl || ""}
-                onChange={(e) => handleInputChange("githubUrl", e.target.value)}
+                value={editForm.github_url || ""}
+                onChange={(e) => handleInputChange("github_url", e.target.value)}
                 className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
                 placeholder="https://github.com/username/project"
               />
@@ -561,8 +526,8 @@ export default function ProjectsManager() {
             <div>
               <label className="text-sm font-medium text-slate-300 mb-2 block">Live URL</label>
               <Input
-                value={editForm.liveUrl || ""}
-                onChange={(e) => handleInputChange("liveUrl", e.target.value)}
+                value={editForm.live_url || ""}
+                onChange={(e) => handleInputChange("live_url", e.target.value)}
                 className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
                 placeholder="https://project-demo.com"
               />
@@ -572,8 +537,8 @@ export default function ProjectsManager() {
           <div>
             <label className="text-sm font-medium text-slate-300 mb-2 block">Short Description *</label>
             <Input
-              value={editForm.shortDescription || ""}
-              onChange={(e) => handleInputChange("shortDescription", e.target.value)}
+              value={editForm.short_description || ""}
+              onChange={(e) => handleInputChange("short_description", e.target.value)}
               className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
               placeholder="Brief one-line description for cards"
               required
@@ -717,18 +682,7 @@ export default function ProjectsManager() {
                 Featured Project
               </label>
             </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="published"
-                checked={editForm.published !== false}
-                onChange={(e) => handleInputChange("published", e.target.checked)}
-                className="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
-              />
-              <label htmlFor="published" className="text-sm font-medium text-slate-300">
-                Published
-              </label>
-            </div>
+            
           </div>
         </div>
       </EnhancedModal>

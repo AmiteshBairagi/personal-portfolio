@@ -7,14 +7,11 @@ export function useProjectsData() {
   const [data, setData] = useState<ProjectData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [lastSync, setLastSync] = useState<Date | null>(null)
-  const [isOnline, setIsOnline] = useState(true)
 
   const refetch = useCallback(() => {
     try {
       const newData = projectsDataService.getData()
       setData(newData)
-      setLastSync(new Date())
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch projects data")
@@ -63,15 +60,11 @@ export function useProjectsData() {
     }
 
     // Online/offline detection
-    const handleOnline = () => setIsOnline(true)
-    const handleOffline = () => setIsOnline(false)
 
     // Add event listeners
     window.addEventListener("projectsDataUpdated", handleCustomEvent as EventListener)
     window.addEventListener("storage", handleStorageEvent)
     window.addEventListener("message", handlePostMessage)
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
 
     // Polling fallback for extra reliability
     const pollInterval = setInterval(refetch, 30000) // 30 seconds
@@ -81,8 +74,6 @@ export function useProjectsData() {
       window.removeEventListener("projectsDataUpdated", handleCustomEvent as EventListener)
       window.removeEventListener("storage", handleStorageEvent)
       window.removeEventListener("message", handlePostMessage)
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
       broadcastChannel?.close()
       clearInterval(pollInterval)
     }
@@ -152,8 +143,6 @@ export function useProjectsData() {
     data,
     isLoading,
     error,
-    lastSync,
-    isOnline,
     addProject,
     updateProject,
     deleteProject,
