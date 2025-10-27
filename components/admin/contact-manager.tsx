@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import {
   Edit,
@@ -20,9 +19,6 @@ import {
   Twitter,
   Globe,
   Download,
-  Wifi,
-  WifiOff,
-  Clock,
   RefreshCw,
   Trash2,
   Plus,
@@ -35,14 +31,10 @@ export default function ContactManager() {
     contactData,
     loading,
     error,
-    isOnline,
-    lastSyncTime,
     updateContact,
     createContact,
     deleteContact,
     refreshData,
-    clearCache,
-    getCacheStatus,
   } = useContactRealTime()
 
   const [isEditing, setIsEditing] = useState(false)
@@ -183,31 +175,6 @@ export default function ContactManager() {
       ]
     : []
 
-  const getAvailabilityColor = (status: string) => {
-    switch (status) {
-      case "available":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-      case "busy":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
-      case "unavailable":
-        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400"
-    }
-  }
-
-  const getAvailabilityText = (status: string) => {
-    switch (status) {
-      case "available":
-        return "Available for work"
-      case "busy":
-        return "Currently busy"
-      case "unavailable":
-        return "Not available"
-      default:
-        return "Status unknown"
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -215,22 +182,6 @@ export default function ContactManager() {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <h2 className="text-2xl font-bold text-white">Contact Management</h2>
-          <div
-            className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
-              isOnline
-                ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-                : "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-            }`}
-          >
-            {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-            <span>{isOnline ? "Connected" : "Offline"}</span>
-            {lastSyncTime && (
-              <>
-                <Clock className="w-3 h-3" />
-                <span>Last sync: {lastSyncTime.toLocaleTimeString()}</span>
-              </>
-            )}
-          </div>
         </div>
 
         <div className="flex space-x-2">
@@ -295,11 +246,6 @@ export default function ContactManager() {
           <CardHeader className="flex flex-row items-center justify-between">
             <div className="flex items-center space-x-4">
               <CardTitle className="text-lg text-white">Contact Information</CardTitle>
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getAvailabilityColor(contactData.availability_status)}`}
-              >
-                {getAvailabilityText(contactData.availability_status)}
-              </span>
             </div>
             <div className="flex space-x-2">
               <Button onClick={handleEdit} size="sm" className="bg-cyan-500 hover:bg-cyan-600">
@@ -349,12 +295,6 @@ export default function ContactManager() {
                   </div>
                 </motion.div>
               ))}
-            </div>
-
-            {/* Timestamps */}
-            <div className="flex justify-between text-xs text-slate-400 pt-4 border-t border-slate-600">
-              <span>Created: {new Date(contactData.created_at).toLocaleString()}</span>
-              <span>Updated: {new Date(contactData.updated_at).toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
@@ -420,34 +360,7 @@ export default function ContactManager() {
             </div>
           </div>
 
-          {/* Availability Status */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-cyan-400">Availability</h4>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Current Status</label>
-              <Select
-                value={editForm.availability_status}
-                onValueChange={(value: "available" | "busy" | "unavailable") =>
-                  handleInputChange("availability_status", value)
-                }
-              >
-                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-700 border-slate-600">
-                  <SelectItem value="available" className="text-white hover:bg-slate-600">
-                    Available for work
-                  </SelectItem>
-                  <SelectItem value="busy" className="text-white hover:bg-slate-600">
-                    Currently busy
-                  </SelectItem>
-                  <SelectItem value="unavailable" className="text-white hover:bg-slate-600">
-                    Not available
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          
 
           {/* Bio */}
           <div className="space-y-4">
