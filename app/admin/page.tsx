@@ -34,21 +34,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 import dynamic from "next/dynamic"
 
-const HeroManager = dynamic(() => import("@/components/admin/hero-manager"), {
-  loading: () => <div className="p-4 text-slate-400">Loading Hero Manager...</div>,
-  ssr: false,
-})
-
-const AboutManager = dynamic(() => import("@/components/admin/about-manager"), {
-  loading: () => <div className="p-4 text-slate-400">Loading About Manager...</div>,
-  ssr: false,
-})
-
-const EducationManager = dynamic(() => import("@/components/admin/education-manager"), {
-  loading: () => <div className="p-4 text-slate-400">Loading Education Manager...</div>,
-  ssr: false,
-})
-
 const ProjectsManager = dynamic(() => import("@/components/admin/projects-manager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Projects Manager...</div>,
   ssr: false,
@@ -123,33 +108,6 @@ function AdminContent() {
   }
 
   const adminTabs = [
-    {
-      id: "hero",
-      label: "Hero",
-      icon: Home,
-      description: "Manage hero section content and image",
-      component: HeroManager,
-      color: "from-cyan-500/20 to-blue-500/20",
-      iconColor: "text-cyan-400",
-    },
-    {
-      id: "about",
-      label: "About",
-      icon: Users,
-      description: "Manage personal information and bio",
-      component: AboutManager,
-      color: "from-blue-500/20 to-cyan-500/20",
-      iconColor: "text-blue-400",
-    },
-    {
-      id: "education",
-      label: "Education",
-      icon: GraduationCap,
-      description: "Manage educational background",
-      component: EducationManager,
-      color: "from-green-500/20 to-emerald-500/20",
-      iconColor: "text-green-400",
-    },
     {
       id: "projects",
       label: "Projects",
