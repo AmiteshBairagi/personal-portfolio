@@ -47,17 +47,14 @@ const iconOptions = [
   "📚",
 ]
 
-export default function CategoriesManager() {
+const CategoriesManager = () => {
   const {
     data: categoriesData,
     isLoading,
     error,
-    lastSync,
-    isOnline,
     addCategory,
     updateCategory,
     deleteCategory,
-    reorderCategory,
     refetch,
   } = useCategoriesData()
 
@@ -148,31 +145,6 @@ export default function CategoriesManager() {
     setEditForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  const moveCategory = async (id: string, direction: "up" | "down") => {
-    const category = categoriesData.find((cat) => cat.id === id)
-    if (!category) return
-
-    const sortedCategories = [...categoriesData].sort((a, b) => a.order - b.order)
-    const currentIndex = sortedCategories.findIndex((cat) => cat.id === id)
-
-    let newOrder = category.order
-
-    if (direction === "up" && currentIndex > 0) {
-      const targetCategory = sortedCategories[currentIndex - 1]
-      newOrder = targetCategory.order
-      await reorderCategory(targetCategory.id, category.order)
-    } else if (direction === "down" && currentIndex < sortedCategories.length - 1) {
-      const targetCategory = sortedCategories[currentIndex + 1]
-      newOrder = targetCategory.order
-      await reorderCategory(targetCategory.id, category.order)
-    }
-
-    if (newOrder !== category.order) {
-      await reorderCategory(category.id, newOrder)
-      toast.success("Category order updated!")
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -208,15 +180,7 @@ export default function CategoriesManager() {
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <h3 className="text-lg font-semibold text-white">Categories ({categoriesData.length})</h3>
-            <div className="flex items-center space-x-1">
-              {isOnline ? <Wifi className="w-4 h-4 text-green-400" /> : <WifiOff className="w-4 h-4 text-red-400" />}
-              <span className="text-xs text-slate-400">{isOnline ? "Online" : "Offline"}</span>
-            </div>
           </div>
-          <p className="text-sm text-slate-400">
-            Manage project categories and their display order
-            {lastSync && <span className="ml-2">• Last sync: {lastSync.toLocaleTimeString()}</span>}
-          </p>
         </div>
         <div className="flex space-x-2">
           <Button onClick={refetch} variant="outline" className="border-slate-600 bg-transparent" size="sm">
@@ -261,26 +225,6 @@ export default function CategoriesManager() {
                 </div>
                 <div className="flex space-x-2">
                   <Button
-                    onClick={() => moveCategory(item.id, "up")}
-                    size="sm"
-                    variant="outline"
-                    className="border-slate-600"
-                    disabled={index === 0}
-                    title="Move up"
-                  >
-                    <ArrowUp className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    onClick={() => moveCategory(item.id, "down")}
-                    size="sm"
-                    variant="outline"
-                    className="border-slate-600"
-                    disabled={index === sortedCategories.length - 1}
-                    title="Move down"
-                  >
-                    <ArrowDown className="w-4 h-4" />
-                  </Button>
-                  <Button
                     onClick={() => handleEdit(item)}
                     size="sm"
                     variant="outline"
@@ -300,13 +244,6 @@ export default function CategoriesManager() {
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-4 text-sm text-slate-400">
-                  <span>Order: {item.order}</span>
-                  <span>Status: {item.active ? "Active" : "Inactive"}</span>
-                  <span>Created: {new Date(item.created_at).toLocaleDateString()}</span>
-                </div>
-              </CardContent>
             </Card>
           </motion.div>
         ))}
@@ -345,16 +282,6 @@ export default function CategoriesManager() {
                 className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
                 placeholder="e.g., Full Stack"
                 required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Order</label>
-              <Input
-                type="number"
-                value={editForm.order || 1}
-                onChange={(e) => handleInputChange("order", Number.parseInt(e.target.value) || 1)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                min="1"
               />
             </div>
           </div>
@@ -405,37 +332,10 @@ export default function CategoriesManager() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="active"
-              checked={editForm.active !== false}
-              onChange={(e) => handleInputChange("active", e.target.checked)}
-              className="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
-            />
-            <label htmlFor="active" className="text-sm font-medium text-slate-300">
-              Active Category
-            </label>
-          </div>
-
-          {/* Preview */}
-          <div className="border-t border-slate-600 pt-4">
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Preview</label>
-            <div className="flex items-center space-x-3 p-3 bg-slate-800 rounded-lg">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
-                style={{ backgroundColor: editForm.color }}
-              >
-                {editForm.icon}
-              </div>
-              <div>
-                <div className="text-white font-medium">{editForm.name || "Category Name"}</div>
-                <div className="text-slate-400 text-sm">{editForm.description || "Category description"}</div>
-              </div>
-            </div>
-          </div>
         </div>
       </EnhancedModal>
     </div>
   )
 }
+
+export default CategoriesManager

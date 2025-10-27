@@ -9,14 +9,11 @@ export function useCategoriesData() {
     data,
     isLoading,
     error,
-    lastSync,
-    isOnline,
     createCategory: createCategoryRT,
     updateCategory: updateCategoryRT,
     deleteCategory: deleteCategoryRT,
     getActiveCategories: getActiveCategoriesRT,
     getCategoryByName: getCategoryByNameRT,
-    reorderCategory,
     refreshData,
   } = useCategoriesRealTime()
 
@@ -67,15 +64,12 @@ export function useCategoriesData() {
     data,
     isLoading,
     error,
-    lastSync,
-    isOnline,
     addCategory,
     updateCategory,
     deleteCategory,
     getCategory,
     getActiveCategories,
     getCategoryByName,
-    reorderCategory,
     refetch,
   }
 }
