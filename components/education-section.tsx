@@ -19,7 +19,7 @@ export default function EducationSection() {
       description:
         "Premier technical university known for its industry-oriented curriculum and strong placement record. Focusing on advanced software development, AI/ML, and emerging technologies.",
       type: "Masters",
-      image: "/images/snu-logo.png", 
+      image: "/snu-image.jpg", 
       display_order: 1,
     },
     {
@@ -32,7 +32,7 @@ export default function EducationSection() {
       description:
         "Well-established institution with strong focus on practical learning and industry exposure. Gained foundation in Physics, Chemistry, and Mathematics.",
       type: "Bachelor",
-      image: "/images/tgc-logo.png", 
+      image: "/snu-image.jpg", 
       display_order: 2,
     },
     {
@@ -45,12 +45,10 @@ export default function EducationSection() {
       description:
         "Completed higher secondary education with Science stream focusing on Mathematics and Computer Science. Developed strong analytical thinking and problem-solving skills during this foundational period.",
       type: "Secondary",
-      image: "/images/katiahat-logo.png", 
+      image: "/snu-image.jpg", 
       display_order: 3,
     },
   ];
-
-
 
   return (
     <section id="education" className="py-20 bg-gray-50 dark:bg-dark-950">
