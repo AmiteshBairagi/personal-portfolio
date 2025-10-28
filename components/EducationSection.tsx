@@ -32,7 +32,7 @@ const EducationSection = () => {
       description:
         "Well-established institution with strong focus on practical learning and industry exposure. Gained foundation in Physics, Chemistry, and Mathematics.",
       type: "Bachelor",
-      image: "/snu-image.jpg", 
+      image: "/taki_college.png", 
       display_order: 2,
     },
     {
@@ -45,7 +45,7 @@ const EducationSection = () => {
       description:
         "Completed higher secondary education with Science stream focusing on Mathematics and Computer Science. Developed strong analytical thinking and problem-solving skills during this foundational period.",
       type: "Secondary",
-      image: "/snu-image.jpg", 
+      image: "/katihat_school.png", 
       display_order: 3,
     },
   ];

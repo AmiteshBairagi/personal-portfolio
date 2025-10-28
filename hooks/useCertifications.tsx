@@ -1,21 +1,18 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { certificationsDataManager, type CertificationItem } from "@/lib/data/certifications-data-manager"
+import { certificationService, type CertificationItem } from "@/lib/data/certificationService"
 
-export function useCertificationsRealTime() {
+const useCertifications = () => {
   const [data, setData] = useState<CertificationItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  // const [isOnline, setIsOnline] = useState(true)
-  // const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
-
   // Load data function
   const loadData = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      const certifications = await certificationsDataManager.getData()
+      const certifications = await certificationService.getData()
       setData(certifications)
       // setLastSyncTime(new Date())
     } catch (err) {
@@ -37,7 +34,7 @@ export function useCertificationsRealTime() {
   const addCertification = useCallback(
     async (certification: Omit<CertificationItem, "id" | "created_at" | "updated_at">) => {
       try {
-        const result = await certificationsDataManager.addItem(certification)
+        const result = await certificationService.addItem(certification)
         if (result.success) {
           // Data will be updated via real-time subscription
           return { success: true, data: result.data }
@@ -57,7 +54,7 @@ export function useCertificationsRealTime() {
 
   const updateCertification = useCallback(async (id: string, updates: Partial<CertificationItem>) => {
     try {
-      const result = await certificationsDataManager.updateItem(id, updates)
+      const result = await certificationService.updateItem(id, updates)
       if (result.success) {
         // Data will be updated via real-time subscription
         return { success: true }
@@ -75,7 +72,7 @@ export function useCertificationsRealTime() {
 
   const deleteCertification = useCallback(async (id: string) => {
     try {
-      const result = await certificationsDataManager.deleteItem(id)
+      const result = await certificationService.deleteItem(id)
       if (result.success) {
         // Data will be updated via real-time subscription
         return { success: true }
@@ -93,7 +90,7 @@ export function useCertificationsRealTime() {
 
   const reorderCertifications = useCallback(async (certifications: CertificationItem[]) => {
     try {
-      const result = await certificationsDataManager.reorderItems(certifications)
+      const result = await certificationService.reorderItems(certifications)
       if (result.success) {
         // Data will be updated via real-time subscription
         return { success: true }
@@ -111,7 +108,7 @@ export function useCertificationsRealTime() {
 
   const moveCertificationUp = useCallback(async (id: string) => {
     try {
-      const result = await certificationsDataManager.moveItemUp(id)
+      const result = await certificationService.moveItemUp(id)
       if (result.success) {
         return { success: true }
       } else {
@@ -128,7 +125,7 @@ export function useCertificationsRealTime() {
 
   const moveCertificationDown = useCallback(async (id: string) => {
     try {
-      const result = await certificationsDataManager.moveItemDown(id)
+      const result = await certificationService.moveItemDown(id)
       if (result.success) {
         return { success: true }
       } else {
@@ -146,7 +143,7 @@ export function useCertificationsRealTime() {
   const searchCertifications = useCallback(async (query: string) => {
     try {
       setLoading(true)
-      const results = await certificationsDataManager.searchItems(query)
+      const results = await certificationService.searchItems(query)
       return { success: true, data: results }
     } catch (err) {
       console.error("Error searching certifications:", err)
@@ -158,7 +155,7 @@ export function useCertificationsRealTime() {
 
   const getFeaturedCertifications = useCallback(async () => {
     try {
-      const featured = await certificationsDataManager.getFeaturedItems()
+      const featured = await certificationService.getFeaturedItems()
       return { success: true, data: featured }
     } catch (err) {
       console.error("Error getting featured certifications:", err)
@@ -168,7 +165,7 @@ export function useCertificationsRealTime() {
 
   // Refresh data manually
   const refresh = useCallback(() => {
-    certificationsDataManager.clearCache()
+    certificationService.clearCache()
     loadData()
   }, [loadData])
 
@@ -182,8 +179,6 @@ export function useCertificationsRealTime() {
     data,
     loading,
     error,
-    // isOnline,
-    // lastSyncTime,
 
     // CRUD operations
     addCertification,
@@ -202,6 +197,9 @@ export function useCertificationsRealTime() {
     clearError,
 
     // Cache status
-    cacheStatus: certificationsDataManager.getCacheStatus(),
+    cacheStatus: certificationService.getCacheStatus(),
   }
 }
+
+
+export default useCertifications

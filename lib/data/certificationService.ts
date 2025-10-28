@@ -71,7 +71,7 @@ const ensureUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<s
   return slug
 }
 
-export const certificationsDataManager = {
+export const certificationService = {
   // Get all certifications with caching
   async getData(): Promise<CertificationItem[]> {
     const now = Date.now()

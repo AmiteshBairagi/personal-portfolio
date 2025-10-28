@@ -7,13 +7,13 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Award, Calendar, Building, X, CheckCircle, Globe, Wifi, WifiOff } from "lucide-react"
+import { Award, Calendar, Building, X, Globe, } from "lucide-react"
 import { useDynamicModalPosition } from "@/hooks/use-dynamic-modal-position"
-import { useCertificationsRealTime } from "@/hooks/use-certifications-real-time"
-import type { CertificationItem } from "@/lib/data/certifications-data-manager"
+import useCertifications from "@/hooks/useCertifications"
+import type { CertificationItem } from "@/lib/data/certificationService"
 
 const CertificationsSection = () => {
-  const { data: certificationsData, loading, error } = useCertificationsRealTime()
+  const { data: certificationsData, loading, error } = useCertifications()
 
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null)
   const [showAll, setShowAll] = useState(false)
@@ -117,10 +117,7 @@ const CertificationsSection = () => {
                     </div>
                   )}
 
-                  {/* Level Badge */}
-                  {/* <div className="absolute top-2 left-2">
-                    <Badge className={`${getLevelColor(cert.level)} text-white text-xs border-0`}>{cert.level}</Badge>
-                  </div> */}
+                  
                 </div>
 
                 <CardContent className="p-4 space-y-3">

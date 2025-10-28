@@ -25,8 +25,8 @@ import {
   Filter,
   RefreshCw,
 } from "lucide-react"
-import { useCertificationsRealTime } from "@/hooks/use-certifications-real-time"
-import type { CertificationItem } from "@/lib/data/certifications-data-manager"
+import useCertifications from "@/hooks/useCertifications"
+import type { CertificationItem } from "@/lib/data/certificationService"
 
 const CertificationManager = () => {
   const {
@@ -39,7 +39,7 @@ const CertificationManager = () => {
     searchCertifications,
     refresh,
     clearError,
-  } = useCertificationsRealTime()
+  } = useCertifications()
 
   // Modal states
   const [isEditing, setIsEditing] = useState(false)
