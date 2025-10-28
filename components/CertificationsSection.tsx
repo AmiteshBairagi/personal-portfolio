@@ -21,29 +21,6 @@ const CertificationsSection = () => {
   const displayedCerts = showAll ? certificationsData : certificationsData.slice(0, 4)
   const { isReady } = useDynamicModalPosition(!!selectedCert)
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case "Professional":
-        return "bg-gradient-to-r from-purple-500 to-pink-500"
-      case "Associate":
-        return "bg-gradient-to-r from-blue-500 to-cyan-500"
-      case "Expert":
-        return "bg-gradient-to-r from-green-500 to-emerald-500"
-      default:
-        return "bg-gradient-to-r from-gray-500 to-gray-600"
-    }
-  }
-
-  const getValidityStatus = (validUntil: string) => {
-    if (validUntil === "Lifetime") return { status: "lifetime", color: "text-green-400" }
-
-    const currentYear = new Date().getFullYear()
-    const expiryYear = Number.parseInt(validUntil)
-
-    if (expiryYear > currentYear + 1) return { status: "valid", color: "text-green-400" }
-    if (expiryYear > currentYear) return { status: "expiring", color: "text-yellow-400" }
-    return { status: "expired", color: "text-red-400" }
-  }
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -141,9 +118,9 @@ const CertificationsSection = () => {
                   )}
 
                   {/* Level Badge */}
-                  <div className="absolute top-2 left-2">
+                  {/* <div className="absolute top-2 left-2">
                     <Badge className={`${getLevelColor(cert.level)} text-white text-xs border-0`}>{cert.level}</Badge>
-                  </div>
+                  </div> */}
                 </div>
 
                 <CardContent className="p-4 space-y-3">
@@ -272,28 +249,6 @@ const CertificationsSection = () => {
                     )}
                   </div>
 
-                  {/* Level Badge */}
-                  <div className="absolute top-4 left-4">
-                    <Badge
-                      className={`${getLevelColor(selectedCert.level)} text-white border-0 px-2 py-1 sm:px-3 text-xs`}
-                    >
-                      {selectedCert.level} Level
-                    </Badge>
-                  </div>
-
-                  {/* Validity Status */}
-                  <div className="absolute top-4 right-16">
-                    <div
-                      className={`flex items-center space-x-1 px-2 py-1 sm:px-3 rounded-full bg-black/20 backdrop-blur-sm ${getValidityStatus(selectedCert.valid_until).color}`}
-                    >
-                      <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="text-xs sm:text-sm font-medium">
-                        {selectedCert.valid_until === "Lifetime"
-                          ? "Lifetime Valid"
-                          : `Valid until ${selectedCert.valid_until}`}
-                      </span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Scrollable Content */}
@@ -323,12 +278,6 @@ const CertificationsSection = () => {
                             <div className="flex justify-between">
                               <span className="text-gray-600 dark:text-gray-400">Issue Date:</span>
                               <span className="font-medium text-gray-900 dark:text-white">{selectedCert.date}</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-gray-600 dark:text-gray-400">Valid Until:</span>
-                              <span className={`font-medium ${getValidityStatus(selectedCert.valid_until).color}`}>
-                                {selectedCert.valid_until}
-                              </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-gray-600 dark:text-gray-400">Score:</span>
@@ -367,19 +316,6 @@ const CertificationsSection = () => {
                           </div>
                         </div>
 
-                        {selectedCert.featured && (
-                          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 dark:text-yellow-400" />
-                              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 text-sm sm:text-base">
-                                Featured Certification
-                              </h4>
-                            </div>
-                            <p className="text-xs sm:text-sm text-yellow-700 dark:text-yellow-300">
-                              This certification is highlighted as one of my key professional achievements.
-                            </p>
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -401,7 +337,7 @@ const CertificationsSection = () => {
                       >
                         <a href={selectedCert.verification_url} target="_blank" rel="noopener noreferrer">
                           <Globe className="w-4 h-4 mr-2" />
-                          Verify Certificate
+                          View Certificate
                         </a>
                       </Button>
                       <Button
