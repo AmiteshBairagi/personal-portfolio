@@ -86,31 +86,42 @@ const SkillsSection = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 lg:gap-8">
           {/* Categories Sidebar */}
           <div className="lg:col-span-1">
             <div className="flex flex-row lg:flex-col gap-1 lg:gap-2 lg:space-y-2 lg:space-x-0 sticky top-24 pb-2 lg:pb-0">
+              <div className="hidden lg:block bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 rounded-md font-semibold text-xs lg:text-base h-[40px] p-2 pl-6">Select Category</div>
               {categories.map((category) => (
                 <motion.button
                   key={category}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.04, y: -2 }}
+                  whileTap={{ scale: 0.98, y: 1 }}
                   onClick={() => setSelectedCategory(category)}
-                  className={`flex-1 lg:w-full text-left p-2 lg:p-4 rounded-lg transition-all duration-300 ${
-                    selectedCategory === category
-                      ? "bg-primary-500 text-white shadow-lg"
-                      : "bg-white dark:bg-dark-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-700"
-                  }`}
+                  className={`w-full text-left px-3 py-2 lg:px-4 lg:py-3 rounded-xl font-semibold transition-all duration-300 shadow-sm border-2 focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer group
+                    ${selectedCategory === category
+                      ? "bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 text-white border-primary-500 shadow-lg"
+                      : "bg-white dark:bg-dark-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-dark-700 hover:bg-gradient-to-r hover:from-cyan-100 hover:via-purple-100 hover:to-pink-100 hover:border-primary-400"}
+                  `}
+                  style={{ minWidth: '80px' }}
                 >
-                  <div className="font-semibold text-xs lg:text-base">{category}</div>
-                  <div className="text-xs lg:text-sm opacity-75">{skillsData[category]?.length || 0} skills</div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs lg:text-base font-bold group-hover:text-cyan-600 group-hover:dark:text-cyan-400 transition-colors">
+                      {category}
+                    </span>
+                    {/* <span className="md:hidden ml-2 text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-200 via-purple-200 to-pink-200 text-gray-700 dark:text-gray-900 font-semibold">
+                      {skillsData[category]?.length || 0}
+                    </span> */}
+                  </div>
+                  <div className="text-xs lg:text-sm opacity-75 mt-1 group-hover:text-pink-600 group-hover:dark:text-pink-400 transition-colors">
+                    {skillsData[category]?.length || 0} skills
+                  </div>
                 </motion.button>
               ))}
             </div>
           </div>
 
           {/* Skills Grid */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-5">
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedCategory}
@@ -118,7 +129,7 @@ const SkillsSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="grid md:grid-cols-2 gap-6"
+                className="grid md:grid-cols-3 gap-6"
               >
                 {skillsData[selectedCategory]?.map((skill, index) => (
                   <motion.div
@@ -130,29 +141,31 @@ const SkillsSection = () => {
                     className="cursor-pointer"
                     onClick={() => setSelectedSkill(skill)}
                   >
-                    <Card className="h-full bg-white dark:bg-dark-800 border-gray-200 dark:border-dark-700 hover:shadow-lg transition-all duration-300 hover:border-primary-500/50">
+                    <Card className="h-full bg-gradient-to-br from-cyan-100 via-purple-100 to-pink-100 dark:from-dark-800 dark:via-dark-900 dark:to-dark-950 border-2 border-transparent hover:border-primary-500/60 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
                       <CardContent className="p-6 space-y-4">
                         {/* Skill Header */}
                         <div className="flex items-center justify-between">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{skill.name}</h3>
-                          <Badge className="bg-primary-500/10 text-primary-600 dark:text-primary-400">
+                          <h3 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 dark:from-primary-400 dark:via-primary-500 dark:to-pink-400">
+                            {skill.name}
+                          </h3>
+                          <Badge className="bg-gradient-to-r from-cyan-400 to-pink-400 text-white shadow-md border-none">
                             {skill.level}%
                           </Badge>
                         </div>
 
                         {/* Progress Bar */}
                         <div className="space-y-2">
-                          <Progress value={skill.level} className="h-2" />
+                          <Progress value={skill.level} className="h-2 bg-gradient-to-r from-cyan-200 via-purple-200 to-pink-200" />
                           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-                            <span>Proficiency</span>
-                            <span>{skill.experience}</span>
+                            <span className="font-semibold text-cyan-600 dark:text-cyan-400">Proficiency</span>
+                            <span className="font-semibold text-pink-600 dark:text-pink-400">{skill.experience}</span>
                           </div>
                         </div>
 
                         {/* Projects Count */}
-                        <div className="text-sm text-gray-600 dark:text-gray-300">
+                        <div className="text-sm text-gray-700 dark:text-gray-200">
                           Used in{" "}
-                          <span className="font-semibold text-primary-600 dark:text-primary-400">
+                          <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 dark:from-primary-400 dark:via-primary-500 dark:to-pink-400">
                             {skill.projects?.length || 0} projects
                           </span>
                         </div>
