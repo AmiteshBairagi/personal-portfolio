@@ -1,7 +1,7 @@
 "use client"
 
 import { ThemeProvider } from "@/contexts/theme-context"
-import OptimizedNavbar from "@/components/optimized-navbar"
+import OptimizedNavbar from "@/components/Navbar"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function BlogPostLoading() {

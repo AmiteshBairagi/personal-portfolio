@@ -1,5 +1,5 @@
 import { ThemeProvider } from "@/contexts/theme-context"
-import OptimizedNavbar from "@/components/optimized-navbar"
+import Navbar from "@/components/Navbar"
 import HeroSection from "@/components/HeroSection"
 import AboutSection from "@/components/AboutSection"
 import EducationSection from "@/components/EducationSection"
@@ -15,13 +15,10 @@ export default function Home() {
   return (
     <ThemeProvider>
       <div className="min-h-screen">
-       
-        <OptimizedNavbar />
-        <main>
+        <Navbar />
+        <main className="pt-24 md:pt-16 lg:pt-0">
           <HeroSection />
 
-          {/* <UpdatedHero/> */}
-          {/* Wrap sections in OptimizedAnimation for better performance */}
           <OptimizedAnimation>
             <section id="about">
               <AboutSection />

@@ -9,6 +9,7 @@ const inter = Inter({
   display: "swap", // Optimize font loading
 })
 
+
 export const metadata: Metadata = {
   title: "Developer Portfolio",
   description: "A stunning developer portfolio website",

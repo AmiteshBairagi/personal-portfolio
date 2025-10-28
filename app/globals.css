@@ -68,10 +68,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     /* Enable hardware acceleration */
-    transform: translateZ(0);
+    /* transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
-    perspective: 1000;
+    perspective: 1000; */
   }
 
   /* Performance optimized scrollbar */

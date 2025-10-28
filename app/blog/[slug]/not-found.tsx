@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { BookOpen, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ThemeProvider } from "@/contexts/theme-context"
-import OptimizedNavbar from "@/components/optimized-navbar"
+import OptimizedNavbar from "@/components/Navbar"
 
 export default function BlogPostNotFound() {
   return (

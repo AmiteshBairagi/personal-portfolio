@@ -18,9 +18,6 @@ import {
   Globe,
   Download,
   Send,
-  Wifi,
-  WifiOff,
-  Clock,
 } from "lucide-react"
 import { useContactRealTime } from "@/hooks/use-contact-real-time"
 
@@ -128,31 +125,9 @@ const ContactSection = () => {
     },
   ].filter((link) => link.href)
 
-  const getAvailabilityColor = (status: string) => {
-    switch (status) {
-      case "available":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
-      case "busy":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400"
-      case "unavailable":
-        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400"
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400"
-    }
-  }
 
-  const getAvailabilityText = (status: string) => {
-    switch (status) {
-      case "available":
-        return "Available for work"
-      case "busy":
-        return "Currently busy"
-      case "unavailable":
-        return "Not available"
-      default:
-        return "Status unknown"
-    }
-  }
+
+ 
 
   return (
     <section id="contact" className="py-20 bg-gray-50 dark:bg-dark-950">
@@ -179,19 +154,7 @@ const ContactSection = () => {
             {loading ? "Loading contact information..." : currentData.bio}
           </p>
 
-          {/* Availability Status */}
-          {!loading && (
-            <div className="mt-4">
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getAvailabilityColor(currentData.availability_status)}`}
-              >
-                <div
-                  className={`w-2 h-2 rounded-full mr-2 ${getAvailabilityColor(currentData.availability_status).replace("text-", "bg-").replace("dark:text-", "dark:bg-")}`}
-                ></div>
-                {getAvailabilityText(currentData.availability_status)}
-              </span>
-            </div>
-          )}
+          
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">

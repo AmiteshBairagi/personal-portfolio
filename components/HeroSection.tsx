@@ -86,7 +86,8 @@ const HeroSection = () => {
           {/* Enhanced layout with better space utilization */}
           <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-12 items-center justify-center min-h-[calc(85vh-5rem)] sm:min-h-[calc(85vh-3rem)] lg:min-h-[85vh]">
 
-            <div className="absolute bottom-0 right-0 md:bottom-0 md:right-40">
+            {/* Show hero image only on large screens */}
+            <div className="absolute bottom-0 right-0 md:bottom-0 md:right-40 hidden lg:block">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, y: 80, rotateX: 15 }}
                 animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
@@ -150,7 +151,7 @@ const HeroSection = () => {
                   />
                 </div>
 
-                <p className="text-sm sm:text-lg md:text-xl lg:text-xl xl:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-2">
+                <p className="text-sm sm:text-lg md:text-xl lg:text-xl xl:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-2">
                   {description}
                 </p>
               </motion.div>
@@ -162,6 +163,15 @@ const HeroSection = () => {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               >
+                <motion.button
+                  onClick={handleReadBlogs}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
+                >
+                  <span>📖</span> Resume
+                </motion.button>
+
                 <motion.button
                   onClick={handleViewWork}
                   whileHover={{ scale: 1.05 }}
@@ -177,17 +187,10 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  <span>📖</span> Read My Blog
+                  <span>📖</span> Interview Experiences
                 </motion.button>
 
-                <motion.button
-                  onClick={handleReadBlogs}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
-                >
-                  <span>📖</span> More About Me
-                </motion.button>
+                
               </motion.div>
 
               {/* Enhanced social links with better prominence */}
