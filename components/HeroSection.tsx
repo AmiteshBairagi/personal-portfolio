@@ -1,79 +1,52 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Github, Linkedin, Twitter, Mail, ArrowDown, Sparkles } from "lucide-react"
+import { Github, Linkedin, Twitter, Mail, ArrowDown, Sparkles, Router } from "lucide-react"
 import Image from "next/image"
-import { useHeroData } from "@/hooks/use-hero-data"
-import { useEffect, useState, useRef } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { ReactTyped } from "react-typed"
 
+
 const HeroSection = () => {
-  const { heroData, lastUpdate } = useHeroData()
-  const [renderKey, setRenderKey] = useState(0)
-  const router = useRouter()
-  const initialRenderRef = useRef(true)
 
-  // Only update render key when data actually changes, not on initial load
-  useEffect(() => {
-    if (initialRenderRef.current) {
-      initialRenderRef.current = false
-      return
-    }
+  const skills = ["React", "Node.js", "TypeScript", "Python", "Next.js", "MongoDB"]
+  const description = "Crafting digital experiences with modern technologies. Passionate about clean code, innovative solutions, and turning ideas into reality."
 
-    if (heroData && lastUpdate) {
-      setRenderKey((prev) => prev + 1)
-    }
-  }, [heroData, lastUpdate])
-
-  // Navigation functions
-  const handleViewWork = () => {
-    const projectsSection = document.getElementById("projects")
-    if (projectsSection) {
-      projectsSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      })
-    }
-  }
-
-  const handleReadBlogs = () => {
-    router.push("/blog")
-  }
 
   // Use heroData with fallbacks
   const socialIcons = [
     {
       icon: Github,
-      href: heroData?.social_links?.github || "#",
+      href: "#",
       label: "GitHub",
     },
     {
       icon: Linkedin,
-      href: heroData?.social_links?.linkedin || "#",
+      href: "#",
       label: "LinkedIn",
     },
     {
       icon: Twitter,
-      href: heroData?.social_links?.twitter || "#",
+      href: "#",
       label: "Twitter",
     },
     {
       icon: Mail,
-      href: heroData?.social_links?.email || "#",
+      href: "#",
       label: "Email",
     },
   ]
 
-  const skills = heroData?.skills || ["React", "Node.js", "TypeScript", "Python", "Next.js", "MongoDB"]
-  const name = heroData?.name || "Amitesh"
-  const title = heroData?.title || "Full Stack Developer"
-  const description =
-    heroData?.description ||
-    "Crafting digital experiences with modern technologies. Passionate about clean code, innovative solutions, and turning ideas into reality."
 
-  // Use the hero image from database or fallback - stable reference
-  const heroImage ="/new-hero-image.jpg"
+
+  const handleViewWork = () => {
+
+  }
+
+  const handleDownloadResume = () => {
+
+  }
+
 
   return (
     <section
@@ -164,7 +137,7 @@ const HeroSection = () => {
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               >
                 <motion.button
-                  onClick={handleReadBlogs}
+                  onClick={handleDownloadResume}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
@@ -182,12 +155,11 @@ const HeroSection = () => {
                 </motion.button>
 
                 <motion.button
-                  onClick={handleReadBlogs}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  <span>📖</span> Interview Experiences
+                  <span>📖</span> <Link href="/blog">Interview Experiences</Link>
                 </motion.button>
 
                 

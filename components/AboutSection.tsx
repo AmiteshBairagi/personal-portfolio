@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { User, Code, Calendar, Award } from "lucide-react"
+import { User, Calendar,} from "lucide-react"
 import Image from "next/image";
 
 const AboutSection = () => {

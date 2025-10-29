@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useRef, useEffect, useState, memo } from "react"
+import { useRef, useEffect, useState, memo, JSX } from "react"
 import { motion, useReducedMotion } from "framer-motion"
 import { fadeIn, animationConfig } from "@/lib/animation-utils"
 

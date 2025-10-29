@@ -14,7 +14,7 @@ const EducationSection = () => {
       id: "1",
       degree: "Master of Computer Applications",
       institution: "Sister Nivedita University",
-      duration: "2023 - 2024",
+      duration: "2023 - 2025",
       grade: "CGPA: 8.54 / 10",
       description:
         "Premier technical university known for its industry-oriented curriculum and strong placement record. Focusing on advanced software development, AI/ML, and emerging technologies.",
@@ -28,7 +28,7 @@ const EducationSection = () => {
       degree: "Bachelor of Science",
       institution: "Taki Government College",
       duration: "2020 - 2023",
-      grade: "Percentage: 85%",
+      grade: "CGPA: 8.88 / 10",
       description:
         "Well-established institution with strong focus on practical learning and industry exposure. Gained foundation in Physics, Chemistry, and Mathematics.",
       type: "Bachelor",

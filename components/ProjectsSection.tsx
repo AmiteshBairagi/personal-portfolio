@@ -44,25 +44,6 @@ const ProjectCard = memo(
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-            {/* Overlay Icons */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="flex space-x-4">
-                <Button size="sm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30">
-                  <Eye className="w-4 h-4" />
-                </Button>
-                <Button size="sm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
-                  <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer">
-                    <Github className="w-4 h-4" />
-                  </a>
-                </Button>
-                <Button size="sm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
-                  <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </Button>
-              </div>
-            </div>
-
             {/* Featured Badge */}
             {project.featured && (
               <div className="absolute top-4 left-4">
@@ -73,20 +54,41 @@ const ProjectCard = memo(
 
           <CardContent className="p-6 space-y-4 flex-1 flex flex-col">
             {/* Category */}
-            {category ? (
-              <Badge
-                variant="outline"
-                className="text-xs w-fit flex items-center space-x-1"
-                style={{ borderColor: category.color, color: category.color }}
-              >
-                <span>{category.icon}</span>
-                <span>{category.name}</span>
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="text-xs w-fit">
-                {project.category}
-              </Badge>
-            )}
+            <div className="flex justify-between">
+              <div>
+                {category ? (
+                  <Badge
+                    variant="outline"
+                    className="text-xs w-fit flex items-center space-x-1"
+                    style={{ borderColor: category.color, color: category.color }}
+                  >
+                    <span>{category.icon}</span>
+                    <span>{category.name}</span>
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-xs w-fit">
+                    {project.category}
+                  </Badge>
+                )}
+              </div>
+              <div >
+                <div className="flex space-x-4">
+                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30">
+                    <Eye className="w-4 h-4" />
+                  </Button>
+                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
+                    <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer">
+                      <Github className="w-4 h-4" />
+                    </a>
+                  </Button>
+                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
+                    <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
 
             {/* Title */}
             <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary-500 transition-colors">
@@ -99,17 +101,19 @@ const ProjectCard = memo(
             </p>
 
             {/* Technologies */}
-            <div className="flex flex-wrap gap-2 mt-auto">
-              {project.technologies.slice(0, 3).map((tech: string) => (
-                <Badge key={tech} variant="secondary" className="text-xs">
-                  {tech}
-                </Badge>
-              ))}
-              {project.technologies.length > 3 && (
-                <Badge variant="secondary" className="text-xs">
-                  +{project.technologies.length - 3}
-                </Badge>
-              )}
+            <div>
+              <div className="flex flex-wrap gap-2 mt-auto">
+                {project.technologies.map((tech: string) => (
+                  <Badge key={tech} variant="destructive" className="text-xs bg-blue-600">
+                    {tech}
+                  </Badge>
+                ))}
+                {/* {project.technologies.length > 3 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{project.technologies.length - 3}
+                  </Badge>
+                )} */}
+              </div>
             </div>
           </CardContent>
         </Card>
