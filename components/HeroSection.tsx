@@ -142,7 +142,7 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  <span>📖</span> Resume
+                  <span>📖</span> <Link href="https://drive.google.com/file/d/1Wcio_BmvUzE1uZTsj4IwEWwgyZJn3Z-m/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">Resume</Link> 
                 </motion.button>
 
                 <motion.button
@@ -159,7 +159,7 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
                 >
-                  <span>📖</span> <Link href="/blog">Interview Experiences</Link>
+                  <span>📖</span> <Link href="/interview-experience">Interview Experiences</Link>
                 </motion.button>
 
                 

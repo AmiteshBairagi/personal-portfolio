@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowRight, BookOpen, Wifi, WifiOff } from "lucide-react"
 import Link from "next/link"
 import { useBlogRealTime } from "@/hooks/use-blog-real-time"
-import OptimizedImage from "./optimized-image"
 
 const FeaturedBlogSection = () => {
   const { posts, isLoading, error, isOnline, lastSyncTime, getFeaturedPosts } = useBlogRealTime()
@@ -108,7 +107,7 @@ const FeaturedBlogSection = () => {
               <Link href={`/blog/${post.slug}`}>
                 <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50">
                   {/* Featured Image */}
-                  <div className="relative h-48 overflow-hidden rounded-t-lg">
+                  {/* <div className="relative h-48 overflow-hidden rounded-t-lg">
                     <OptimizedImage
                       src={post.image}
                       alt={post.title}
@@ -119,7 +118,7 @@ const FeaturedBlogSection = () => {
                     <div className="absolute top-4 left-4">
                       <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">Featured</Badge>
                     </div>
-                  </div>
+                  </div> */}
 
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">

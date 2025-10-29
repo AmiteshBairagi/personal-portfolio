@@ -10,7 +10,6 @@ import { Calendar, Clock, Search, Filter, BookOpen, ArrowRight } from "lucide-re
 import Link from "next/link"
 import { useBlogStore } from "@/hooks/use-blog-store"
 import type { BlogPost } from "@/lib/blog-types"
-import OptimizedImage from "@/components/optimized-image"
 
 interface BlogPageClientProps {
   categories: string[]
@@ -84,14 +83,11 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 pt-20">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-slate-900">
+      <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Blog & Articles</h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Insights on web development, programming, and tech career advice
-          </p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+          <h1 className="text-4xl md:text-4xl font-bold text-white mb-6">My Interview Experiences</h1>
         </motion.div>
 
         {/* Filters */}
@@ -99,10 +95,10 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-12"
+          className="mb-12 flex justify-end"
         >
-          <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardContent className="p-6">
+          <Card className="bg-slate-800/50 border-slate-700/50 w-full lg:w-1/3">
+            <CardContent className="p-2">
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
@@ -115,7 +111,8 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+
+                {/* <div className="flex flex-wrap gap-2">
                   {categories.map((category) => (
                     <Button
                       key={category}
@@ -132,20 +129,21 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                       {category}
                     </Button>
                   ))}
-                </div>
+                </div> */}
+
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
         {/* Results count */}
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <p className="text-slate-400">
             {filteredPosts.length === 0
               ? "No articles found"
               : `${filteredPosts.length} article${filteredPosts.length === 1 ? "" : "s"} found`}
           </p>
-        </div>
+        </div> */}
 
         {/* Posts Grid */}
         {filteredPosts.length === 0 ? (
@@ -183,7 +181,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                 <Link href={`/blog/${post.slug}`} className="block h-full">
                   <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50 cursor-pointer">
                     {/* Featured Image */}
-                    <div className="relative h-48 overflow-hidden rounded-t-lg">
+                    {/* <div className="relative h-48 overflow-hidden rounded-t-lg">
                       <OptimizedImage
                         src={post.image}
                         alt={post.title}
@@ -196,7 +194,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                           <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">Featured</Badge>
                         </div>
                       )}
-                    </div>
+                    </div> */}
 
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">

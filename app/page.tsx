@@ -8,7 +8,6 @@ import SkillsSection from "@/components/SkillsSection"
 import CertificationsSection from "@/components/CertificationsSection"
 import ContactSection from "@/components/ContactSection"
 import OptimizedAnimation from "@/components/optimized-animation"
-import FeaturedBlogSection from "@/components/FeaturedBlogSection"
 import Footer from "@/components/Footer"
 
 export default function Home() {
@@ -49,11 +48,11 @@ export default function Home() {
             </section>
           </OptimizedAnimation>
 
-          <OptimizedAnimation delay={0.1}>
+          {/* <OptimizedAnimation delay={0.1}>
             <section id="blog">
               <FeaturedBlogSection />
             </section>
-          </OptimizedAnimation>
+          </OptimizedAnimation> */}
 
           <OptimizedAnimation delay={0.1}>
             <section id="contact">
