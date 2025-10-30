@@ -10,17 +10,13 @@ import { Button } from "@/components/ui/button"
 import {
   ArrowLeft,
   Shield,
-  Database,
-  Users,
   Code,
   Award,
   Mail,
-  GraduationCap,
   Briefcase,
   LogOut,
   BookOpen,
   Tag,
-  Home,
   AlertCircle,
 } from "lucide-react"
 import Link from "next/link"
@@ -82,7 +78,7 @@ function ErrorBoundary({ children, fallback }: { children: React.ReactNode; fall
 }
 
 function AdminContent() {
-  const [activeTab, setActiveTab] = useState("hero")
+  const [activeTab, setActiveTab] = useState("projects")
   const [mounted, setMounted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { logout, isAuthenticated, loading } = useAuth()

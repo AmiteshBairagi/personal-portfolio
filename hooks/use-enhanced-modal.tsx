@@ -66,50 +66,65 @@ export function useEnhancedModal({ isOpen, size = "lg", centered = true, trigger
 
   // Calculate optimal position
   const calculatePosition = useCallback(() => {
-    if (!isOpen) return
+    if (!isOpen) return;
 
-    const viewport = getViewportDimensions()
-    const modalDims = getModalDimensions(viewport)
+    const viewport = getViewportDimensions();
+    const modalDims = getModalDimensions(viewport);
 
-    let newPosition: ModalPosition
+    let newPosition: ModalPosition;
+
+    // Clamp function to keep modal within viewport
+    const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
 
     if (centered || !triggerRef?.current) {
-      // Center the modal
+      // Center the modal, but if modal is taller than viewport, stick to top: 40px
+      let top;
+      if (modalDims.height + 80 > viewport.height) {
+        top = 40;
+      } else {
+        top = (viewport.height - modalDims.height) / 2;
+      }
+      let left = (viewport.width - modalDims.width) / 2;
+      // Clamp left so modal never goes out of viewport horizontally
+      left = clamp(left, 20, viewport.width - modalDims.width - 20);
       newPosition = {
-        top: viewport.scrollTop + (viewport.height - modalDims.height) / 2,
-        left: viewport.scrollLeft + (viewport.width - modalDims.width) / 2,
+        top,
+        left,
         width: modalDims.width,
         height: modalDims.height,
-      }
+      };
     } else {
       // Position relative to trigger element
-      const triggerRect = triggerRef.current.getBoundingClientRect()
-      const triggerTop = triggerRect.top + viewport.scrollTop
-      const triggerLeft = triggerRect.left + viewport.scrollLeft
+      const triggerRect = triggerRef.current.getBoundingClientRect();
+      const triggerTop = triggerRect.top + viewport.scrollTop;
+      const triggerLeft = triggerRect.left + viewport.scrollLeft;
 
       // Try to position below the trigger, but adjust if it goes off-screen
-      let top = triggerTop + triggerRect.height + 10
-      let left = triggerLeft
+      let top = triggerTop + triggerRect.height + 10;
+      let left = triggerLeft;
 
       // Adjust if modal goes off the right edge
       if (left + modalDims.width > viewport.scrollLeft + viewport.width - 20) {
-        left = viewport.scrollLeft + viewport.width - modalDims.width - 20
+        left = viewport.scrollLeft + viewport.width - modalDims.width - 20;
       }
 
       // Adjust if modal goes off the left edge
       if (left < viewport.scrollLeft + 20) {
-        left = viewport.scrollLeft + 20
+        left = viewport.scrollLeft + 20;
       }
 
       // Adjust if modal goes off the bottom edge
       if (top + modalDims.height > viewport.scrollTop + viewport.height - 20) {
-        top = triggerTop - modalDims.height - 10
+        top = triggerTop - modalDims.height - 10;
       }
 
       // If still off-screen, center it
       if (top < viewport.scrollTop + 20) {
-        top = viewport.scrollTop + (viewport.height - modalDims.height) / 2
-        left = viewport.scrollLeft + (viewport.width - modalDims.width) / 2
+        top = (viewport.height - modalDims.height) / 2;
+        left = (viewport.width - modalDims.width) / 2;
+        // Clamp again
+        top = clamp(top, 20, viewport.height - modalDims.height - 20);
+        left = clamp(left, 20, viewport.width - modalDims.width - 20);
       }
 
       newPosition = {
@@ -117,11 +132,11 @@ export function useEnhancedModal({ isOpen, size = "lg", centered = true, trigger
         left,
         width: modalDims.width,
         height: modalDims.height,
-      }
+      };
     }
 
-    setPosition(newPosition)
-  }, [isOpen, centered, triggerRef, getViewportDimensions, getModalDimensions])
+    setPosition(newPosition);
+  }, [isOpen, centered, triggerRef, getViewportDimensions, getModalDimensions]);
 
   // Handle modal open/close animations
   useEffect(() => {
