@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, Search, Filter, BookOpen, ArrowRight } from "lucide-react"
+import { Calendar, Clock, Search, Filter, BookOpen, ArrowRight, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useBlogStore } from "@/hooks/use-blog-store"
 import type { BlogPost } from "@/lib/blog-types"
@@ -86,6 +86,16 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
     <div className="min-h-screen bg-slate-900">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
+        <motion.div>
+          <Link
+            href="/"
+            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Portfolio
+          </Link>
+        </motion.div>
+        
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="text-4xl md:text-4xl font-bold text-white mb-6">My Interview Experiences</h1>
         </motion.div>

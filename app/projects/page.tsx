@@ -181,7 +181,7 @@ export default function AllProjectsPage() {
     <ThemeProvider>
       <div className="min-h-screen bg-white dark:bg-dark-900">
         {/* Header Section - No Navigation Bar */}
-        <section className="py-16 bg-gradient-to-br from-primary-50 to-primary-100 dark:from-dark-800 dark:to-dark-900">
+        <section className=" bg-gradient-to-br from-primary-50 to-primary-100 dark:from-dark-800 dark:to-dark-900">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -189,17 +189,22 @@ export default function AllProjectsPage() {
               transition={{ duration: 0.8 }}
               className="text-center mb-8"
             >
-              <Button variant="ghost" className="mb-6 text-primary-600 hover:text-primary-700" asChild>
-                <Link href="/#projects">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Home
-                </Link>
-              </Button>
-
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4">
-                All <span className="gradient-text">Projects</span>
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              <div className="flex pt-6">
+                <div className="w-100">
+                  <Button variant="ghost" className="mb-2 text-primary-600 hover:text-primary-700" asChild>
+                    <Link href="/#projects">
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back to Home
+                    </Link>
+                  </Button>
+                </div>
+                <div className="w-full pr-40">
+                  <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                    All <span className="gradient-text">Projects</span>
+                  </h1>
+                </div>
+              </div>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
                 Explore my complete portfolio of projects, showcasing various technologies and solutions
               </p>
             </motion.div>

@@ -3,9 +3,10 @@
 import { motion } from "framer-motion"
 import { User, Calendar,} from "lucide-react"
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const AboutSection = () => {
-
+  const router = useRouter();
   const aboutData = {
     title: "About",
     description:
@@ -112,10 +113,7 @@ const AboutSection = () => {
             >
               <button
                 onClick={() => {
-                  const contactSection = document.getElementById("contact")
-                  if (contactSection) {
-                    contactSection.scrollIntoView({ behavior: "smooth" })
-                  }
+                  router.push("/about-me")
                 }}
                 className="inline-flex items-center px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors shadow-lg hover:shadow-xl"
               >
