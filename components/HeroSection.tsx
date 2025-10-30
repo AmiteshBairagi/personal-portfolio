@@ -136,31 +136,37 @@ const HeroSection = () => {
                 transition={{ delay: 0.6 }}
                 className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
               >
-                <motion.button
-                  onClick={handleDownloadResume}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
-                >
-                  <span>📖</span> <Link href="https://drive.google.com/file/d/1Wcio_BmvUzE1uZTsj4IwEWwgyZJn3Z-m/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">Resume</Link> 
-                </motion.button>
+                <Link href="https://drive.google.com/file/d/1Wcio_BmvUzE1uZTsj4IwEWwgyZJn3Z-m/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">
+                  <motion.button
+                    onClick={handleDownloadResume}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
+                  >
+                    <span>📖</span> Resume
+                  </motion.button>
+                </Link>
 
-                <motion.button
-                  onClick={handleViewWork}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
-                >
-                  View My Work
-                </motion.button>
+                <Link href="google.com">
+                  <motion.button
+                    onClick={handleViewWork}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
+                  >
+                    View My Work
+                  </motion.button>
+                </Link>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
-                >
-                  <span>📖</span> <Link href="/interview-experience">Interview Experiences</Link>
-                </motion.button>
+                <Link href="/interview-experience">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md font-medium transition-colors text-xs sm:text-sm lg:text-sm shadow-md hover:shadow-lg cursor-pointer"
+                  >
+                    <span>📖</span> Interview Experiences
+                  </motion.button>
+                </Link>
 
                 
               </motion.div>

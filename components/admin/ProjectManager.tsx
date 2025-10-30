@@ -40,6 +40,8 @@ const ProjectManager = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [editingItem, setEditingItem] = useState<ProjectData | null>(null)
+  // const [techInput, setTechInput] = useState("")
+  // const [keyFeaturesInput, setKeyFeaturesInput] = useState("");
 
   const [editForm, setEditForm] = useState<Partial<ProjectData>>({
     title: "",
@@ -152,6 +154,8 @@ const ProjectManager = () => {
 
   const handleSave = async () => {
     try {
+      // handleTechnologiesInput();
+      // handleKeyFeaturesInput();
       if (!editForm.title?.trim()) {
         toast.error("Project title is required")
         return
@@ -259,7 +263,31 @@ const ProjectManager = () => {
       .map((item) => item.trim())
       .filter(Boolean)
     setEditForm((prev) => ({ ...prev, [field]: array }))
+
+    // const technologiesArray = techInput
+    //   .split(",")
+    //   .map((t) => t.trim())
+    //   .filter(Boolean)
+
+    // setEditForm((prev) => ({ ...prev, technologies: technologiesArray }))
   }
+
+
+  // const handleKeyFeaturesInput = () => {
+  //   // const array = value
+  //   //   .split(",")
+  //   //   .map((item) => item.trim())
+  //   //   .filter(Boolean)
+  //   // setEditForm((prev) => ({ ...prev, [field]: array }))
+
+  //   const keyFeatures = keyFeaturesInput
+  //     .split(",")
+  //     .map((t) => t.trim())
+  //     .filter(Boolean)
+
+  //   setEditForm((prev) => ({ ...prev, features: keyFeatures }))
+  // }
+
 
   if (isLoading) {
     return (
@@ -513,7 +541,7 @@ const ProjectManager = () => {
                 placeholder="e.g., 3 months"
               />
             </div>
-            
+
             <div>
               <label className="text-sm font-medium text-slate-300 mb-2 block">GitHub URL</label>
               <Input
@@ -582,11 +610,12 @@ const ProjectManager = () => {
           <div>
             <label className="text-sm font-medium text-slate-300 mb-2 block">Challenges</label>
             <Textarea
-              value={editForm.details?.challenges || ""}
-              onChange={(e) => handleInputChange("challenges", e.target.value)}
+              value={editForm.technologies?.join(", ") || ""}
+              onChange={(e) => handleArrayInputChange("technologies", e.target.value)}
               rows={2}
               className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="What challenges did you face during development?"
+              placeholder="React, Node.js, MongoDB, etc."
+              required
             />
           </div>
 
@@ -594,7 +623,9 @@ const ProjectManager = () => {
             <label className="text-sm font-medium text-slate-300 mb-2 block">Technologies (comma-separated) *</label>
             <Textarea
               value={editForm.technologies?.join(", ") || ""}
-              onChange={(e) => handleArrayInputChange("technologies", e.target.value)}
+              onChange={(e) => handleInputChange("technologies", e.target.value)}
+              // value={techInput}
+              // onChange={(e) => setTechInput(e.target.value)}
               rows={2}
               className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
               placeholder="React, Node.js, MongoDB, etc."
@@ -607,6 +638,8 @@ const ProjectManager = () => {
             <Textarea
               value={editForm.details?.features?.join(", ") || ""}
               onChange={(e) => handleInputChange("features", e.target.value)}
+              // value={keyFeaturesInput}
+              // onChange={(e) => setKeyFeaturesInput(e.target.value)}
               rows={2}
               className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
               placeholder="Real-time updates, User authentication, etc."
@@ -682,7 +715,7 @@ const ProjectManager = () => {
                 Featured Project
               </label>
             </div>
-            
+
           </div>
         </div>
       </EnhancedModal>
