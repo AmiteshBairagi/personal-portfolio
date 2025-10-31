@@ -188,8 +188,7 @@ export const skillsService = {
   // Delete a skill
   async deleteSkill(skillId: string): Promise<void> {
     try {
-      const { error } = await supabase.from("skills").delete().eq("id", skillId)
-
+      const {error} = await supabase.from("skills").delete().eq("id", skillId)
       if (error) {
         console.error("Error deleting skill:", error)
         throw error
@@ -204,125 +203,125 @@ export const skillsService = {
   },
 
   // Reorder skills within a category
-  async reorderSkills(skillId: string, newOrder: number, category: string): Promise<void> {
-    try {
-      // Get current skill
-      const { data: currentSkill, error: fetchError } = await supabase
-        .from("skills")
-        .select("display_order")
-        .eq("id", skillId)
-        .single()
+  // async reorderSkills(skillId: string, newOrder: number, category: string): Promise<void> {
+  //   try {
+  //     // Get current skill
+  //     const { data: currentSkill, error: fetchError } = await supabase
+  //       .from("skills")
+  //       .select("display_order")
+  //       .eq("id", skillId)
+  //       .single()
 
-      if (fetchError) throw fetchError
+  //     if (fetchError) throw fetchError
 
-      const currentOrder = currentSkill.display_order || 0
+  //     const currentOrder = currentSkill.display_order || 0
 
-      if (currentOrder === newOrder) return
+  //     if (currentOrder === newOrder) return
 
-      // Get all skills in the category
-      const { data: categorySkills, error: categoryError } = await supabase
-        .from("skills")
-        .select("id, display_order")
-        .eq("category", category)
-        .order("display_order", { ascending: true })
+  //     // Get all skills in the category
+  //     const { data: categorySkills, error: categoryError } = await supabase
+  //       .from("skills")
+  //       .select("id, display_order")
+  //       .eq("category", category)
+  //       .order("display_order", { ascending: true })
 
-      if (categoryError) throw categoryError
+  //     if (categoryError) throw categoryError
 
-      // Reorder logic
-      const updates: Array<{ id: string; display_order: number }> = []
+  //     // Reorder logic
+  //     const updates: Array<{ id: string; display_order: number }> = []
 
-      if (newOrder > currentOrder) {
-        // Moving down
-        categorySkills.forEach((skill) => {
-          if (skill.id === skillId) {
-            updates.push({ id: skill.id, display_order: newOrder })
-          } else if (skill.display_order > currentOrder && skill.display_order <= newOrder) {
-            updates.push({ id: skill.id, display_order: skill.display_order - 1 })
-          }
-        })
-      } else {
-        // Moving up
-        categorySkills.forEach((skill) => {
-          if (skill.id === skillId) {
-            updates.push({ id: skill.id, display_order: newOrder })
-          } else if (skill.display_order >= newOrder && skill.display_order < currentOrder) {
-            updates.push({ id: skill.id, display_order: skill.display_order + 1 })
-          }
-        })
-      }
+  //     if (newOrder > currentOrder) {
+  //       // Moving down
+  //       categorySkills.forEach((skill) => {
+  //         if (skill.id === skillId) {
+  //           updates.push({ id: skill.id, display_order: newOrder })
+  //         } else if (skill.display_order > currentOrder && skill.display_order <= newOrder) {
+  //           updates.push({ id: skill.id, display_order: skill.display_order - 1 })
+  //         }
+  //       })
+  //     } else {
+  //       // Moving up
+  //       categorySkills.forEach((skill) => {
+  //         if (skill.id === skillId) {
+  //           updates.push({ id: skill.id, display_order: newOrder })
+  //         } else if (skill.display_order >= newOrder && skill.display_order < currentOrder) {
+  //           updates.push({ id: skill.id, display_order: skill.display_order + 1 })
+  //         }
+  //       })
+  //     }
 
-      // Apply updates
-      for (const update of updates) {
-        await supabase.from("skills").update({ display_order: update.display_order }).eq("id", update.id)
-      }
+  //     // Apply updates
+  //     for (const update of updates) {
+  //       await supabase.from("skills").update({ display_order: update.display_order }).eq("id", update.id)
+  //     }
 
-      // Invalidate cache
-      skillsCache = null
-    } catch (error) {
-      console.error("Error reordering skills:", error)
-      throw error
-    }
-  },
+  //     // Invalidate cache
+  //     skillsCache = null
+  //   } catch (error) {
+  //     console.error("Error reordering skills:", error)
+  //     throw error
+  //   }
+  // },
 
   // Move skill up in order
-  async moveSkillUp(skillId: string, category: string): Promise<void> {
-    try {
-      const { data: skills, error } = await supabase
-        .from("skills")
-        .select("id, display_order")
-        .eq("category", category)
-        .order("display_order", { ascending: true })
+  // async moveSkillUp(skillId: string, category: string): Promise<void> {
+  //   try {
+  //     const { data: skills, error } = await supabase
+  //       .from("skills")
+  //       .select("id, display_order")
+  //       .eq("category", category)
+  //       .order("display_order", { ascending: true })
 
-      if (error) throw error
+  //     if (error) throw error
 
-      const currentIndex = skills.findIndex((s) => s.id === skillId)
-      if (currentIndex > 0) {
-        const currentSkill = skills[currentIndex]
-        const previousSkill = skills[currentIndex - 1]
+  //     const currentIndex = skills.findIndex((s) => s.id === skillId)
+  //     if (currentIndex > 0) {
+  //       const currentSkill = skills[currentIndex]
+  //       const previousSkill = skills[currentIndex - 1]
 
-        // Swap display orders
-        await supabase.from("skills").update({ display_order: previousSkill.display_order }).eq("id", currentSkill.id)
+  //       // Swap display orders
+  //       await supabase.from("skills").update({ display_order: previousSkill.display_order }).eq("id", currentSkill.id)
 
-        await supabase.from("skills").update({ display_order: currentSkill.display_order }).eq("id", previousSkill.id)
+  //       await supabase.from("skills").update({ display_order: currentSkill.display_order }).eq("id", previousSkill.id)
 
-        // Invalidate cache
-        skillsCache = null
-      }
-    } catch (error) {
-      console.error("Error moving skill up:", error)
-      throw error
-    }
-  },
+  //       // Invalidate cache
+  //       skillsCache = null
+  //     }
+  //   } catch (error) {
+  //     console.error("Error moving skill up:", error)
+  //     throw error
+  //   }
+  // },
 
   // Move skill down in order
-  async moveSkillDown(skillId: string, category: string): Promise<void> {
-    try {
-      const { data: skills, error } = await supabase
-        .from("skills")
-        .select("id, display_order")
-        .eq("category", category)
-        .order("display_order", { ascending: true })
+  // async moveSkillDown(skillId: string, category: string): Promise<void> {
+  //   try {
+  //     const { data: skills, error } = await supabase
+  //       .from("skills")
+  //       .select("id, display_order")
+  //       .eq("category", category)
+  //       .order("display_order", { ascending: true })
 
-      if (error) throw error
+  //     if (error) throw error
 
-      const currentIndex = skills.findIndex((s) => s.id === skillId)
-      if (currentIndex < skills.length - 1) {
-        const currentSkill = skills[currentIndex]
-        const nextSkill = skills[currentIndex + 1]
+  //     const currentIndex = skills.findIndex((s) => s.id === skillId)
+  //     if (currentIndex < skills.length - 1) {
+  //       const currentSkill = skills[currentIndex]
+  //       const nextSkill = skills[currentIndex + 1]
 
-        // Swap display orders
-        await supabase.from("skills").update({ display_order: nextSkill.display_order }).eq("id", currentSkill.id)
+  //       // Swap display orders
+  //       await supabase.from("skills").update({ display_order: nextSkill.display_order }).eq("id", currentSkill.id)
 
-        await supabase.from("skills").update({ display_order: currentSkill.display_order }).eq("id", nextSkill.id)
+  //       await supabase.from("skills").update({ display_order: currentSkill.display_order }).eq("id", nextSkill.id)
 
-        // Invalidate cache
-        skillsCache = null
-      }
-    } catch (error) {
-      console.error("Error moving skill down:", error)
-      throw error
-    }
-  },
+  //       // Invalidate cache
+  //       skillsCache = null
+  //     }
+  //   } catch (error) {
+  //     console.error("Error moving skill down:", error)
+  //     throw error
+  //   }
+  // },
 
   // Get available categories
   async getCategories(): Promise<string[]> {
@@ -340,9 +339,9 @@ export const skillsService = {
   },
 
   // Get last updated timestamp
-  getLastUpdated(): string {
-    return new Date().toLocaleString()
-  },
+  // getLastUpdated(): string {
+  //   return new Date().toLocaleString()
+  // },
 
   // Clear cache (useful for testing)
   clearCache(): void {

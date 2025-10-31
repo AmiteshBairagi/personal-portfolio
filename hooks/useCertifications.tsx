@@ -181,11 +181,9 @@ const useCertifications = () => {
     data,
     loading,
     error,
-
     addCertification,
     updateCertification,
     deleteCertification,
- 
     refresh,
     clearError,
   }
