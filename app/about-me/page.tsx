@@ -45,9 +45,9 @@ export default function MoreAboutMe() {
           <div className="space-y-3">
             <h2 className="text-2xl font-semibold text-cyan-400">My Photography</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              <img src="/images/photo1.jpg" className="rounded-xl shadow-lg" alt="Nature" />
-              <img src="/images/photo2.jpg" className="rounded-xl shadow-lg" alt="Travel" />
-              <img src="/images/photo3.jpg" className="rounded-xl shadow-lg" alt="City" />
+              <img src="/katihat_school.png" className="rounded-xl shadow-lg" alt="Nature" />
+              <img src="/taki_college.png" className="rounded-xl shadow-lg" alt="Travel" />
+              <img src="snu-image.jpg" className="rounded-xl shadow-lg" alt="City" />
             </div>
           </div>
         );

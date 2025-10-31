@@ -11,14 +11,15 @@ import { Award, Calendar, Building, X, Globe, } from "lucide-react"
 import { useDynamicModalPosition } from "@/hooks/use-dynamic-modal-position"
 import useCertifications from "@/hooks/useCertifications"
 import type { CertificationItem } from "@/lib/data/certificationService"
+import { useRouter } from "next/navigation"
 
 const CertificationsSection = () => {
+  const router = useRouter();
   const { data: certificationsData, loading, error } = useCertifications()
 
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null)
-  const [showAll, setShowAll] = useState(false)
 
-  const displayedCerts = showAll ? certificationsData : certificationsData.slice(0, 4)
+  const displayedCerts = certificationsData.slice(0, 10)
   const { isReady } = useDynamicModalPosition(!!selectedCert)
 
 
@@ -117,7 +118,7 @@ const CertificationsSection = () => {
                     </div>
                   )}
 
-                  
+
                 </div>
 
                 <CardContent className="p-4 space-y-3">
@@ -158,17 +159,15 @@ const CertificationsSection = () => {
         </div>
 
         {/* See All Certifications Button */}
-        {!showAll && certificationsData.length > 4 && (
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center">
-            <Button
-              onClick={() => setShowAll(true)}
-              size="lg"
-              className="bg-primary-500 hover:bg-primary-600 text-white"
-            >
-              See All Certifications ({certificationsData.length})
-            </Button>
-          </motion.div>
-        )}
+        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center">
+          <Button
+            onClick={() => router.push("/all-certifications")}
+            size="lg"
+            className="bg-primary-500 hover:bg-primary-600 text-white"
+          >
+            See All Certifications ({certificationsData.length})
+          </Button>
+        </motion.div>
 
         {/* Enhanced Certification Modal */}
         <AnimatePresence>
@@ -198,7 +197,7 @@ const CertificationsSection = () => {
                   stiffness: 300,
                   opacity: { duration: 0.2 },
                 }}
-                className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                className="relative w-full max-w-4xl max-h-[120vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                 onClick={handleModalClick}
                 style={{
                   minHeight: "400px",

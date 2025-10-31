@@ -128,6 +128,7 @@ export const certificationService = {
     item: Omit<CertificationItem, "id" | "created_at" | "updated_at">,
   ): Promise<{ success: boolean; error?: string; data?: CertificationItem }> {
     try {
+      console.log(item)
       // Generate unique ID from title
       const baseId = generateSlug(item.title)
       const uniqueId = await ensureUniqueSlug(baseId)
