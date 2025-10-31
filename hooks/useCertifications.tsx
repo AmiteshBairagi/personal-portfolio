@@ -88,82 +88,84 @@ const useCertifications = () => {
     }
   }, [])
 
-  const reorderCertifications = useCallback(async (certifications: CertificationItem[]) => {
-    try {
-      const result = await certificationService.reorderItems(certifications)
-      if (result.success) {
-        // Data will be updated via real-time subscription
-        return { success: true }
-      } else {
-        setError(result.error || "Failed to reorder certifications")
-        return { success: false, error: result.error }
-      }
-    } catch (err) {
-      const errorMsg = "Failed to reorder certifications"
-      setError(errorMsg)
-      console.error("Error reordering certifications:", err)
-      return { success: false, error: errorMsg }
-    }
-  }, [])
+  // const reorderCertifications = useCallback(async (certifications: CertificationItem[]) => {
+  //   try {
+  //     const result = await certificationService.reorderItems(certifications)
+  //     if (result.success) {
+  //       // Data will be updated via real-time subscription
+  //       return { success: true }
+  //     } else {
+  //       setError(result.error || "Failed to reorder certifications")
+  //       return { success: false, error: result.error }
+  //     }
+  //   } catch (err) {
+  //     const errorMsg = "Failed to reorder certifications"
+  //     setError(errorMsg)
+  //     console.error("Error reordering certifications:", err)
+  //     return { success: false, error: errorMsg }
+  //   }
+  // }, [])
 
-  const moveCertificationUp = useCallback(async (id: string) => {
-    try {
-      const result = await certificationService.moveItemUp(id)
-      if (result.success) {
-        return { success: true }
-      } else {
-        setError(result.error || "Failed to move certification up")
-        return { success: false, error: result.error }
-      }
-    } catch (err) {
-      const errorMsg = "Failed to move certification up"
-      setError(errorMsg)
-      console.error("Error moving certification up:", err)
-      return { success: false, error: errorMsg }
-    }
-  }, [])
+  // const moveCertificationUp = useCallback(async (id: string) => {
+  //   try {
+  //     const result = await certificationService.moveItemUp(id)
+  //     if (result.success) {
+  //       return { success: true }
+  //     } else {
+  //       setError(result.error || "Failed to move certification up")
+  //       return { success: false, error: result.error }
+  //     }
+  //   } catch (err) {
+  //     const errorMsg = "Failed to move certification up"
+  //     setError(errorMsg)
+  //     console.error("Error moving certification up:", err)
+  //     return { success: false, error: errorMsg }
+  //   }
+  // }, [])
 
-  const moveCertificationDown = useCallback(async (id: string) => {
-    try {
-      const result = await certificationService.moveItemDown(id)
-      if (result.success) {
-        return { success: true }
-      } else {
-        setError(result.error || "Failed to move certification down")
-        return { success: false, error: result.error }
-      }
-    } catch (err) {
-      const errorMsg = "Failed to move certification down"
-      setError(errorMsg)
-      console.error("Error moving certification down:", err)
-      return { success: false, error: errorMsg }
-    }
-  }, [])
+  // const moveCertificationDown = useCallback(async (id: string) => {
+  //   try {
+  //     const result = await certificationService.moveItemDown(id)
+  //     if (result.success) {
+  //       return { success: true }
+  //     } else {
+  //       setError(result.error || "Failed to move certification down")
+  //       return { success: false, error: result.error }
+  //     }
+  //   } catch (err) {
+  //     const errorMsg = "Failed to move certification down"
+  //     setError(errorMsg)
+  //     console.error("Error moving certification down:", err)
+  //     return { success: false, error: errorMsg }
+  //   }
+  // }, [])
 
-  const searchCertifications = useCallback(async (query: string) => {
-    try {
-      setLoading(true)
-      const results = await certificationService.searchItems(query)
-      return { success: true, data: results }
-    } catch (err) {
-      console.error("Error searching certifications:", err)
-      return { success: false, error: "Failed to search certifications" }
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+  // const searchCertifications = useCallback(async (query: string) => {
+  //   try {
+  //     setLoading(true)
+  //     const results = await certificationService.searchItems(query)
+  //     return { success: true, data: results }
+  //   } catch (err) {
+  //     console.error("Error searching certifications:", err)
+  //     return { success: false, error: "Failed to search certifications" }
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }, [])
 
-  const getFeaturedCertifications = useCallback(async () => {
-    try {
-      const featured = await certificationService.getFeaturedItems()
-      return { success: true, data: featured }
-    } catch (err) {
-      console.error("Error getting featured certifications:", err)
-      return { success: false, error: "Failed to get featured certifications" }
-    }
-  }, [])
+  // const getFeaturedCertifications = useCallback(async () => {
+  //   try {
+  //     const featured = await certificationService.getFeaturedItems()
+  //     return { success: true, data: featured }
+  //   } catch (err) {
+  //     console.error("Error getting featured certifications:", err)
+  //     return { success: false, error: "Failed to get featured certifications" }
+  //   }
+  // }, [])
 
   // Refresh data manually
+  
+  
   const refresh = useCallback(() => {
     certificationService.clearCache()
     loadData()
@@ -180,24 +182,12 @@ const useCertifications = () => {
     loading,
     error,
 
-    // CRUD operations
     addCertification,
     updateCertification,
     deleteCertification,
-    reorderCertifications,
-    moveCertificationUp,
-    moveCertificationDown,
-
-    // Search and filter
-    searchCertifications,
-    getFeaturedCertifications,
-
-    // Utility functions
+ 
     refresh,
     clearError,
-
-    // Cache status
-    cacheStatus: certificationService.getCacheStatus(),
   }
 }
 

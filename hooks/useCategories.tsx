@@ -2,9 +2,9 @@
 
 import { useCallback } from "react"
 import { useCategoriesRealTime } from "./use-categories-real-time"
-import type { CategoryData } from "@/lib/data/categories-data-manager"
+import type { CategoryData } from "@/lib/data/categoryService"
 
-export function useCategoriesData() {
+export function useCategories() {
   const {
     data,
     isLoading,

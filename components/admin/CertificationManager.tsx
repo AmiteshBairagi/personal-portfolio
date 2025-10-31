@@ -36,7 +36,6 @@ const CertificationManager = () => {
     addCertification,
     updateCertification,
     deleteCertification,
-    searchCertifications,
     refresh,
     clearError,
   } = useCertifications()

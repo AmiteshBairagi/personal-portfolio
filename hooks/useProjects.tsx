@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { projectsDataService, type ProjectData } from "@/lib/data/projects-data"
+import { projectsDataService, type ProjectData } from "@/lib/data/projectsService"
 
-export function useProjectsData() {
+export function useProjects() {
   const [data, setData] = useState<ProjectData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -18,7 +18,7 @@ export function useProjectsData() {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [])  
 
   useEffect(() => {
     // Initial load
@@ -112,16 +112,16 @@ export function useProjectsData() {
     }
   }, [])
 
-  const reorderProject = useCallback(async (id: string, direction: "up" | "down") => {
-    try {
-      setError(null)
-      await projectsDataService.reorderProject(id, direction)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to reorder project"
-      setError(errorMessage)
-      throw new Error(errorMessage)
-    }
-  }, [])
+  // const reorderProject = useCallback(async (id: string, direction: "up" | "down") => {
+  //   try {
+  //     setError(null)
+  //     await projectsDataService.reorderProject(id, direction)
+  //   } catch (err) {
+  //     const errorMessage = err instanceof Error ? err.message : "Failed to reorder project"
+  //     setError(errorMessage)
+  //     throw new Error(errorMessage)
+  //   }
+  // }, [])
 
   const getProject = useCallback((id: string) => {
     return projectsDataService.getProject(id)
@@ -146,7 +146,6 @@ export function useProjectsData() {
     addProject,
     updateProject,
     deleteProject,
-    reorderProject,
     getProject,
     refetch,
     refresh,

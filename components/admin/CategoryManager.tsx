@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
-import { useCategoriesData } from "@/hooks/use-categories-data"
-import type { CategoryData } from "@/lib/data/categories-data-manager"
+import { useCategories } from "@/hooks/useCategories"
+import type { CategoryData } from "@/lib/data/categoryService"
 import { Edit, Trash2, Plus, Save, X, ArrowUp, ArrowDown, Wifi, WifiOff, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
 
@@ -56,7 +56,7 @@ const CategoryManager = () => {
     updateCategory,
     deleteCategory,
     refetch,
-  } = useCategoriesData()
+  } = useCategories()
 
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)

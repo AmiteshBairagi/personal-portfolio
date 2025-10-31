@@ -1,65 +1,65 @@
-import { categoriesDataManager, type CategoryData } from "./categories-data-manager"
+// import { categoriesDataManager, type CategoryData } from "./categoryService"
 
-// Re-export the interface and manager for backward compatibility
-export type { CategoryData }
+// // Re-export the interface and manager for backward compatibility
+// export type { CategoryData }
 
-class CategoriesDataService {
-  private static instance: CategoriesDataService
-  private listeners: Set<() => void> = new Set()
+// class CategoriesDataService {
+//   private static instance: CategoriesDataService
+//   private listeners: Set<() => void> = new Set()
 
-  private constructor() {
-    // Subscribe to the data manager updates
-    categoriesDataManager.subscribe(() => {
-      this.notifyListeners()
-    })
-  }
+//   private constructor() {
+//     // Subscribe to the data manager updates
+//     categoriesDataManager.subscribe(() => {
+//       this.notifyListeners()
+//     })
+//   }
 
-  static getInstance(): CategoriesDataService {
-    if (!CategoriesDataService.instance) {
-      CategoriesDataService.instance = new CategoriesDataService()
-    }
-    return CategoriesDataService.instance
-  }
+//   static getInstance(): CategoriesDataService {
+//     if (!CategoriesDataService.instance) {
+//       CategoriesDataService.instance = new CategoriesDataService()
+//     }
+//     return CategoriesDataService.instance
+//   }
 
-  private notifyListeners() {
-    this.listeners.forEach((listener) => listener())
-  }
+//   private notifyListeners() {
+//     this.listeners.forEach((listener) => listener())
+//   }
 
-  subscribe(listener: () => void) {
-    this.listeners.add(listener)
-    return () => this.listeners.delete(listener)
-  }
+//   subscribe(listener: () => void) {
+//     this.listeners.add(listener)
+//     return () => this.listeners.delete(listener)
+//   }
 
-  async getData(): Promise<CategoryData[]> {
-    return await categoriesDataManager.getCategoriesData()
-  }
+//   async getData(): Promise<CategoryData[]> {
+//     return await categoriesDataManager.getCategoriesData()
+//   }
 
-  async getActiveCategories(): Promise<CategoryData[]> {
-    return await categoriesDataManager.getActiveCategories()
-  }
+//   async getActiveCategories(): Promise<CategoryData[]> {
+//     return await categoriesDataManager.getActiveCategories()
+//   }
 
-  async addCategory(category: CategoryData): Promise<void> {
-    const { id, created_at, updated_at, ...categoryData } = category
-    await categoriesDataManager.createCategory(categoryData)
-  }
+//   async addCategory(category: CategoryData): Promise<void> {
+//     const { id, created_at, updated_at, ...categoryData } = category
+//     await categoriesDataManager.createCategory(categoryData)
+//   }
 
-  async updateCategory(id: string, updates: Partial<CategoryData>): Promise<void> {
-    await categoriesDataManager.updateCategory(id, updates)
-  }
+//   async updateCategory(id: string, updates: Partial<CategoryData>): Promise<void> {
+//     await categoriesDataManager.updateCategory(id, updates)
+//   }
 
-  async deleteCategory(id: string): Promise<void> {
-    await categoriesDataManager.deleteCategory(id)
-  }
+//   async deleteCategory(id: string): Promise<void> {
+//     await categoriesDataManager.deleteCategory(id)
+//   }
 
-  async getCategory(id: string): Promise<CategoryData | undefined> {
-    const category = await categoriesDataManager.getCategoryById(id)
-    return category || undefined
-  }
+//   async getCategory(id: string): Promise<CategoryData | undefined> {
+//     const category = await categoriesDataManager.getCategoryById(id)
+//     return category || undefined
+//   }
 
-  async getCategoryByName(name: string): Promise<CategoryData | undefined> {
-    const category = await categoriesDataManager.getCategoryByName(name)
-    return category || undefined
-  }
-}
+//   async getCategoryByName(name: string): Promise<CategoryData | undefined> {
+//     const category = await categoriesDataManager.getCategoryByName(name)
+//     return category || undefined
+//   }
+// }
 
-export const categoriesDataService = CategoriesDataService.getInstance()
+// export const categoriesDataService = CategoriesDataService.getInstance()

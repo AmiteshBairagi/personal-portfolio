@@ -23,8 +23,8 @@ import {
   Trash2,
   Plus,
 } from "lucide-react"
-import { useContactRealTime } from "@/hooks/use-contact-real-time"
-import type { ContactFormData } from "@/lib/data/contact-data-manager"
+import { useContact } from "@/hooks/useContact"
+import type { ContactFormData } from "@/lib/data/contactService"
 
 const ContactManager = () => {
   const {
@@ -35,7 +35,7 @@ const ContactManager = () => {
     createContact,
     deleteContact,
     refreshData,
-  } = useContactRealTime()
+  } = useContact()
 
   const [isEditing, setIsEditing] = useState(false)
   const [isCreating, setIsCreating] = useState(false)

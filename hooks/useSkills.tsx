@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { skillsDataService, type SkillCategory, type SkillItem } from "@/lib/data/skills-data"
+import { skillsService, type SkillCategory, type SkillItem } from "@/lib/data/skillsService"
 
-export function useSkillsData() {
+export function useSkills() {
   const [skillsData, setSkillsData] = useState<SkillCategory>({})
   const [allSkills, setAllSkills] = useState<SkillItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -14,7 +14,7 @@ export function useSkillsData() {
     try {
       setIsLoading(true)
       setError(null)
-      const data = await skillsDataService.getSkillsData()
+      const data = await skillsService.getSkillsData()
       setSkillsData(data || {})
     } catch (err) {
       console.error("Error loading skills data:", err)
@@ -28,7 +28,7 @@ export function useSkillsData() {
   // Load all skills for admin
   const loadAllSkills = useCallback(async () => {
     try {
-      const data = await skillsDataService.getAllSkillsForAdmin()
+      const data = await skillsService.getAllSkillsForAdmin()
       setAllSkills(data || [])
     } catch (err) {
       console.error("Error loading all skills:", err)
@@ -38,7 +38,7 @@ export function useSkillsData() {
 
   // Initialize real-time updates
   useEffect(() => {
-    const cleanup = skillsDataService.initializeRealtime((newData) => {
+    const cleanup = skillsService.initializeRealtime((newData) => {
       setSkillsData(newData)
       // Also reload all skills for admin
       loadAllSkills()
@@ -59,7 +59,7 @@ export function useSkillsData() {
       try {
         setIsSaving(true)
         setError(null)
-        await skillsDataService.addSkill(skill)
+        await skillsService.addSkill(skill)
         await loadData()
         await loadAllSkills()
         return { success: true }
@@ -80,7 +80,7 @@ export function useSkillsData() {
       try {
         setIsSaving(true)
         setError(null)
-        await skillsDataService.updateSkill(skillId, updates)
+        await skillsService.updateSkill(skillId, updates)
         await loadData()
         await loadAllSkills()
         return { success: true }
@@ -101,7 +101,7 @@ export function useSkillsData() {
       try {
         setIsSaving(true)
         setError(null)
-        await skillsDataService.deleteSkill(skillId)
+        await skillsService.deleteSkill(skillId)
         await loadData()
         await loadAllSkills()
         return { success: true }
@@ -119,7 +119,7 @@ export function useSkillsData() {
   // Get categories
   const getCategories = useCallback(async () => {
     try {
-      return await skillsDataService.getCategories()
+      return await skillsService.getCategories()
     } catch (err) {
       console.error("Error getting categories:", err)
       return ["Frontend", "Backend", "Database", "Tools & Others", "Mobile", "DevOps"]

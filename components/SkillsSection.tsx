@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useSkillsData } from "@/hooks/use-skills-data"
+import { useSkills } from "@/hooks/useSkills"
 import { Loader2, Wifi, WifiOff } from "lucide-react"
 
 const SkillsSection = () => {
-  const { skillsData, isLoading, error } = useSkillsData()
+  const { skillsData, isLoading, error } = useSkills()
   const [selectedCategory, setSelectedCategory] = useState("Frontend")
   const [selectedSkill, setSelectedSkill] = useState<any>(null)
 

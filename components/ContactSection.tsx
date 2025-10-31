@@ -19,10 +19,10 @@ import {
   Download,
   Send,
 } from "lucide-react"
-import { useContactRealTime } from "@/hooks/use-contact-real-time"
+import { useContact } from "@/hooks/useContact"
 
 const ContactSection = () => {
-  const { contactData, loading, error} = useContactRealTime()
+  const { contactData, loading, error} = useContact()
   const [formData, setFormData] = useState({
     name: "",
     email: "",

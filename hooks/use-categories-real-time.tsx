@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { categoriesDataManager, type CategoryData } from "@/lib/data/categories-data-manager"
+import { categoryService, type CategoryData } from "@/lib/data/categoryService"
 
 export function useCategoriesRealTime() {
   const [data, setData] = useState<CategoryData[]>([])
@@ -13,7 +13,7 @@ export function useCategoriesRealTime() {
   const fetchData = useCallback(async () => {
     try {
       setError(null)
-      const categories = await categoriesDataManager.getCategoriesData()
+      const categories = await categoryService.getCategoriesData()
       setData(categories)
       setLastSync(new Date())
     } catch (err) {
@@ -29,7 +29,7 @@ export function useCategoriesRealTime() {
     fetchData()
 
     // Subscribe to real-time updates
-    const unsubscribe = categoriesDataManager.subscribe(() => {
+    const unsubscribe = categoryService.subscribe(() => {
       fetchData()
     })
 
@@ -53,7 +53,7 @@ export function useCategoriesRealTime() {
   const createCategory = useCallback(async (categoryData: Omit<CategoryData, "id" | "created_at" | "updated_at">) => {
     try {
       setError(null)
-      await categoriesDataManager.createCategory(categoryData)
+      await categoryService.createCategory(categoryData)
       // Data will be updated via real-time subscription
     } catch (err) {
       console.error("Error creating category:", err)
@@ -65,7 +65,7 @@ export function useCategoriesRealTime() {
   const updateCategory = useCallback(async (id: string, updates: Partial<CategoryData>) => {
     try {
       setError(null)
-      await categoriesDataManager.updateCategory(id, updates)
+      await categoryService.updateCategory(id, updates)
       // Data will be updated via real-time subscription
     } catch (err) {
       console.error("Error updating category:", err)
@@ -77,7 +77,7 @@ export function useCategoriesRealTime() {
   const deleteCategory = useCallback(async (id: string) => {
     try {
       setError(null)
-      await categoriesDataManager.deleteCategory(id)
+      await categoryService.deleteCategory(id)
       // Data will be updated via real-time subscription
     } catch (err) {
       console.error("Error deleting category:", err)
@@ -100,7 +100,7 @@ export function useCategoriesRealTime() {
   const reorderCategory = useCallback(async (categoryId: string, newOrder: number) => {
     try {
       setError(null)
-      await categoriesDataManager.reorderCategories(categoryId, newOrder)
+      await categoryService.reorderCategories(categoryId, newOrder)
       // Data will be updated via real-time subscription
     } catch (err) {
       console.error("Error reordering category:", err)
@@ -110,12 +110,12 @@ export function useCategoriesRealTime() {
   }, [])
 
   const refreshData = useCallback(() => {
-    categoriesDataManager.clearCache()
+    categoryService.clearCache()
     fetchData()
   }, [fetchData])
 
   const getCacheStatus = useCallback(() => {
-    return categoriesDataManager.getCacheStatus()
+    return categoryService.getCacheStatus()
   }, [])
 
   return {

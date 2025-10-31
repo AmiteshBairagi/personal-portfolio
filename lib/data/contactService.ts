@@ -34,7 +34,7 @@ export interface ContactFormData {
   availability_status: "available" | "busy" | "unavailable"
 }
 
-class ContactDataManager {
+class ContactManager {
   private cache: ContactData | null = null
   private cacheTimestamp = 0
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
@@ -180,4 +180,4 @@ class ContactDataManager {
   }
 }
 
-export const contactDataManager = new ContactDataManager()
+export const contactManager = new ContactManager()

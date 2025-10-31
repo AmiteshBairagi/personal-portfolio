@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,9 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
-import { useProjectsData } from "@/hooks/use-projects-data"
-import { useCategoriesData } from "@/hooks/use-categories-data"
-import type { ProjectData } from "@/lib/data/projects-data"
+import { useProjects } from "@/hooks/useProjects"
+import { useCategories } from "@/hooks/useCategories"
+import type { ProjectData } from "@/lib/data/projectsService"
 import {
   Edit,
   Trash2,
@@ -33,9 +33,10 @@ const ProjectManager = () => {
     updateProject,
     deleteProject,
     refresh,
-  } = useProjectsData()
+    refetch
+  } = useProjects()
 
-  const { getActiveCategories, getCategoryByName } = useCategoriesData()
+  const { getActiveCategories, getCategoryByName } = useCategories()
 
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
@@ -287,7 +288,7 @@ const ProjectManager = () => {
 
   //   setEditForm((prev) => ({ ...prev, features: keyFeatures }))
   // }
-
+  
 
   if (isLoading) {
     return (

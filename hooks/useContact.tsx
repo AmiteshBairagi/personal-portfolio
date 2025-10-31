@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { contactDataManager, type ContactData, type ContactFormData } from "@/lib/data/contact-data-manager"
+import { contactManager, type ContactData, type ContactFormData } from "@/lib/data/contactService"
 
-export function useContactRealTime() {
+export function useContact() {
   const [contactData, setContactData] = useState<ContactData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -13,7 +13,7 @@ export function useContactRealTime() {
     try {
       setLoading(true)
       setError(null)
-      const data = await contactDataManager.getContactData()
+      const data = await contactManager.getContactData()
       setContactData(data)
       // setLastSyncTime(new Date())
     } catch (err) {
@@ -28,7 +28,7 @@ export function useContactRealTime() {
   const createContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
     try {
       setError(null)
-      const newContact = await contactDataManager.createContactData(formData)
+      const newContact = await contactManager.createContactData(formData)
       setContactData(newContact)
       // setLastSyncTime(new Date())
       return newContact
@@ -43,7 +43,7 @@ export function useContactRealTime() {
   const updateContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
     try {
       setError(null)
-      const updatedContact = await contactDataManager.updateContactData(formData)
+      const updatedContact = await contactManager.updateContactData(formData)
       setContactData(updatedContact)
       // setLastSyncTime(new Date())
       return updatedContact
@@ -58,7 +58,7 @@ export function useContactRealTime() {
   const deleteContact = useCallback(async (id: string): Promise<void> => {
     try {
       setError(null)
-      await contactDataManager.deleteContactData(id)
+      await contactManager.deleteContactData(id)
       setContactData(null)
       // setLastSyncTime(new Date())
     } catch (err) {

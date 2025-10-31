@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
-import { useSkillsData } from "@/hooks/use-skills-data"
+import { useSkills } from "@/hooks/useSkills"
 import {
   Edit,
   Trash2,
@@ -19,7 +19,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react"
-import type { SkillItem } from "@/lib/data/skills-data"
+import type { SkillItem } from "@/lib/data/skillsService"
 
 const SkillsManager = () => {
   const {
@@ -31,7 +31,7 @@ const SkillsManager = () => {
     updateSkill,
     deleteSkill,
     getCategories,
-  } = useSkillsData()
+  } = useSkills()
 
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)

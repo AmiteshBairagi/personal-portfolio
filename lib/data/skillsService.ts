@@ -28,7 +28,7 @@ const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 let realtimeChannel: any = null
 
 // Skills data service
-export const skillsDataService = {
+export const skillsService = {
   // Initialize real-time subscription
   initializeRealtime(callback: (data: SkillCategory) => void) {
     if (realtimeChannel) {

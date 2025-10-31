@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Github, Eye, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useProjectsData } from "@/hooks/use-projects-data"
-import { useCategoriesData } from "@/hooks/use-categories-data"
+import { useProjects } from "@/hooks/useProjects"
+import { useCategories } from "@/hooks/useCategories"
 
 const ProjectCard = memo(
   ({
@@ -125,8 +125,8 @@ const ProjectCard = memo(
 ProjectCard.displayName = "ProjectCard"
 
 export default memo(function ProjectsSection() {
-  const { data: projectsData, isLoading, error } = useProjectsData()
-  const { getCategoryByName } = useCategoriesData()
+  const { data: projectsData, isLoading, error } = useProjects()
+  const { getCategoryByName } = useCategories()
 
   // Filter only published projects and show first 5
   const publishedProjects = useMemo(() => projectsData.filter((project) => project.published !== false), [projectsData])

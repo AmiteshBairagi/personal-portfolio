@@ -14,8 +14,8 @@ export interface CategoryData {
   updated_at: string
 }
 
-class CategoriesDataManager {
-  private static instance: CategoriesDataManager
+class CategoriesManager {
+  private static instance: CategoriesManager
   private cache: CategoryData[] = []
   private cacheTimestamp = 0
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
@@ -25,11 +25,11 @@ class CategoriesDataManager {
     this.setupRealtimeSubscription()
   }
 
-  static getInstance(): CategoriesDataManager {
-    if (!CategoriesDataManager.instance) {
-      CategoriesDataManager.instance = new CategoriesDataManager()
+  static getInstance(): CategoriesManager {
+    if (!CategoriesManager.instance) {
+      CategoriesManager.instance = new CategoriesManager()
     }
-    return CategoriesDataManager.instance
+    return CategoriesManager.instance
   }
 
   private setupRealtimeSubscription() {
@@ -184,4 +184,4 @@ class CategoriesDataManager {
   }
 }
 
-export const categoriesDataManager = CategoriesDataManager.getInstance()
+export const categoryService = CategoriesManager.getInstance()
