@@ -38,12 +38,12 @@ export function useCategories() {
     [deleteCategoryRT],
   )
 
-  const getCategory = useCallback(
-    (id: string) => {
-      return data.find((item) => item.id === id)
-    },
-    [data],
-  )
+  // const getCategory = useCallback(
+  //   (id: string) => {
+  //     return data.find((item) => item.id === id)
+  //   },
+  //   [data],
+  // )
 
   const getActiveCategories = useCallback(() => {
     return getActiveCategoriesRT()
@@ -67,7 +67,7 @@ export function useCategories() {
     addCategory,
     updateCategory,
     deleteCategory,
-    getCategory,
+    // getCategory,
     getActiveCategories,
     getCategoryByName,
     refetch,

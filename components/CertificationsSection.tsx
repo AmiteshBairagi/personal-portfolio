@@ -19,7 +19,7 @@ const CertificationsSection = () => {
 
   const [selectedCert, setSelectedCert] = useState<CertificationItem | null>(null)
 
-  const displayedCerts = certificationsData.slice(0, 10)
+  const displayedCerts = certificationsData.slice(0, 11)
   const { isReady } = useDynamicModalPosition(!!selectedCert)
 
 

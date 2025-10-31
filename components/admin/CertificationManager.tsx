@@ -27,6 +27,7 @@ import {
 } from "lucide-react"
 import useCertifications from "@/hooks/useCertifications"
 import type { CertificationItem } from "@/lib/data/certificationService"
+import { toast } from "sonner"
 
 const CertificationManager = () => {
   const {
@@ -63,6 +64,7 @@ const CertificationManager = () => {
 
   // UI states
   const [imagePreview, setImagePreview] = useState<string>("")
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -129,29 +131,48 @@ const CertificationManager = () => {
   }
 
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  // const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0]
+  //   if (!file) return
 
-    setIsUploadingImage(true)
-    try {
-      // Create a preview URL
-      const previewUrl = URL.createObjectURL(file)
-      setImagePreview(previewUrl)
+  //   setIsUploadingImage(true)
+  //   try {
+  //     // Create a preview URL
+  //     const previewUrl = URL.createObjectURL(file)
+  //     setImagePreview(previewUrl)
 
-      // In a real app, you would upload to a service like Cloudinary, AWS S3, etc.
-      // For now, we'll simulate an upload and use a placeholder
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+  //     // In a real app, you would upload to a service like Cloudinary, AWS S3, etc.
+  //     // For now, we'll simulate an upload and use a placeholder
+  //     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      // Simulate getting back a URL from the upload service
-      const uploadedUrl = `/placeholder.svg?height=400&width=600&text=${encodeURIComponent(file.name)}`
+  //     // Simulate getting back a URL from the upload service
+  //     const uploadedUrl = `/placeholder.svg?height=400&width=600&text=${encodeURIComponent(file.name)}`
 
-      setEditForm((prev) => ({ ...prev, image: uploadedUrl }))
-    } catch (error) {
-      console.error("Failed to upload image:", error)
-      alert("Failed to upload image. Please try again.")
-    } finally {
-      setIsUploadingImage(false)
+  //     setEditForm((prev) => ({ ...prev, image: uploadedUrl }))
+  //   } catch (error) {
+  //     console.error("Failed to upload image:", error)
+  //     alert("Failed to upload image. Please try again.")
+  //   } finally {
+  //     setIsUploadingImage(false)
+  //   }
+  // }
+
+  const handleImageUpload = (file: File) => {
+    if (file) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setImageFile(file)
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const result = e.target?.result as string
+          setImagePreview(result)
+          handleInputChange("image", result)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        toast.error("Image size should be less than 10MB")
+      }
+    } else {
+      toast.error("Please select a valid image file (JPG or PNG)")
     }
   }
 
@@ -376,7 +397,7 @@ const CertificationManager = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   {/* Reorder buttons */}
-                 
+
                   <Button
                     onClick={() => handleEdit(item)}
                     size="sm"
@@ -505,7 +526,10 @@ const CertificationManager = () => {
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleImageUpload(file)
+                  }}
                   className="hidden"
                 />
                 <Button
@@ -518,7 +542,7 @@ const CertificationManager = () => {
                   <Upload className="w-4 h-4 mr-2" />
                   {isUploadingImage ? "Uploading..." : "Upload Image"}
                 </Button>
-                <p className="text-xs text-slate-400 mt-1">Recommended: 600x400px, JPG or PNG</p>
+                <p className="text-xs text-slate-400 mt-1">Recommended: 600x400px, less than 10mb</p>
               </div>
             </div>
           </div>
