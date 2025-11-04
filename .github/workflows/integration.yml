@@ -24,7 +24,7 @@ jobs:
         cache: 'npm'
     
     - name: "Installing dependencies"
-      run: npm i
+      run: npm i --force
     
     - name: "Build command"
       run: npm run build
