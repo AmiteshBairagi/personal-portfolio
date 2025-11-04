@@ -8,7 +8,7 @@ import SkillsSection from "@/components/SkillsSection"
 import CertificationsSection from "@/components/CertificationsSection"
 import ContactSection from "@/components/ContactSection"
 import OptimizedAnimation from "@/components/optimized-animation"
-import Footer from "@/components/Footer"
+import Footer from "@/components/FFooter"
 
 export default function Home() {
   return (

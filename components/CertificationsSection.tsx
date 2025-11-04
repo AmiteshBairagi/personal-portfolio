@@ -141,16 +141,16 @@ const CertificationsSection = () => {
 
                   {/* Skills Preview */}
                   <div className="flex flex-wrap gap-1">
-                    {cert.skills.slice(0, 2).map((skill) => (
-                      <Badge key={skill} variant="secondary" className="text-xs px-2 py-0">
+                    {cert.skills.map((skill) => (
+                      <Badge key={skill} variant="secondary" className="text-xs px-2 py-0 bg-blue-500">
                         {skill}
                       </Badge>
                     ))}
-                    {cert.skills.length > 2 && (
+                    {/* {cert.skills.length > 2 && (
                       <Badge variant="secondary" className="text-xs px-2 py-0">
                         +{cert.skills.length - 2}
                       </Badge>
-                    )}
+                    )} */}
                   </div>
                 </CardContent>
               </Card>
