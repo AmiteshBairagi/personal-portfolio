@@ -11,8 +11,8 @@ import { ExternalLink, Github, Eye, Calendar, Users, Code, Search, Filter, Arrow
 import Image from "next/image"
 import Link from "next/link"
 import { ThemeProvider } from "@/contexts/theme-context"
-import { useProjectsData } from "@/hooks/useProjects"
-import { useCategoriesData } from "@/hooks/useCategories"
+import { useProjects } from "@/hooks/useProjects"
+import { useCategories } from "@/hooks/useCategories"
 
 const ProjectCard = memo(
   ({
@@ -136,8 +136,8 @@ const ProjectCard = memo(
 ProjectCard.displayName = "ProjectCard"
 
 export default function AllProjectsPage() {
-  const { data: projectsData, isLoading } = useProjectsData()
-  const { getActiveCategories, getCategoryByName } = useCategoriesData()
+  const { data: projectsData, isLoading } = useProjects()
+  const { getActiveCategories, getCategoryByName } = useCategories()
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
