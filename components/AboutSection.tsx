@@ -113,7 +113,7 @@ const AboutSection = () => {
             >
               <button
                 onClick={() => {
-                  router.push("/about-me")
+                  router.push("/more-about-me")
                 }}
                 className="inline-flex items-center px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors shadow-lg hover:shadow-xl"
               >
