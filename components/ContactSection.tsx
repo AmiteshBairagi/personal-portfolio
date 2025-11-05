@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import axios from "axios"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
@@ -22,7 +22,7 @@ import {
 import { useContact } from "@/hooks/useContact"
 
 const ContactSection = () => {
-  const { contactData, loading, error} = useContact()
+  const { contactData, loading, error } = useContact()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -56,16 +56,34 @@ const ContactSection = () => {
     setIsSubmitting(true)
 
     try {
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const service_id = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      const template_id = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+      const user_id = process.env.NEXT_PUBLIC_EMAILJS_USER_ID;
 
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      })
+      const template_params = {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message
+      }
+
+      const response = await axios.post("https://api.emailjs.com/api/v1.0/email/send",
+        {
+          service_id: service_id,
+          template_id: template_id,
+          user_id: user_id,
+          template_params: template_params
+        }
+      );
+      if (response.status === 200) {
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        })
+
+        alert("Message Received Successfully");
+      }
 
       alert("Message sent successfully!")
     } catch (error) {
@@ -127,12 +145,12 @@ const ContactSection = () => {
 
 
 
- 
+
 
   return (
     <section id="contact" className="py-20 bg-gray-50 dark:bg-dark-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Error Display */}
         {error && (
           <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-lg">
@@ -154,7 +172,7 @@ const ContactSection = () => {
             {loading ? "Loading contact information..." : currentData.bio}
           </p>
 
-          
+
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12">
@@ -313,7 +331,7 @@ const ContactSection = () => {
                     </div>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="subject"
                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
@@ -330,7 +348,7 @@ const ContactSection = () => {
                       className="w-full"
                       placeholder="Project Discussion"
                     />
-                  </div>
+                  </div> */}
 
                   <div>
                     <label
