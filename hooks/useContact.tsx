@@ -29,7 +29,7 @@ export function useContact() {
     try {
       setError(null)
       const newContact = await contactManager.createContactData(formData)
-      setContactData(newContact)
+      //setContactData(newContact)
       // setLastSyncTime(new Date())
       return newContact
     } catch (err) {

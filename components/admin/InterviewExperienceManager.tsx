@@ -74,7 +74,7 @@ const initialFormData: BlogFormData = {
   published: true,
 }
 
-const BlogManager = () => {
+const InterviewExperienceManager = () => {
   const { toast } = useToast()
   const {
     posts,
@@ -415,7 +415,7 @@ const BlogManager = () => {
   }
 
   // Blog form component
-  const BlogForm = () => (
+  const AddInterviewExperienceForm = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -581,28 +581,14 @@ const BlogManager = () => {
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button variant="outline" onClick={() => setIsCreateModalOpen(true)} disabled={isLoading}  className="border-slate-600 text-slate-300 bg-transparent">
+          <Button variant="outline" onClick={() => setIsCreateModalOpen(true)} disabled={isLoading} className="border-slate-600 text-slate-300 bg-transparent">
             <Plus className="h-4 w-4 mr-2" />
             Add Post
           </Button>
-          
+
         </div>
       </div>
 
-      {/* Connection Status */}
-      <div className="flex justify-center">
-        <div
-          className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs ${
-            isOnline
-              ? "bg-green-500/20 text-green-400 border border-green-500/30"
-              : "bg-red-500/20 text-red-400 border border-red-500/30"
-          }`}
-        >
-          {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-          {isOnline ? "Live" : "Offline"}
-          {lastSyncTime && <span className="text-slate-400">• Last sync: {lastSyncTime.toLocaleTimeString()}</span>}
-        </div>
-      </div>
 
       {/* Error Display */}
       {error && (
@@ -618,7 +604,7 @@ const BlogManager = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card  className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -627,7 +613,7 @@ const BlogManager = () => {
             <div className="text-2xl font-bold">{posts.length}</div>
           </CardContent>
         </Card>
-        <Card  className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Published</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
@@ -636,7 +622,7 @@ const BlogManager = () => {
             <div className="text-2xl font-bold">{posts.filter((post) => post.published).length}</div>
           </CardContent>
         </Card>
-        <Card  className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Featured</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
@@ -645,7 +631,7 @@ const BlogManager = () => {
             <div className="text-2xl font-bold">{posts.filter((post) => post.featured).length}</div>
           </CardContent>
         </Card>
-        <Card  className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-700 border-slate-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Drafts</CardTitle>
             <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -657,41 +643,19 @@ const BlogManager = () => {
       </div>
 
       {/* Filters */}
-      <Card  className="bg-slate-700 border-slate-600 text-white">
+      <Card className="bg-slate-700 border-slate-600 text-white">
         <CardHeader>
           <CardTitle className="text-lg">Filters & Search</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1bg-slate-700 border-slate-600 text-white">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search posts by title, excerpt, or tags..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-            </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory} >
-              <SelectTrigger className="w-full sm:w-[200px] bg-slate-700 border-slate-600 text-white" >
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-700 border-slate-600 text-white">
-                {blogCategories.map((category) => (
-                  <SelectItem key={category} value={category} >
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2 ">
-                <Switch 
-                  id="featured-filter" 
-                  checked={showOnlyFeatured} 
-                  onCheckedChange={setShowOnlyFeatured} 
+                <Switch
+                  id="featured-filter"
+                  checked={showOnlyFeatured}
+                  onCheckedChange={setShowOnlyFeatured}
                   className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
                 />
                 <Label htmlFor="featured-filter" className="text-sm">
@@ -699,10 +663,10 @@ const BlogManager = () => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <Switch 
-                  id="published-filter" 
-                  checked={showOnlyPublished} 
-                  onCheckedChange={setShowOnlyPublished} 
+                <Switch
+                  id="published-filter"
+                  checked={showOnlyPublished}
+                  onCheckedChange={setShowOnlyPublished}
                   className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
                 />
                 <Label htmlFor="published-filter" className="text-sm">
@@ -855,7 +819,7 @@ const BlogManager = () => {
                         size="sm"
                         onClick={() => openDeleteDialog(post.id)}
                         className="text-destructive hover:text-destructive bg-slate-700 border-slate-600 text-white"
-                        
+
                       >
                         <Trash2 className="h-3 w-3 mr-1" />
                         Delete
@@ -896,7 +860,7 @@ const BlogManager = () => {
           </>
         }
       >
-        <BlogForm />
+        <AddInterviewExperienceForm />
       </EnhancedModal>
 
       {/* Edit Modal */}
@@ -927,7 +891,7 @@ const BlogManager = () => {
           </>
         }
       >
-        <BlogForm />
+        <AddInterviewExperienceForm />
       </EnhancedModal>
 
       {/* Delete Confirmation Dialog */}
@@ -955,4 +919,4 @@ const BlogManager = () => {
   )
 }
 
-export default BlogManager
+export default InterviewExperienceManager

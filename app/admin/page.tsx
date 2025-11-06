@@ -50,7 +50,7 @@ const CertificationsManager = dynamic(() => import("@/components/admin/Certifica
   ssr: false,
 })
 
-const BlogManager = dynamic(() => import("@/components/admin/BlogManager"), {
+const InterviewExperienceManager = dynamic(() => import("@/components/admin/InterviewExperienceManager"), {
   loading: () => <div className="p-4 text-slate-400">Loading Blog Manager...</div>,
   ssr: false,
 })
@@ -141,11 +141,11 @@ function AdminContent() {
       iconColor: "text-yellow-400",
     },
     {
-      id: "blog",
-      label: "Blog",
+      id: "interview-experience",
+      label: "Interview Experience",
       icon: BookOpen,
       description: "Manage blog posts and articles",
-      component: BlogManager,
+      component: InterviewExperienceManager,
       color: "from-pink-500/20 to-rose-500/20",
       iconColor: "text-pink-400",
     },

@@ -122,38 +122,11 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                   </div>
                 </div>
 
-                {/* <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => (
-                    <Button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      variant={selectedCategory === category ? "default" : "outline"}
-                      size="sm"
-                      className={
-                        selectedCategory === category
-                          ? "bg-cyan-500 hover:bg-cyan-600"
-                          : "border-slate-600 text-slate-300 hover:bg-slate-700"
-                      }
-                    >
-                      <Filter className="w-4 h-4 mr-2" />
-                      {category}
-                    </Button>
-                  ))}
-                </div> */}
 
               </div>
             </CardContent>
           </Card>
         </motion.div>
-
-        {/* Results count */}
-        {/* <div className="text-center mb-8">
-          <p className="text-slate-400">
-            {filteredPosts.length === 0
-              ? "No articles found"
-              : `${filteredPosts.length} article${filteredPosts.length === 1 ? "" : "s"} found`}
-          </p>
-        </div> */}
 
         {/* Posts Grid */}
         {filteredPosts.length === 0 ? (
@@ -190,21 +163,6 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
               >
                 <Link href={`/blog/${post.slug}`} className="block h-full">
                   <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50 cursor-pointer">
-                    {/* Featured Image */}
-                    {/* <div className="relative h-48 overflow-hidden rounded-t-lg">
-                      <OptimizedImage
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
-                      {post.featured && (
-                        <div className="absolute top-4 left-4">
-                          <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-500/30">Featured</Badge>
-                        </div>
-                      )}
-                    </div> */}
 
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
