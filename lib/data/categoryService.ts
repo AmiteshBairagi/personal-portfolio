@@ -1,6 +1,4 @@
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+import { api } from "@/lib/axios"
 
 export interface CategoryData {
   id: string
@@ -21,33 +19,13 @@ class CategoriesManager {
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
   private listeners: Set<() => void> = new Set()
 
-  private constructor() {
-    this.setupRealtimeSubscription()
-  }
+  private constructor() {}
 
   static getInstance(): CategoriesManager {
     if (!CategoriesManager.instance) {
       CategoriesManager.instance = new CategoriesManager()
     }
     return CategoriesManager.instance
-  }
-
-  private setupRealtimeSubscription() {
-    supabase
-      .channel("categories_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "categories",
-        },
-        () => {
-          this.invalidateCache()
-          this.notifyListeners()
-        },
-      )
-      .subscribe()
   }
 
   private notifyListeners() {
@@ -73,13 +51,7 @@ class CategoriesManager {
     }
 
     try {
-      const { data, error } = await supabase.from("categories").select("*").order("order", { ascending: true })
-
-      if (error) {
-        console.error("Error fetching categories:", error)
-        throw error
-      }
-
+      const { data } = await api.get<CategoryData[]>("/api/categories")
       this.cache = data || []
       this.cacheTimestamp = Date.now()
       return this.cache
@@ -91,14 +63,9 @@ class CategoriesManager {
 
   async createCategory(categoryData: Omit<CategoryData, "id" | "created_at" | "updated_at">): Promise<CategoryData> {
     try {
-      const { data, error } = await supabase.from("categories").insert([categoryData]).select().single()
-
-      if (error) {
-        console.error("Error creating category:", error)
-        throw error
-      }
-
+      const { data } = await api.post<CategoryData>("/api/categories", categoryData)
       this.invalidateCache()
+      this.notifyListeners()
       return data
     } catch (error) {
       console.error("Error in createCategory:", error)
@@ -108,14 +75,9 @@ class CategoriesManager {
 
   async updateCategory(id: string, updates: Partial<CategoryData>): Promise<CategoryData> {
     try {
-      const { data, error } = await supabase.from("categories").update(updates).eq("id", id).select().single()
-
-      if (error) {
-        console.error("Error updating category:", error)
-        throw error
-      }
-
+      const { data } = await api.put<CategoryData>(`/api/categories/${id}`, updates)
       this.invalidateCache()
+      this.notifyListeners()
       return data
     } catch (error) {
       console.error("Error in updateCategory:", error)
@@ -125,14 +87,9 @@ class CategoriesManager {
 
   async deleteCategory(id: string): Promise<void> {
     try {
-      const { error } = await supabase.from("categories").delete().eq("id", id)
-
-      if (error) {
-        console.error("Error deleting category:", error)
-        throw error
-      }
-
+      await api.delete(`/api/categories/${id}`)
       this.invalidateCache()
+      this.notifyListeners()
     } catch (error) {
       console.error("Error in deleteCategory:", error)
       throw error
@@ -156,14 +113,9 @@ class CategoriesManager {
 
   async reorderCategories(categoryId: string, newOrder: number): Promise<void> {
     try {
-      const { error } = await supabase.from("categories").update({ order: newOrder }).eq("id", categoryId)
-
-      if (error) {
-        console.error("Error reordering category:", error)
-        throw error
-      }
-
+      await api.put(`/api/categories/${categoryId}`, { order: newOrder })
       this.invalidateCache()
+      this.notifyListeners()
     } catch (error) {
       console.error("Error in reorderCategories:", error)
       throw error

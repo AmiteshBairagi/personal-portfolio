@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
+import { ContactForm } from "./forms/ContactForm"
 import {
   Edit,
   Save,
@@ -22,6 +23,7 @@ import {
   RefreshCw,
   Trash2,
   Plus,
+  User,
 } from "lucide-react"
 import { useContact } from "@/hooks/useContact"
 import type { ContactFormData } from "@/lib/data/contactService"
@@ -179,17 +181,20 @@ const ContactManager = () => {
   return (
     <div className="space-y-6">
       {/* Header with Connection Status */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div className="flex items-center space-x-4">
-          <h2 className="text-2xl font-bold text-white">Contact Management</h2>
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+            <Mail className="w-5 h-5 text-cyan-400" />
+            Contact Management
+          </h2>
         </div>
 
-        <div className="flex space-x-2">
+        <div className="flex items-center space-x-3">
           <Button
             onClick={refreshData}
             size="sm"
             variant="outline"
-            className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+            className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 px-3"
             disabled={loading}
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
@@ -197,7 +202,7 @@ const ContactManager = () => {
           </Button>
 
           {!contactData && (
-            <Button onClick={handleCreate} size="sm" className="bg-green-500 hover:bg-green-600">
+            <Button onClick={handleCreate} size="sm" className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0 h-10 px-4">
               <Plus className="w-4 h-4 mr-2" />
               Create Contact
             </Button>
@@ -214,12 +219,12 @@ const ContactManager = () => {
 
       {/* Loading State */}
       {loading && (
-        <Card className="bg-slate-700/30 border-slate-600/30">
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 shadow-lg">
           <CardContent className="p-8">
             <div className="animate-pulse space-y-4">
-              <div className="h-6 bg-slate-600 rounded w-1/3"></div>
-              <div className="h-4 bg-slate-600 rounded w-2/3"></div>
-              <div className="h-4 bg-slate-600 rounded w-1/2"></div>
+              <div className="h-6 bg-slate-700/50 rounded-lg w-1/3"></div>
+              <div className="h-4 bg-slate-700/50 rounded-lg w-2/3"></div>
+              <div className="h-4 bg-slate-700/50 rounded-lg w-1/2"></div>
             </div>
           </CardContent>
         </Card>
@@ -227,12 +232,14 @@ const ContactManager = () => {
 
       {/* No Contact Data */}
       {!loading && !contactData && (
-        <Card className="bg-slate-700/30 border-slate-600/30">
-          <CardContent className="p-8 text-center">
-            <Mail className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 shadow-lg">
+          <CardContent className="p-12 text-center flex flex-col items-center">
+            <div className="w-20 h-20 bg-cyan-500/10 rounded-full flex items-center justify-center border border-cyan-500/20 mb-6">
+              <Mail className="w-10 h-10 text-cyan-400" />
+            </div>
             <h3 className="text-xl font-semibold text-white mb-2">No Contact Information</h3>
-            <p className="text-slate-300 mb-4">Create your contact information to get started.</p>
-            <Button onClick={handleCreate} className="bg-cyan-500 hover:bg-cyan-600">
+            <p className="text-slate-400 mb-6 max-w-md">Create your contact information to display it on your portfolio and let people reach out to you.</p>
+            <Button onClick={handleCreate} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               <Plus className="w-4 h-4 mr-2" />
               Create Contact Information
             </Button>
@@ -242,61 +249,72 @@ const ContactManager = () => {
 
       {/* Current Contact Data */}
       {contactData && (
-        <Card className="bg-slate-700/30 border-slate-600/30">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <CardTitle className="text-lg text-white">Contact Information</CardTitle>
-            </div>
-            <div className="flex space-x-2">
-              <Button onClick={handleEdit} size="sm" className="bg-cyan-500 hover:bg-cyan-600">
-                <Edit className="w-4 h-4 mr-2" />
-                Edit
-              </Button>
-              <Button
-                onClick={() => setIsDeleting(true)}
-                size="sm"
-                variant="destructive"
-                className="bg-red-500 hover:bg-red-600"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Bio Section */}
-            {contactData.bio && (
-              <div className="p-4 bg-slate-800/30 rounded-lg">
-                <h4 className="text-sm font-medium text-slate-300 mb-2">Bio</h4>
-                <p className="text-white text-sm leading-relaxed">{contactData.bio}</p>
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 shadow-lg group pointer-events-none">
+          <div className="pointer-events-auto">
+            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-700/50 pb-4">
+              <div className="flex items-center space-x-4 mb-4 sm:mb-0">
+                 <CardTitle className="text-lg text-white flex items-center gap-2">
+                   Contact Details
+                   <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 ml-2">Active</span>
+                 </CardTitle>
               </div>
-            )}
-
-            {/* Contact Details Grid */}
-            <div className="grid md:grid-cols-2 gap-4">
-              {contactItems.map((item, index) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-center space-x-3 p-3 bg-slate-800/30 rounded-lg"
+              <div className="flex items-center gap-2 opacity-100 sm:opacity-70 sm:group-hover:opacity-100 transition-opacity">
+                <Button onClick={handleEdit} size="sm" variant="outline" className="h-8 bg-slate-800/50 border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white">
+                  <Edit className="w-3.5 h-3.5 mr-1.5" />
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => setIsDeleting(true)}
+                  size="sm"
+                  variant="outline"
+                  className="h-8 bg-slate-800/50 border-red-900/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/50"
                 >
-                  <div
-                    className={`w-10 h-10 bg-slate-700/50 rounded-lg flex items-center justify-center ${item.color}`}
+                  <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+                  Delete
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6 pt-6">
+              {/* Bio Section */}
+              {contactData.bio && (
+                <div className="p-5 bg-slate-900/40 rounded-xl border border-slate-700/50">
+                  <h4 className="text-sm font-semibold text-cyan-400 mb-3 flex items-center gap-2 uppercase tracking-wider text-xs">
+                    <User className="w-4 h-4" /> Bio / About
+                  </h4>
+                  <p className="text-slate-300 text-sm leading-relaxed">{contactData.bio}</p>
+                </div>
+              )}
+
+              {/* Contact Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {contactItems.map((item, index) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="flex items-start space-x-4 p-4 bg-slate-900/40 rounded-xl border border-slate-700/50 hover:bg-slate-800/80 hover:border-slate-600 transition-all duration-300 group/item"
                   >
-                    <item.icon className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-slate-300">{item.label}</div>
-                    <div className="text-white text-sm truncate" title={item.value}>
-                      {item.value}
+                    <div
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border bg-slate-800/50 group-hover/item:scale-110 transition-transform duration-300`}
+                      style={{ 
+                        borderColor: `color-mix(in srgb, currentColor 20%, transparent)`,
+                        color: `color-mix(in srgb, currentColor, transparent)` // Fallback
+                      }}
+                    >
+                      <item.icon className={`w-5 h-5 ${item.color}`} />
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
+                    <div className="flex-1 min-w-0 overflow-hidden">
+                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{item.label}</div>
+                      <div className={`text-sm truncate ${item.value === "Not provided" ? "text-slate-500 italic" : "text-slate-200 font-medium"}`} title={item.value}>
+                        {item.value || "Not provided"}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </CardContent>
+          </div>
         </Card>
       )}
 
@@ -311,129 +329,19 @@ const ContactManager = () => {
             <Button
               onClick={handleCancel}
               variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-cyan-500 hover:bg-cyan-600">
+            <Button onClick={handleSave} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               <Save className="w-4 h-4 mr-2" />
-              {isCreating ? "Create" : "Save Changes"}
+              {isCreating ? "Create Contact" : "Save Changes"}
             </Button>
           </>
         }
       >
-        <div className="space-y-6">
-          {/* Basic Contact Information */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-cyan-400">Basic Information</h4>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Email Address *</label>
-                <Input
-                  type="email"
-                  value={editForm.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="your.email@example.com"
-                  required
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Phone Number</label>
-                <Input
-                  value={editForm.phone || ""}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="+1 (555) 123-4567"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Location</label>
-                <Input
-                  value={editForm.location || ""}
-                  onChange={(e) => handleInputChange("location", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="City, State/Country"
-                />
-              </div>
-            </div>
-          </div>
-
-          
-
-          {/* Bio */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-cyan-400">Bio</h4>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">About You</label>
-              <Textarea
-                value={editForm.bio || ""}
-                onChange={(e) => handleInputChange("bio", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="Tell visitors about yourself, your availability, and what you're looking for..."
-                rows={4}
-              />
-            </div>
-          </div>
-
-          {/* Social Media & Professional Links */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-cyan-400">Social Media & Professional</h4>
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">GitHub Profile</label>
-                <Input
-                  value={editForm.github_url || ""}
-                  onChange={(e) => handleInputChange("github_url", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="https://github.com/username"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">LinkedIn Profile</label>
-                <Input
-                  value={editForm.linkedin_url || ""}
-                  onChange={(e) => handleInputChange("linkedin_url", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="https://linkedin.com/in/username"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Twitter Profile</label>
-                <Input
-                  value={editForm.twitter_url || ""}
-                  onChange={(e) => handleInputChange("twitter_url", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="https://twitter.com/username"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-slate-300 mb-2 block">Personal Website</label>
-                <Input
-                  value={editForm.website_url || ""}
-                  onChange={(e) => handleInputChange("website_url", e.target.value)}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="https://yourwebsite.com"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Resume */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-cyan-400">Resume</h4>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Resume URL</label>
-              <Input
-                value={editForm.resume_url || ""}
-                onChange={(e) => handleInputChange("resume_url", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="/resume.pdf or https://example.com/resume.pdf"
-              />
-            </div>
-          </div>
-        </div>
+        <ContactForm editForm={editForm} handleInputChange={handleInputChange} />
       </EnhancedModal>
 
       {/* Delete Confirmation Modal */}
@@ -447,22 +355,24 @@ const ContactManager = () => {
             <Button
               onClick={handleCancel}
               variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
             >
               Cancel
             </Button>
-            <Button onClick={handleDelete} variant="destructive" className="bg-red-500 hover:bg-red-600">
+            <Button onClick={handleDelete} variant="destructive" className="bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white shadow-lg shadow-red-500/25 border-0">
               <Trash2 className="w-4 h-4 mr-2" />
-              Delete
+              Delete Contact
             </Button>
           </>
         }
       >
-        <div className="text-center py-4">
-          <Trash2 className="w-16 h-16 text-red-400 mx-auto mb-4" />
+        <div className="text-center py-6">
+          <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center border border-red-500/20 mx-auto mb-6">
+            <Trash2 className="w-8 h-8 text-red-500" />
+          </div>
           <h3 className="text-lg font-semibold text-white mb-2">Delete Contact Information?</h3>
-          <p className="text-slate-300">
-            This action cannot be undone. All contact information will be permanently deleted.
+          <p className="text-slate-400 max-w-xs mx-auto">
+            This action cannot be undone. All contact information will be permanently deleted from the system.
           </p>
         </div>
       </EnhancedModal>

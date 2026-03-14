@@ -233,8 +233,8 @@ export function EnhancedModal({
               stiffness: 300,
             }}
             className={cn(
-              "fixed z-50 bg-slate-800 border border-slate-600/50 shadow-2xl rounded-xl overflow-hidden",
-              "backdrop-blur-md bg-slate-800/95 flex flex-col",
+              "fixed z-50 overflow-hidden",
+              "bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-2xl flex flex-col",
               "focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:ring-offset-2 focus:ring-offset-slate-900",
               className,
             )}
@@ -251,7 +251,7 @@ export function EnhancedModal({
             tabIndex={-1}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-600/50 bg-slate-800/80 backdrop-blur-sm flex-shrink-0">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-700/50 bg-slate-800/40 flex-shrink-0">
               <h2 id="modal-title" className="text-xl font-semibold text-white truncate pr-4">
                 {title}
               </h2>
@@ -260,9 +260,9 @@ export function EnhancedModal({
                 {allowFullscreen && (
                   <Button
                     onClick={toggleFullscreen}
-                    size="sm"
+                    size="icon"
                     variant="ghost"
-                    className="text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors"
+                    className="h-8 w-8 text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors rounded-full"
                     aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
                   >
                     {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -271,9 +271,9 @@ export function EnhancedModal({
                 {showCloseButton && (
                   <Button
                     onClick={onClose}
-                    size="sm"
+                    size="icon"
                     variant="ghost"
-                    className="text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors"
+                    className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors rounded-full"
                     aria-label="Close modal"
                   >
                     <X className="w-4 h-4" />
@@ -293,7 +293,7 @@ export function EnhancedModal({
 
             {/* Footer */}
             {footerActions && (
-              <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-slate-600/50 bg-slate-800/80 backdrop-blur-sm flex-shrink-0">
+              <div className="flex items-center justify-end space-x-3 px-6 py-4 border-t border-slate-700/50 bg-slate-800/40 flex-shrink-0">
                 {footerActions}
               </div>
             )}

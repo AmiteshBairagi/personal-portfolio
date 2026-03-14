@@ -1,11 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
-
+import { api } from '@/lib/axios'
 
 export interface BlogPost {
   id: string
@@ -32,67 +25,29 @@ let blogCache: BlogPost[] | null = null
 let cacheTimestamp: number = 0
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
-// Real-time subscription
-let subscription: any = null
-
 export const blogDataManager = {
-  // Initialize real-time subscription
+  // Initialize subscription — now a no-op (no Supabase real-time)
   initializeSubscription: (callback?: () => void) => {
-    if (subscription) return
-
-    subscription = supabase
-      .channel('blog_posts_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'blog_posts'
-        },
-        (payload) => {
-          console.log('Blog posts changed:', payload)
-          // Invalidate cache
-          blogCache = null
-          cacheTimestamp = 0
-          // Notify callback
-          if (callback) callback()
-        }
-      )
-      .subscribe()
+    // No real-time subscription; data refreshes on manual page reload
   },
 
-  // Cleanup subscription
-  cleanup: () => {
-    if (subscription) {
-      supabase.removeChannel(subscription)
-      subscription = null
-    }
-  },
+  // Cleanup — no-op
+  cleanup: () => {},
 
   // Get all blog posts with caching
   getAllBlogPosts: async (forceRefresh = false): Promise<BlogPost[]> => {
     const now = Date.now()
-    
+
     // Return cached data if valid and not forcing refresh
     if (!forceRefresh && blogCache && (now - cacheTimestamp) < CACHE_DURATION) {
       return blogCache
     }
 
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true })
-        .order('published_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching blog posts:', error)
-        return blogCache || []
-      }
+      const { data } = await api.get<BlogPost[]>('/api/blog-posts')
 
       // Transform data
-      const transformedData = data.map(post => ({
+      const transformedData = (data || []).map(post => ({
         ...post,
         tags: post.tags || []
       }))
@@ -124,17 +79,9 @@ export const blogDataManager = {
   // Get blog post by slug
   getBlogPostBySlug: async (slug: string): Promise<BlogPost | null> => {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('slug', slug)
-        .eq('is_active', true)
-        .single()
+      const { data } = await api.get<BlogPost>(`/api/blog-posts/slug/${slug}`)
 
-      if (error || !data) {
-        console.error('Error fetching blog post by slug:', error)
-        return null
-      }
+      if (!data) return null
 
       return {
         ...data,
@@ -149,16 +96,9 @@ export const blogDataManager = {
   // Get blog post by ID
   getBlogPostById: async (id: string): Promise<BlogPost | null> => {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('id', id)
-        .single()
+      const { data } = await api.get<BlogPost>(`/api/blog-posts/${id}`)
 
-      if (error || !data) {
-        console.error('Error fetching blog post by ID:', error)
-        return null
-      }
+      if (!data) return null
 
       return {
         ...data,
@@ -184,46 +124,15 @@ export const blogDataManager = {
           .replace(/^-+|-+$/g, '')
       }
 
-      // Ensure slug is unique
-      const { data: existingPost } = await supabase
-        .from('blog_posts')
-        .select('id')
-        .eq('slug', slug)
-        .single()
-
-      if (existingPost) {
-        slug = `${slug}-${Date.now()}`
-      }
-
       // Calculate read time
       const readTime = Math.max(1, Math.ceil(postData.content.trim().split(/\s+/).length / 200))
 
-      // Get next display order
-      const { data: lastPost } = await supabase
-        .from('blog_posts')
-        .select('display_order')
-        .order('display_order', { ascending: false })
-        .limit(1)
-        .single()
-
-      const nextDisplayOrder = (lastPost?.display_order || 0) + 1
-
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .insert([{
-          ...postData,
-          slug,
-          read_time: readTime,
-          display_order: nextDisplayOrder,
-          tags: postData.tags || []
-        }])
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Error creating blog post:', error)
-        return null
-      }
+      const { data } = await api.post<BlogPost>('/api/blog-posts', {
+        ...postData,
+        slug,
+        read_time: readTime,
+        tags: postData.tags || []
+      })
 
       // Invalidate cache
       blogCache = null
@@ -250,18 +159,7 @@ export const blogDataManager = {
           .replace(/[^\w\s-]/g, '')
           .replace(/[\s_-]+/g, '-')
           .replace(/^-+|-+$/g, '')
-
-        // Check if slug is unique (excluding current post)
-        const { data: existingPost } = await supabase
-          .from('blog_posts')
-          .select('id')
-          .eq('slug', newSlug)
-          .neq('id', id)
-          .single()
-
-        if (!existingPost) {
-          updates.slug = newSlug
-        }
+        updates.slug = newSlug
       }
 
       // Recalculate read time if content is updated
@@ -269,17 +167,7 @@ export const blogDataManager = {
         updates.read_time = Math.max(1, Math.ceil(updates.content.trim().split(/\s+/).length / 200))
       }
 
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Error updating blog post:', error)
-        return null
-      }
+      const { data } = await api.put<BlogPost>(`/api/blog-posts/${id}`, updates)
 
       // Invalidate cache
       blogCache = null
@@ -298,15 +186,7 @@ export const blogDataManager = {
   // Delete blog post (soft delete)
   deleteBlogPost: async (id: string): Promise<boolean> => {
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ is_active: false })
-        .eq('id', id)
-
-      if (error) {
-        console.error('Error deleting blog post:', error)
-        return false
-      }
+      await api.put(`/api/blog-posts/${id}`, { is_active: false })
 
       // Invalidate cache
       blogCache = null
@@ -344,20 +224,8 @@ export const blogDataManager = {
       const targetPost = allPosts[targetIndex]
 
       // Swap display orders
-      const { error: error1 } = await supabase
-        .from('blog_posts')
-        .update({ display_order: targetPost.display_order })
-        .eq('id', currentPost.id)
-
-      const { error: error2 } = await supabase
-        .from('blog_posts')
-        .update({ display_order: currentPost.display_order })
-        .eq('id', targetPost.id)
-
-      if (error1 || error2) {
-        console.error('Error reordering blog posts:', error1 || error2)
-        return false
-      }
+      await api.put(`/api/blog-posts/${currentPost.id}`, { display_order: targetPost.display_order })
+      await api.put(`/api/blog-posts/${targetPost.id}`, { display_order: currentPost.display_order })
 
       // Invalidate cache
       blogCache = null
@@ -376,15 +244,7 @@ export const blogDataManager = {
       const currentPost = await blogDataManager.getBlogPostById(id)
       if (!currentPost) return false
 
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ featured: !currentPost.featured })
-        .eq('id', id)
-
-      if (error) {
-        console.error('Error toggling featured status:', error)
-        return false
-      }
+      await api.put(`/api/blog-posts/${id}`, { featured: !currentPost.featured })
 
       // Invalidate cache
       blogCache = null
@@ -403,15 +263,7 @@ export const blogDataManager = {
       const currentPost = await blogDataManager.getBlogPostById(id)
       if (!currentPost) return false
 
-      const { error } = await supabase
-        .from('blog_posts')
-        .update({ published: !currentPost.published })
-        .eq('id', id)
-
-      if (error) {
-        console.error('Error toggling published status:', error)
-        return false
-      }
+      await api.put(`/api/blog-posts/${id}`, { published: !currentPost.published })
 
       // Invalidate cache
       blogCache = null
@@ -427,30 +279,13 @@ export const blogDataManager = {
   // Search blog posts
   searchBlogPosts: async (query: string, category?: string): Promise<BlogPost[]> => {
     try {
-      let queryBuilder = supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('is_active', true)
-        .eq('published', true)
+      const params: Record<string, string> = {}
+      if (query.trim()) params.search = query
+      if (category && category !== 'All') params.category = category
 
-      if (category && category !== 'All') {
-        queryBuilder = queryBuilder.eq('category', category)
-      }
+      const { data } = await api.get<BlogPost[]>('/api/blog-posts', { params })
 
-      if (query.trim()) {
-        queryBuilder = queryBuilder.or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,content.ilike.%${query}%`)
-      }
-
-      const { data, error } = await queryBuilder
-        .order('display_order', { ascending: true })
-        .order('published_at', { ascending: false })
-
-      if (error) {
-        console.error('Error searching blog posts:', error)
-        return []
-      }
-
-      return data.map(post => ({
+      return (data || []).map(post => ({
         ...post,
         tags: post.tags || []
       }))
@@ -467,21 +302,11 @@ export const blogDataManager = {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .eq('category', category)
-        .eq('is_active', true)
-        .eq('published', true)
-        .order('display_order', { ascending: true })
-        .order('published_at', { ascending: false })
+      const { data } = await api.get<BlogPost[]>('/api/blog-posts', {
+        params: { category },
+      })
 
-      if (error) {
-        console.error('Error fetching blog posts by category:', error)
-        return []
-      }
-
-      return data.map(post => ({
+      return (data || []).map(post => ({
         ...post,
         tags: post.tags || []
       }))

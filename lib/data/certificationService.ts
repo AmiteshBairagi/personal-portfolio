@@ -1,8 +1,6 @@
 "use client"
 
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+import { api } from "@/lib/axios"
 
 export interface CertificationItem {
   id: string
@@ -35,42 +33,6 @@ const notifySubscribers = () => {
   subscribers.forEach((callback) => callback())
 }
 
-// Helper function to generate slug from title
-const generateSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-}
-
-// Helper function to ensure unique slug
-const ensureUniqueSlug = async (baseSlug: string, excludeId?: string): Promise<string> => {
-  let slug = baseSlug
-  let counter = 1
-
-  while (true) {
-    const { data, error } = await supabase
-      .from("certifications")
-      .select("id")
-      .eq("id", slug)
-      .neq("id", excludeId || "")
-
-    if (error) {
-      console.error("Error checking slug uniqueness:", error)
-      break
-    }
-
-    if (!data || data.length === 0) {
-      break
-    }
-
-    slug = `${baseSlug}-${counter}`
-    counter++
-  }
-
-  return slug
-}
-
 export const certificationService = {
   // Get all certifications with caching
   async getData(): Promise<CertificationItem[]> {
@@ -82,15 +44,7 @@ export const certificationService = {
     }
 
     try {
-      const { data, error } = await supabase
-        .from("certifications")
-        .select("*")
-        .order("display_order", { ascending: true })
-
-      if (error) {
-        console.error("Error fetching certifications:", error)
-        return cachedData || []
-      }
+      const { data } = await api.get<CertificationItem[]>("/api/certifications")
 
       // Transform data to match interface
       const transformedData: CertificationItem[] = (data || []).map((item) => ({
@@ -128,33 +82,10 @@ export const certificationService = {
     item: Omit<CertificationItem, "id" | "created_at" | "updated_at">,
   ): Promise<{ success: boolean; error?: string; data?: CertificationItem }> {
     try {
-      console.log(item)
-      // Generate unique ID from title
-      const baseId = generateSlug(item.title)
-      const uniqueId = await ensureUniqueSlug(baseId)
-
-      // Get next display order
-      const { data: maxOrderData } = await supabase
-        .from("certifications")
-        .select("display_order")
-        .order("display_order", { ascending: false })
-        .limit(1)
-
-      const nextOrder = (maxOrderData?.[0]?.display_order || 0) + 1
-
-      const newItem = {
+      const { data } = await api.post<CertificationItem>("/api/certifications", {
         ...item,
-        id: uniqueId,
-        display_order: nextOrder,
         skills: item.skills || [],
-      }
-
-      const { data, error } = await supabase.from("certifications").insert([newItem]).select().single()
-
-      if (error) {
-        console.error("Error adding certification:", error)
-        return { success: false, error: error.message }
-      }
+      })
 
       // Clear cache
       cachedData = null
@@ -162,10 +93,10 @@ export const certificationService = {
       // Notify subscribers
       notifySubscribers()
 
-      return { success: true, data: data as CertificationItem }
+      return { success: true, data }
     } catch (error) {
       console.error("Error adding certification:", error)
-      return { success: false, error: "Failed to add certification" }
+      return { success: false, error: error instanceof Error ? error.message : "Failed to add certification" }
     }
   },
 
@@ -175,12 +106,7 @@ export const certificationService = {
       // Remove readonly fields
       const { created_at, updated_at, ...updateData } = updates
 
-      const { error } = await supabase.from("certifications").update(updateData).eq("id", id)
-
-      if (error) {
-        console.error("Error updating certification:", error)
-        return { success: false, error: error.message }
-      }
+      await api.put(`/api/certifications/${id}`, updateData)
 
       // Clear cache
       cachedData = null
@@ -191,19 +117,14 @@ export const certificationService = {
       return { success: true }
     } catch (error) {
       console.error("Error updating certification:", error)
-      return { success: false, error: "Failed to update certification" }
+      return { success: false, error: error instanceof Error ? error.message : "Failed to update certification" }
     }
   },
 
   // Delete certification
   async deleteItem(id: string): Promise<{ success: boolean; error?: string }> {
     try {
-      const { error } = await supabase.from("certifications").delete().eq("id", id)
-
-      if (error) {
-        console.error("Error deleting certification:", error)
-        return { success: false, error: error.message }
-      }
+      await api.delete(`/api/certifications/${id}`)
 
       // Clear cache
       cachedData = null
@@ -214,29 +135,20 @@ export const certificationService = {
       return { success: true }
     } catch (error) {
       console.error("Error deleting certification:", error)
-      return { success: false, error: "Failed to delete certification" }
+      return { success: false, error: error instanceof Error ? error.message : "Failed to delete certification" }
     }
   },
 
   // Reorder certifications
   async reorderItems(items: CertificationItem[]): Promise<{ success: boolean; error?: string }> {
     try {
-      // Update display_order for each item
       const updates = items.map((item, index) => ({
         id: item.id,
         display_order: index + 1,
       }))
 
       for (const update of updates) {
-        const { error } = await supabase
-          .from("certifications")
-          .update({ display_order: update.display_order })
-          .eq("id", update.id)
-
-        if (error) {
-          console.error("Error reordering certification:", error)
-          return { success: false, error: error.message }
-        }
+        await api.put(`/api/certifications/${update.id}`, { display_order: update.display_order })
       }
 
       // Clear cache
@@ -297,16 +209,9 @@ export const certificationService = {
   // Search certifications
   async searchItems(query: string): Promise<CertificationItem[]> {
     try {
-      const { data, error } = await supabase
-        .from("certifications")
-        .select("*")
-        .or(`title.ilike.%${query}%,issuer.ilike.%${query}%,description.ilike.%${query}%`)
-        .order("display_order", { ascending: true })
-
-      if (error) {
-        console.error("Error searching certifications:", error)
-        return []
-      }
+      const { data } = await api.get<CertificationItem[]>("/api/certifications", {
+        params: { search: query },
+      })
 
       return (data || []).map((item) => ({
         id: item.id,
@@ -335,16 +240,9 @@ export const certificationService = {
   // Get featured certifications
   async getFeaturedItems(): Promise<CertificationItem[]> {
     try {
-      const { data, error } = await supabase
-        .from("certifications")
-        .select("*")
-        .eq("featured", true)
-        .order("display_order", { ascending: true })
-
-      if (error) {
-        console.error("Error fetching featured certifications:", error)
-        return []
-      }
+      const { data } = await api.get<CertificationItem[]>("/api/certifications", {
+        params: { featured: true },
+      })
 
       return (data || []).map((item) => ({
         id: item.id,
@@ -370,24 +268,11 @@ export const certificationService = {
     }
   },
 
-  // Subscribe to real-time changes
+  // Subscribe to changes (local subscriber pattern only, no real-time)
   subscribe(callback: () => void): () => void {
     subscribers.add(callback)
-
-    // Set up real-time subscription
-    const channel = supabase
-      .channel("certifications-changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "certifications" }, () => {
-        // Clear cache when data changes
-        cachedData = null
-        callback()
-      })
-      .subscribe()
-
-    // Return unsubscribe function
     return () => {
       subscribers.delete(callback)
-      supabase.removeChannel(channel)
     }
   },
 

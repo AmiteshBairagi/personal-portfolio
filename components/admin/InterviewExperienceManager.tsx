@@ -47,32 +47,7 @@ import {
   WifiOff,
   RefreshCw,
 } from "lucide-react"
-
-interface BlogFormData {
-  title: string
-  slug: string
-  excerpt: string
-  content: string
-  category: string
-  tags: string
-  image: string
-  author: string
-  featured: boolean
-  published: boolean
-}
-
-const initialFormData: BlogFormData = {
-  title: "",
-  slug: "",
-  excerpt: "",
-  content: "",
-  category: "Technical Tutorial",
-  tags: "",
-  image: "/placeholder.svg?height=400&width=600",
-  author: "Amitesh",
-  featured: false,
-  published: true,
-}
+import { InterviewExperienceForm, type BlogFormData, initialFormData } from "./forms/InterviewExperienceForm"
 
 const InterviewExperienceManager = () => {
   const { toast } = useToast()
@@ -414,178 +389,29 @@ const InterviewExperienceManager = () => {
     setIsEditModalOpen(false)
   }
 
-  // Blog form component
-  const AddInterviewExperienceForm = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="title">
-            Title <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="title"
-            value={formData.title}
-            onChange={(e) => handleInputChange("title", e.target.value)}
-            placeholder="Enter blog post title"
-            className={formErrors.title ? "border-red-500" : ""}
-          />
-          {formErrors.title && (
-            <p className="text-sm text-red-500 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
-              {formErrors.title}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="slug">Slug (optional)</Label>
-          <Input
-            id="slug"
-            value={formData.slug}
-            onChange={(e) => handleInputChange("slug", e.target.value)}
-            placeholder="auto-generated-from-title"
-          />
-          <p className="text-xs text-slate-500">Leave empty to auto-generate from title</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="author">
-            Author <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="author"
-            value={formData.author}
-            onChange={(e) => handleInputChange("author", e.target.value)}
-            placeholder="Author name"
-            className={formErrors.author ? "border-red-500" : ""}
-          />
-          {formErrors.author && (
-            <p className="text-sm text-red-500 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
-              {formErrors.author}
-            </p>
-          )}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="category">
-            Category <span className="text-red-500">*</span>
-          </Label>
-          <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
-            <SelectTrigger className={formErrors.category ? "border-red-500" : ""}>
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              {blogCategories
-                .filter((cat) => cat !== "All")
-                .map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          {formErrors.category && (
-            <p className="text-sm text-red-500 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
-              {formErrors.category}
-            </p>
-          )}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="excerpt">Excerpt</Label>
-        <Textarea
-          id="excerpt"
-          value={formData.excerpt}
-          onChange={(e) => handleInputChange("excerpt", e.target.value)}
-          placeholder="Brief description (optional - will be auto-generated if empty)"
-          rows={3}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="content">
-          Content <span className="text-red-500">*</span>
-        </Label>
-        <Textarea
-          id="content"
-          value={formData.content}
-          onChange={(e) => handleInputChange("content", e.target.value)}
-          placeholder="Write your blog post content here (supports Markdown)"
-          rows={12}
-          className={formErrors.content ? "border-red-500" : ""}
-        />
-        {formErrors.content && (
-          <p className="text-sm text-red-500 flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" />
-            {formErrors.content}
-          </p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="tags">Tags</Label>
-        <Input
-          id="tags"
-          value={formData.tags}
-          onChange={(e) => handleInputChange("tags", e.target.value)}
-          placeholder="Enter tags separated by commas"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="image">Featured Image URL</Label>
-        <Input
-          id="image"
-          value={formData.image}
-          onChange={(e) => handleInputChange("image", e.target.value)}
-          placeholder="Enter image URL"
-        />
-      </div>
-
-      <div className="flex items-center space-x-6">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="featured"
-            checked={formData.featured}
-            onCheckedChange={(checked) => handleInputChange("featured", checked)}
-          />
-          <Label htmlFor="featured">Featured Post</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="published"
-            checked={formData.published}
-            onCheckedChange={(checked) => handleInputChange("published", checked)}
-          />
-          <Label htmlFor="published">Published</Label>
-        </div>
-      </div>
-    </div>
-  )
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div>
-          <h2 className="text-2xl font-bold">Blog Management</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+            <FileText className="w-5 h-5 text-cyan-400" />
+            Blog Management
+          </h2>
+          <p className="text-slate-400 text-sm mt-1">
             Manage your blog posts with real-time updates. Changes are instantly reflected on the website.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => refreshData()} disabled={isLoading} className="border-slate-600 text-slate-300 bg-transparent">
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm" onClick={() => refreshData()} disabled={isLoading} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 px-3">
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button variant="outline" onClick={() => setIsCreateModalOpen(true)} disabled={isLoading} className="border-slate-600 text-slate-300 bg-transparent">
+          <Button onClick={() => setIsCreateModalOpen(true)} disabled={isLoading} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0 h-10 px-4">
             <Plus className="h-4 w-4 mr-2" />
             Add Post
           </Button>
-
         </div>
       </div>
 
@@ -604,72 +430,83 @@ const InterviewExperienceManager = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Posts</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-slate-300">Total Posts</CardTitle>
+            <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
+              <FileText className="h-4 w-4 text-blue-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.length}</div>
+            <div className="text-2xl font-bold text-white">{posts.length}</div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Published</CardTitle>
-            <Eye className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-slate-300">Published</CardTitle>
+            <div className="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center border border-green-500/20">
+              <Eye className="h-4 w-4 text-green-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.filter((post) => post.published).length}</div>
+            <div className="text-2xl font-bold text-white">{posts.filter((post) => post.published).length}</div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Featured</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-slate-300">Featured</CardTitle>
+            <div className="w-8 h-8 bg-yellow-500/10 rounded-lg flex items-center justify-center border border-yellow-500/20">
+              <Star className="h-4 w-4 text-yellow-500" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.filter((post) => post.featured).length}</div>
+            <div className="text-2xl font-bold text-white">{posts.filter((post) => post.featured).length}</div>
           </CardContent>
         </Card>
-        <Card className="bg-slate-700 border-slate-600 text-white">
+        <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Drafts</CardTitle>
-            <EyeOff className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-slate-300">Drafts</CardTitle>
+            <div className="w-8 h-8 bg-slate-500/10 rounded-lg flex items-center justify-center border border-slate-500/20">
+              <EyeOff className="h-4 w-4 text-slate-400" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{posts.filter((post) => !post.published).length}</div>
+            <div className="text-2xl font-bold text-white">{posts.filter((post) => !post.published).length}</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters */}
-      <Card className="bg-slate-700 border-slate-600 text-white">
-        <CardHeader>
-          <CardTitle className="text-lg">Filters & Search</CardTitle>
+      <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 text-white shadow-lg">
+        <CardHeader className="pb-3 border-b border-slate-700/50">
+          <CardTitle className="text-lg text-white flex items-center gap-2">
+            <Search className="w-5 h-5 text-cyan-400" />
+            Filters & Search
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="pt-4">
+          <div className="flex flex-col sm:flex-row gap-6">
 
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 ">
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-3 bg-slate-900/40 px-4 py-2 rounded-lg border border-slate-700/50">
                 <Switch
                   id="featured-filter"
                   checked={showOnlyFeatured}
                   onCheckedChange={setShowOnlyFeatured}
-                  className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
+                  className="data-[state=checked]:bg-cyan-500 bg-slate-600 border-transparent [&>span]:bg-white"
                 />
-                <Label htmlFor="featured-filter" className="text-sm">
+                <Label htmlFor="featured-filter" className="text-sm text-slate-300 font-medium cursor-pointer">
                   Featured Only
                 </Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3 bg-slate-900/40 px-4 py-2 rounded-lg border border-slate-700/50">
                 <Switch
                   id="published-filter"
                   checked={showOnlyPublished}
                   onCheckedChange={setShowOnlyPublished}
-                  className="data-[state=checked]:bg-slate-800 bg-slate-300 border-slate-400 [&>span]:bg-slate-100"
+                  className="data-[state=checked]:bg-cyan-500 bg-slate-600 border-transparent [&>span]:bg-white"
                 />
-                <Label htmlFor="published-filter" className="text-sm">
+                <Label htmlFor="published-filter" className="text-sm text-slate-300 font-medium cursor-pointer">
                   Published Only
                 </Label>
               </div>
@@ -711,77 +548,84 @@ const InterviewExperienceManager = () => {
 
         {!isLoading &&
           filteredPosts.map((post, index) => (
-            <Card key={post.id} className="overflow-hidden bg-slate-700 border-slate-600 text-white">
+            <Card key={post.id} className="overflow-hidden bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 text-white shadow-lg group">
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Post Image */}
-                  <div className="lg:w-48 flex-shrink-0">
+                  <div className="lg:w-56 flex-shrink-0 relative rounded-xl overflow-hidden border border-slate-700/50 group/image">
                     <img
                       src={post.image || "/placeholder.svg"}
                       alt={post.title}
-                      className="w-full h-32 lg:h-32 object-cover rounded-lg"
+                      className="w-full h-40 lg:h-full object-cover transition-transform duration-500 group-hover/image:scale-105"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
                   {/* Post Content */}
-                  <div className="flex-1 space-y-4">
-                    {/* Title and Description */}
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-semibold line-clamp-2">{post.title}</h3>
-                      <p className="text-muted-foreground line-clamp-2">{post.excerpt}</p>
-                    </div>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      {/* Title and Description */}
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <h3 className="text-xl font-semibold line-clamp-2 text-white group-hover:text-cyan-400 transition-colors">{post.title}</h3>
+                          <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 whitespace-nowrap">{post.category}</Badge>
+                        </div>
+                        <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                      </div>
 
-                    {/* Post Meta */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {post.author}
+                      {/* Post Meta */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 bg-slate-900/40 p-2.5 rounded-lg border border-slate-800/50 mb-4 inline-flex">
+                        <div className="flex items-center gap-1.5 border-r border-slate-700 pr-4">
+                          <User className="h-3.5 w-3.5 text-cyan-500/70" />
+                          <span className="text-slate-300">{post.author}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 border-r border-slate-700 pr-4">
+                          <Calendar className="h-3.5 w-3.5 text-cyan-500/70" />
+                          <span className="text-slate-300">{new Date(post.published_at).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-cyan-500/70" />
+                          <span className="text-slate-300">{post.read_time} min read</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {new Date(post.published_at).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {post.read_time} min read
-                      </div>
-                      <Badge variant="secondary">{post.category}</Badge>
-                    </div>
 
-                    {/* Tags */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      {post.tags.slice(0, 3).map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          <Tag className="h-2 w-2 mr-1" />
-                          {tag}
-                        </Badge>
-                      ))}
-                      {post.tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{post.tags.length - 3} more
-                        </Badge>
-                      )}
+                      {/* Tags */}
+                      <div className="flex flex-wrap items-center gap-2 mb-5">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <Badge key={tag} variant="secondary" className="bg-slate-800 border-slate-700 text-slate-300 text-[11px] hover:bg-slate-700 transition-colors">
+                            <Tag className="h-2.5 w-2.5 mr-1" />
+                            {tag}
+                          </Badge>
+                        ))}
+                        {post.tags.length > 3 && (
+                          <Badge variant="secondary" className="bg-slate-800 border-slate-700 text-slate-400 text-[11px]">
+                            +{post.tags.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-700/50">
                       {/* Reorder buttons */}
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 mr-2 opacity-60 group-hover:opacity-100 transition-opacity">
                         <Button
                           variant="outline"
-                          size="sm"
+                          size="icon"
                           onClick={() => handleReorderPost(post.id, "up")}
                           disabled={index === 0}
+                          className="h-8 w-8 bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white"
                         >
-                          <ArrowUp className="h-3 w-3" />
+                          <ArrowUp className="h-3.5 w-3.5" />
                         </Button>
                         <Button
                           variant="outline"
-                          size="sm"
+                          size="icon"
                           onClick={() => handleReorderPost(post.id, "down")}
                           disabled={index === filteredPosts.length - 1}
+                          className="h-8 w-8 bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white"
                         >
-                          <ArrowDown className="h-3 w-3" />
+                          <ArrowDown className="h-3.5 w-3.5" />
                         </Button>
                       </div>
 
@@ -789,12 +633,12 @@ const InterviewExperienceManager = () => {
                         variant={post.featured ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleToggleFeatured(post.id)}
-                        className={post.featured ? "bg-yellow-500 hover:bg-yellow-600" : ""}
+                        className={`text-xs h-8 ${post.featured ? "bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border border-yellow-500/30" : "bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500"}`}
                       >
                         {post.featured ? (
-                          <Star className="h-3 w-3 mr-1 fill-current" />
+                          <Star className="h-3.5 w-3.5 mr-1.5 fill-yellow-400" />
                         ) : (
-                          <Star className="h-3 w-3 mr-1" />
+                          <Star className="h-3.5 w-3.5 mr-1.5" />
                         )}
                         {post.featured ? "Featured" : "Feature"}
                       </Button>
@@ -803,27 +647,30 @@ const InterviewExperienceManager = () => {
                         variant={post.published ? "default" : "outline"}
                         size="sm"
                         onClick={() => handleTogglePublished(post.id)}
-                        className={post.published ? "bg-green-500 hover:bg-green-600" : ""}
+                        className={`text-xs h-8 ${post.published ? "bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/30" : "bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500"}`}
                       >
-                        {post.published ? <Eye className="h-3 w-3 mr-1" /> : <EyeOff className="h-3 w-3 mr-1" />}
+                        {post.published ? <Eye className="h-3.5 w-3.5 mr-1.5" /> : <EyeOff className="h-3.5 w-3.5 mr-1.5" />}
                         {post.published ? "Published" : "Publish"}
                       </Button>
 
-                      <Button variant="outline" size="sm" onClick={() => openEditModal(post)} className="bg-slate-700 border-slate-600 text-white">
-                        <Edit className="h-3 w-3 mr-1" />
-                        Edit
-                      </Button>
+                      <div className="flex-1"></div>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openDeleteDialog(post.id)}
-                        className="text-destructive hover:text-destructive bg-slate-700 border-slate-600 text-white"
+                      <div className="opacity-80 group-hover:opacity-100 transition-opacity flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => openEditModal(post)} className="h-8 bg-slate-800/50 border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white">
+                          <Edit className="h-3.5 w-3.5 mr-1.5" />
+                          Edit
+                        </Button>
 
-                      >
-                        <Trash2 className="h-3 w-3 mr-1" />
-                        Delete
-                      </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openDeleteDialog(post.id)}
+                          className="h-8 bg-slate-800/50 border-red-900/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/50"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                          Delete
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -840,11 +687,11 @@ const InterviewExperienceManager = () => {
         size="lg"
         footerActions={
           <>
-            <Button variant="outline" onClick={resetCreateForm} disabled={isSubmitting}>
+            <Button variant="outline" onClick={resetCreateForm} disabled={isSubmitting} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
               <X className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleCreatePost} disabled={isSubmitting}>
+            <Button onClick={handleCreatePost} disabled={isSubmitting} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -860,7 +707,7 @@ const InterviewExperienceManager = () => {
           </>
         }
       >
-        <AddInterviewExperienceForm />
+        <InterviewExperienceForm formData={formData} handleInputChange={handleInputChange} formErrors={formErrors} />
       </EnhancedModal>
 
       {/* Edit Modal */}
@@ -871,11 +718,11 @@ const InterviewExperienceManager = () => {
         size="lg"
         footerActions={
           <>
-            <Button variant="outline" onClick={resetEditForm} disabled={isSubmitting}>
+            <Button variant="outline" onClick={resetEditForm} disabled={isSubmitting} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
               <X className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleEditPost} disabled={isSubmitting}>
+            <Button onClick={handleEditPost} disabled={isSubmitting} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -891,7 +738,7 @@ const InterviewExperienceManager = () => {
           </>
         }
       >
-        <AddInterviewExperienceForm />
+        <InterviewExperienceForm formData={formData} handleInputChange={handleInputChange} formErrors={formErrors} />
       </EnhancedModal>
 
       {/* Delete Confirmation Dialog */}

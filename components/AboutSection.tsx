@@ -40,15 +40,23 @@ const AboutSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image Section */}
-          <div className="flex justify-center items-center">
-            <div className="relative w-[450px] h-[450px]">
+          <div className="flex justify-center items-center order-1 lg:order-none">
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.8 }}
+               whileInView={{ opacity: 1, scale: 1 }}
+               transition={{ duration: 0.6, delay: 0.2 }}
+               viewport={{ once: true }}
+               className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-[380px] lg:h-[380px] xl:w-[400px] xl:h-[400px] rounded-full flex-shrink-0"
+            >
               <Image
                 src={aboutData.image_url} 
                 alt="Profile"
                 fill
-                className="rounded-full object-cover border-4 border-white shadow-lg transition-transform duration-300 hover:scale-105"
+                className="rounded-full object-cover border-4 border-cyan-500/30 dark:border-cyan-500/20 shadow-xl shadow-cyan-500/10 transition-transform duration-500 hover:scale-105"
               />
-            </div>
+              {/* Decorative absolute border glow to match the new theme */}
+              <div className="absolute inset-0 rounded-full border border-cyan-400/30 backdrop-blur-sm -z-10 scale-[1.03]"></div>
+            </motion.div>
           </div>
 
 

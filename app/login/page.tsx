@@ -54,8 +54,8 @@ function LoginForm() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-        <div className="text-center">
+      <div className="min-h-[100dvh] bg-slate-950 flex items-center justify-center p-4 font-sans">
+        <div className="text-center relative z-10 w-full max-w-md">
           <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10 text-green-400" />
           </div>
@@ -67,9 +67,10 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(14,165,233,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.05)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+    <div className="min-h-[100dvh] bg-slate-950 flex items-center justify-center p-4 font-sans relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-md">
@@ -80,13 +81,13 @@ function LoginForm() {
           </Link>
         </div>
 
-        <Card className="bg-slate-800/90 border-slate-600/50 backdrop-blur-xl shadow-2xl">
+        <Card className="bg-slate-900/60 border-slate-700/50 backdrop-blur-xl shadow-[0_0_40px_rgba(0,0,0,0.5)]">
           <CardHeader className="text-center space-y-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-cyan-500/20 border border-white/10">
               <Shield className="w-8 h-8 text-white" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white via-cyan-200 to-purple-200 bg-clip-text text-transparent">
+              <CardTitle className="text-2xl font-bold text-white tracking-tight">
                 Admin Login
               </CardTitle>
               <p className="text-slate-400 mt-2">Access the portfolio admin panel</p>
@@ -110,7 +111,7 @@ function LoginForm() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="bg-slate-700/50 border-slate-600/50 text-white pl-10 focus:border-cyan-500 focus:ring-cyan-500/20"
+                    className="bg-slate-950/50 border-slate-700/50 text-white pl-10 focus:border-cyan-500/50 focus:ring-cyan-500/20 placeholder:text-slate-500"
                     placeholder="Enter username"
                     disabled={loading}
                   />
@@ -125,7 +126,7 @@ function LoginForm() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-700/50 border-slate-600/50 text-white pl-10 pr-10 focus:border-cyan-500 focus:ring-cyan-500/20"
+                    className="bg-slate-950/50 border-slate-700/50 text-white pl-10 pr-10 focus:border-cyan-500/50 focus:ring-cyan-500/20 placeholder:text-slate-500"
                     placeholder="Enter password"
                     disabled={loading}
                   />
@@ -143,7 +144,7 @@ function LoginForm() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-semibold py-2.5"
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0 font-medium py-2.5 h-11"
               >
                 {loading ? (
                   <>

@@ -11,6 +11,7 @@ import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useProjects } from "@/hooks/useProjects"
 import { useCategories } from "@/hooks/useCategories"
 import type { ProjectData } from "@/lib/data/projectsService"
+import { ProjectForm } from "./forms/ProjectForm"
 import {
   Edit,
   Trash2,
@@ -41,8 +42,6 @@ const ProjectManager = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [editingItem, setEditingItem] = useState<ProjectData | null>(null)
-  // const [techInput, setTechInput] = useState("")
-  // const [keyFeaturesInput, setKeyFeaturesInput] = useState("");
 
   const [editForm, setEditForm] = useState<Partial<ProjectData>>({
     title: "",
@@ -102,9 +101,7 @@ const ProjectManager = () => {
       github_url: "",
       live_url: "",
       category: "",
-      // featured: false,
       duration: "",
-      // teamSize: "",
       image: "",
       details: {
         problem: "",
@@ -112,10 +109,8 @@ const ProjectManager = () => {
         challenges: "",
         technologies: [],
         duration: "",
-        // teamSize: "",
         features: [],
       },
-      // published: true,
     })
     setImagePreview("")
     setImageFile(null)
@@ -131,7 +126,6 @@ const ProjectManager = () => {
         challenges: item.details?.challenges || "",
         technologies: item.technologies || [],
         duration: item.duration || "",
-        // teamSize: item.teamSize || "",
         features: item.details?.features || [],
       },
     })
@@ -155,8 +149,6 @@ const ProjectManager = () => {
 
   const handleSave = async () => {
     try {
-      // handleTechnologiesInput();
-      // handleKeyFeaturesInput();
       if (!editForm.title?.trim()) {
         toast.error("Project title is required")
         return
@@ -166,16 +158,17 @@ const ProjectManager = () => {
         return
       }
 
+      const cleanedTechnologies = editForm.technologies ? editForm.technologies.map(t => t.trim()).filter(Boolean) : []
       const projectData: Partial<ProjectData> = {
         ...editForm,
+        technologies: cleanedTechnologies,
         details: {
           problem: editForm.details?.problem || "",
           solution: editForm.details?.solution || "",
           challenges: editForm.details?.challenges || "",
-          technologies: editForm.technologies || [],
+          technologies: cleanedTechnologies,
           duration: editForm.duration || "",
-          // teamSize: editForm.teamSize || "",
-          features: editForm.details?.features || [],
+          features: editForm.details?.features ? editForm.details.features.map((f: string) => f.trim()).filter(Boolean) : [],
         },
       }
 
@@ -203,9 +196,7 @@ const ProjectManager = () => {
       github_url: "",
       live_url: "",
       category: "",
-      // featured: false,
       duration: "",
-      // teamSize: "",
       image: "",
       details: {
         problem: "",
@@ -213,10 +204,8 @@ const ProjectManager = () => {
         challenges: "",
         technologies: [],
         duration: "",
-        // teamSize: "",
         features: [],
       },
-      // published: true,
     })
     setEditingItem(null)
     setImageFile(null)
@@ -242,15 +231,11 @@ const ProjectManager = () => {
         },
       }))
     } else if (field === "features") {
-      const array = value
-        .split(",")
-        .map((item: string) => item.trim())
-        .filter(Boolean)
       setEditForm((prev) => ({
         ...prev,
         details: {
           ...prev.details!,
-          features: array,
+          features: value.split(","),
         },
       }))
     } else {
@@ -259,43 +244,15 @@ const ProjectManager = () => {
   }
 
   const handleArrayInputChange = (field: "technologies", value: string) => {
-    const array = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-    setEditForm((prev) => ({ ...prev, [field]: array }))
-
-    // const technologiesArray = techInput
-    //   .split(",")
-    //   .map((t) => t.trim())
-    //   .filter(Boolean)
-
-    // setEditForm((prev) => ({ ...prev, technologies: technologiesArray }))
+    setEditForm((prev) => ({ ...prev, [field]: value.split(",") }))
   }
-
-
-  // const handleKeyFeaturesInput = () => {
-  //   // const array = value
-  //   //   .split(",")
-  //   //   .map((item) => item.trim())
-  //   //   .filter(Boolean)
-  //   // setEditForm((prev) => ({ ...prev, [field]: array }))
-
-  //   const keyFeatures = keyFeaturesInput
-  //     .split(",")
-  //     .map((t) => t.trim())
-  //     .filter(Boolean)
-
-  //   setEditForm((prev) => ({ ...prev, features: keyFeatures }))
-  // }
-  
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-slate-400">Loading projects data...</p>
+          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
+          <p className="text-slate-400 font-medium">Loading projects data...</p>
         </div>
       </div>
     )
@@ -304,9 +261,9 @@ const ProjectManager = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-4">
-          <p className="text-red-400">Error loading projects: {error}</p>
-          <Button onClick={refresh} className="bg-cyan-500 hover:bg-cyan-600">
+        <div className="text-center space-y-4 bg-slate-800/40 backdrop-blur-md border border-red-500/20 p-6 rounded-xl shadow-lg">
+          <p className="text-red-400 font-medium">Error loading projects: {error}</p>
+          <Button onClick={refresh} className="bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white shadow-lg shadow-red-500/25 border-0">
             <RefreshCw className="w-4 h-4 mr-2" />
             Retry
           </Button>
@@ -321,16 +278,19 @@ const ProjectManager = () => {
     <div className="space-y-6">
 
       {/* header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-white">Projects ({projectsData.length})</h3>
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Briefcase className="w-5 h-5 text-cyan-400" />
+            Projects <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 ml-2">{projectsData.length}</Badge>
+          </h3>
         </div>
-        <div className="flex space-x-2">
-          <Button onClick={refresh} variant="outline" className="border-slate-600 bg-transparent">
+        <div className="flex space-x-3">
+          <Button onClick={refresh} variant="outline" className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-          <Button onClick={handleAdd} className="bg-cyan-500 hover:bg-cyan-600">
+          <Button onClick={handleAdd} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
             <Plus className="w-4 h-4 mr-2" />
             Add Project
           </Button>
@@ -348,57 +308,38 @@ const ProjectManager = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="bg-slate-700/30 border-slate-600/30">
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg flex items-center justify-center">
-                      <Briefcase className="w-5 h-5 text-cyan-400" />
+              <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 shadow-lg group">
+                <CardHeader className="flex flex-row items-center justify-between border-b border-slate-700/50 pb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center border border-cyan-500/30 group-hover:scale-105 transition-transform duration-300 shadow-[0_0_15px_rgba(6,182,212,0.15)]">
+                      <Briefcase className="w-6 h-6 text-cyan-400" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <CardTitle className="text-lg text-white">{item.title}</CardTitle>
+                        <CardTitle className="text-lg text-white group-hover:text-cyan-400 transition-colors">{item.title}</CardTitle>
                       </div>
-                      <div className="flex items-center space-x-1">
+                      <div className="flex items-center space-x-1 mt-1">
                         {category ? (
-                          <>
-                            <span>{category.icon}</span>
-                            <span className="text-sm" style={{ color: category.color }}>
+                          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-900/50 border" style={{ borderColor: `${category.color}40` }}>
+                            <span className="text-xs">{category.icon}</span>
+                            <span className="text-xs font-medium" style={{ color: category.color }}>
                               {item.category}
                             </span>
-                          </>
+                          </div>
                         ) : (
-                          <span className="text-cyan-400">{item.category}</span>
+                          <Badge className="bg-slate-900/50 text-cyan-400 border border-cyan-500/20 text-xs font-medium">
+                            {item.category}
+                          </Badge>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex space-x-2">
-                    {/* <Button    
-                      onClick={() => handleReorder(item.id, "up")}
-                      size="sm"
-                      variant="outline"
-                      className="border-slate-600"
-                      disabled={index === 0}
-                      title="Move up"
-                    >
-                      <ChevronUp className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      onClick={() => handleReorder(item.id, "down")}
-                      size="sm"
-                      variant="outline"
-                      className="border-slate-600"
-                      disabled={index === projectsData.length - 1}
-                      title="Move down"
-                    >
-                      <ChevronDown className="w-4 h-4" />
-                    </Button> */}
-
+                  <div className="flex space-x-2 opacity-80 group-hover:opacity-100 transition-opacity">
                     <Button   // Edit Button
                       onClick={() => handleEdit(item)}
                       size="sm"
                       variant="outline"
-                      className="border-slate-600"
+                      className="bg-slate-800/50 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-8 w-8 p-0"
                       title="Edit project"
                     >
                       <Edit className="w-4 h-4" />
@@ -407,28 +348,28 @@ const ProjectManager = () => {
                       onClick={() => handleDelete(item.id)}
                       size="sm"
                       variant="outline"
-                      className="border-red-600 text-red-400 hover:bg-red-600"
+                      className="bg-slate-800/50 border border-red-900/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/50 transition-all h-8 w-8 p-0"
                       title="Delete project"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>
-
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-5 pt-4">
 
                   {/* Project Image */}
                   {item.image && (
-                    <div className="w-full h-32 bg-slate-800 rounded-lg overflow-hidden mb-3">
+                    <div className="w-full h-40 bg-slate-900/50 rounded-xl overflow-hidden mb-3 border border-slate-700/50 relative group/image">
                       <img
                         src={item.image || "/placeholder.svg"}
                         alt={item.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/image:scale-105"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-300"></div>
                     </div>
                   )}
-                  <p className="text-slate-400 text-sm leading-relaxed">
+                  <p className="text-slate-300 text-sm leading-relaxed">
                     {item.short_description || item.short_description}
                   </p>
 
@@ -436,39 +377,39 @@ const ProjectManager = () => {
                     {category && (
                       <Badge
                         variant="outline"
-                        className="text-xs flex items-center space-x-1"
-                        style={{ borderColor: category.color, color: category.color }}
+                        className="text-xs flex items-center space-x-1 border"
+                        style={{ borderColor: `${category.color}40`, color: category.color, backgroundColor: `${category.color}10` }}
                       >
-                        <span>{category.icon}</span>
-                        <span>{category.name}</span>
+                        <span className="mr-1">{category.icon}</span>
+                        {category.name}
                       </Badge>
                     )}
                     {item.technologies.slice(0, 3).map((tech) => (
-                      <Badge key={tech} variant="secondary" className="bg-slate-600/50 text-slate-300 text-xs">
+                      <Badge key={tech} variant="secondary" className="bg-slate-800 border border-slate-700 text-slate-300 text-xs">
                         {tech}
                       </Badge>
                     ))}
                     {item.technologies.length > 3 && (
-                      <Badge variant="secondary" className="bg-slate-600/50 text-slate-300 text-xs">
+                      <Badge variant="secondary" className="bg-slate-800 border border-slate-700 text-slate-300 text-xs">
                         +{item.technologies.length - 3}
                       </Badge>
                     )}
                   </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-slate-400">
-                    <span>Duration: {item.duration}</span>
+                  <div className="flex items-center space-x-4 text-sm text-slate-400 bg-slate-900/30 p-3 rounded-lg border border-slate-800">
+                    <span className="flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5 text-cyan-500/70" /> Duration: <span className="text-slate-300">{item.duration}</span></span>
                   </div>
 
-                  <div className="flex space-x-3">
-                    <Button size="sm" variant="outline" className="border-slate-600 bg-transparent" asChild>
+                  <div className="flex space-x-3 pt-2">
+                    <Button size="sm" variant="outline" className="flex-1 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-slate-300 hover:text-white transition-all shadow-sm" asChild>
                       <a href={item.github_url || item.github_url} target="_blank" rel="noopener noreferrer">
-                        <Github className="w-3 h-3 mr-1" />
+                        <Github className="w-4 h-4 mr-2" />
                         Code
                       </a>
                     </Button>
-                    <Button size="sm" variant="outline" className="border-slate-600 bg-transparent" asChild>
+                    <Button size="sm" variant="outline" className="flex-1 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 transition-all shadow-sm" asChild>
                       <a href={item.live_url || item.live_url} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="w-3 h-3 mr-1" />
+                        <ExternalLink className="w-4 h-4 mr-2" />
                         Live Demo
                       </a>
                     </Button>
@@ -493,232 +434,27 @@ const ProjectManager = () => {
             <Button
               onClick={handleCancel}
               variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-cyan-500 hover:bg-cyan-600 text-white">
+            <Button onClick={handleSave} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               <Save className="w-4 h-4 mr-2" />
               {isAdding ? "Add Project" : "Save Changes"}
             </Button>
           </>
         }
       >
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Project Title *</label>
-              <Input
-                value={editForm.title || ""}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="e.g., E-Commerce Platform"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Category *</label>
-              <select
-                value={editForm.category || ""}
-                onChange={(e) => handleInputChange("category", e.target.value)}
-                className="w-full bg-slate-700 border border-slate-600 text-white rounded-md px-3 py-2 focus:border-cyan-500 focus:ring-cyan-500"
-                required
-              >
-                <option value="">Select a category</option>
-                {activeCategories.map((category) => (
-                  <option key={category.id} value={category.name}>
-                    {category.icon} {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Duration</label>
-              <Input
-                value={editForm.duration || ""}
-                onChange={(e) => handleInputChange("duration", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="e.g., 3 months"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">GitHub URL</label>
-              <Input
-                value={editForm.github_url || ""}
-                onChange={(e) => handleInputChange("github_url", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="https://github.com/username/project"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Live URL</label>
-              <Input
-                value={editForm.live_url || ""}
-                onChange={(e) => handleInputChange("live_url", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="https://project-demo.com"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Short Description *</label>
-            <Input
-              value={editForm.short_description || ""}
-              onChange={(e) => handleInputChange("short_description", e.target.value)}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-              placeholder="Brief one-line description for cards"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Full Description *</label>
-            <Textarea
-              value={editForm.description || ""}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              rows={3}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="Detailed project description"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Problem Statement</label>
-            <Textarea
-              value={editForm.details?.problem || ""}
-              onChange={(e) => handleInputChange("problem", e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="What problem does this project solve?"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Solution</label>
-            <Textarea
-              value={editForm.details?.solution || ""}
-              onChange={(e) => handleInputChange("solution", e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="How does this project solve the problem?"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Challenges</label>
-            <Textarea
-              value={editForm.technologies?.join(", ") || ""}
-              onChange={(e) => handleArrayInputChange("technologies", e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="React, Node.js, MongoDB, etc."
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Technologies (comma-separated) *</label>
-            <Textarea
-              value={editForm.technologies?.join(", ") || ""}
-              onChange={(e) => handleInputChange("technologies", e.target.value)}
-              // value={techInput}
-              // onChange={(e) => setTechInput(e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="React, Node.js, MongoDB, etc."
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Key Features (comma-separated)</label>
-            <Textarea
-              value={editForm.details?.features?.join(", ") || ""}
-              onChange={(e) => handleInputChange("features", e.target.value)}
-              // value={keyFeaturesInput}
-              // onChange={(e) => setKeyFeaturesInput(e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="Real-time updates, User authentication, etc."
-            />
-          </div>
-
-          {/* Image Upload Section */}
-          <div className="space-y-4">
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Project Image</label>
-
-            {imagePreview ? (
-              <div className="space-y-3">
-                <div className="relative w-full h-48 bg-slate-800 rounded-lg overflow-hidden">
-                  <img
-                    src={imagePreview || "/placeholder.svg"}
-                    alt="Project preview"
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleImageRemove}
-                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full border-slate-600 text-slate-300 bg-transparent"
-                  onClick={() => document.getElementById("project-image-upload")?.click()}
-                >
-                  Change Image
-                </Button>
-              </div>
-            ) : (
-              <div
-                className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-cyan-500 transition-colors"
-                onClick={() => document.getElementById("project-image-upload")?.click()}
-              >
-                <div className="space-y-2">
-                  <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center mx-auto">
-                    <Plus className="w-6 h-6 text-slate-400" />
-                  </div>
-                  <p className="text-slate-400">Click to upload project image</p>
-                  <p className="text-xs text-slate-500">JPG or PNG, max 10MB</p>
-                </div>
-              </div>
-            )}
-
-            <input
-              id="project-image-upload"
-              type="file"
-              accept="image/jpeg,image/png"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
-                if (file) handleImageUpload(file)
-              }}
-              className="hidden"
-            />
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="featured"
-                checked={editForm.featured || false}
-                onChange={(e) => handleInputChange("featured", e.target.checked)}
-                className="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500 focus:ring-2"
-              />
-              <label htmlFor="featured" className="text-sm font-medium text-slate-300">
-                Featured Project
-              </label>
-            </div>
-
-          </div>
-        </div>
+        <ProjectForm
+          editForm={editForm}
+          activeCategories={activeCategories}
+          imagePreview={imagePreview}
+          handleInputChange={handleInputChange}
+          handleArrayInputChange={handleArrayInputChange}
+          handleImageUpload={handleImageUpload}
+          handleImageRemove={handleImageRemove}
+        />
       </EnhancedModal>
     </div>
   )

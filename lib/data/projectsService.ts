@@ -1,6 +1,4 @@
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+import { api } from "@/lib/axios"
 
 export interface ProjectData {
   id: string
@@ -39,7 +37,7 @@ class ProjectsDataService {
   private listeners: Set<() => void> = new Set()
 
   private constructor() {
-    this.loadData()
+    // Data is loaded lazily on first getData() call
   }
 
   static getInstance(): ProjectsDataService {
@@ -51,12 +49,7 @@ class ProjectsDataService {
 
   private async loadData() {
     try {
-      const { data, error } = await supabase.from("projects").select("*").order("display_order", { ascending: true })
-
-      if (error) {
-        console.error("Error fetching projects from Supabase:", error)
-        return
-      }
+      const { data } = await api.get<any[]>("/api/projects")
 
       // Transform data to match frontend interface
       const transformedData = data?.map(this.transformFromDatabase) || []
@@ -151,23 +144,8 @@ class ProjectsDataService {
 
   async addProject(project: Omit<ProjectData, "id">): Promise<void> {
     try {
-      // Get the highest display_order and increment
-      const { data: maxOrderData } = await supabase
-        .from("projects")
-        .select("display_order")
-        .order("display_order", { ascending: false })
-        .limit(1)
-
-      const nextOrder = (maxOrderData?.[0]?.display_order || 0) + 1
-
-      const dbData = {
-        ...this.transformToDatabase(project),
-        display_order: nextOrder,
-      }
-
-      const { error } = await supabase.from("projects").insert([dbData])
-      if (error) throw error
-
+      const dbData = this.transformToDatabase(project)
+      await api.post("/api/projects", dbData)
       await this.loadData()
     } catch (error) {
       console.error("Error adding project:", error)
@@ -178,11 +156,7 @@ class ProjectsDataService {
   async updateProject(id: string, updates: Partial<ProjectData>): Promise<void> {
     try {
       const dbData = this.transformToDatabase(updates)
-
-      const { error } = await supabase.from("projects").update(dbData).eq("id", id)
-
-      if (error) throw error
-
+      await api.put(`/api/projects/${id}`, dbData)
       await this.loadData()
     } catch (error) {
       console.error("Error updating project:", error)
@@ -192,9 +166,7 @@ class ProjectsDataService {
 
   async deleteProject(id: string): Promise<void> {
     try {
-      const { error } = await supabase.from("projects").delete().eq("id", id)
-      if (error) throw error
-
+      await api.delete(`/api/projects/${id}`)
       await this.loadData()
     } catch (error) {
       console.error("Error deleting project:", error)
@@ -218,8 +190,8 @@ class ProjectsDataService {
       const targetItem = currentData[newIndex]
 
       await Promise.all([
-        supabase.from("projects").update({ display_order: targetItem.display_order }).eq("id", currentItem.id),
-        supabase.from("projects").update({ display_order: currentItem.display_order }).eq("id", targetItem.id),
+        api.put(`/api/projects/${currentItem.id}`, { display_order: targetItem.display_order }),
+        api.put(`/api/projects/${targetItem.id}`, { display_order: currentItem.display_order }),
       ])
 
       await this.loadData()
@@ -234,7 +206,7 @@ class ProjectsDataService {
     return data.find((item) => item.id === id)
   }
 
-  // Force refresh from Supabase
+  // Force refresh from backend
   async refresh(): Promise<void> {
     this.cache = null
     await this.loadData()

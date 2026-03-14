@@ -10,42 +10,9 @@ import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useCategories } from "@/hooks/useCategories"
 import type { CategoryData } from "@/lib/data/categoryService"
+import { CategoryForm, colorOptions, iconOptions } from "./forms/CategoryForm"
 import { Edit, Trash2, Plus, Save, X, ArrowUp, ArrowDown, Wifi, WifiOff, RefreshCw } from "lucide-react"
 import { toast } from "sonner"
-
-const colorOptions = [
-  "#8B5CF6", // Purple
-  "#06B6D4", // Cyan
-  "#10B981", // Emerald
-  "#F59E0B", // Amber
-  "#EF4444", // Red
-  "#3B82F6", // Blue
-  "#8B5A2B", // Brown
-  "#6B7280", // Gray
-]
-
-const iconOptions = [
-  "🚀",
-  "🎨",
-  "⚙️",
-  "📱",
-  "🌐",
-  "🤖",
-  "📊",
-  "📈",
-  "👥",
-  "💻",
-  "🔧",
-  "🎯",
-  "💡",
-  "🔥",
-  "⭐",
-  "🎪",
-  "🎭",
-  "🎵",
-  "🎮",
-  "📚",
-]
 
 const CategoryManager = () => {
   const {
@@ -148,9 +115,9 @@ const CategoryManager = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-4">
-          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-slate-400">Loading categories data...</p>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
+          <span className="text-slate-400 font-medium pt-2">Loading categories data...</span>
         </div>
       </div>
     )
@@ -159,10 +126,10 @@ const CategoryManager = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-4">
-          <div className="text-red-400 text-lg">Error loading categories</div>
-          <p className="text-slate-400">{error}</p>
-          <Button onClick={refetch} variant="outline" className="border-slate-600 bg-transparent">
+        <div className="text-center space-y-4 bg-slate-800/40 backdrop-blur-md border border-red-500/20 p-6 rounded-xl shadow-lg">
+          <div className="text-red-400 text-lg font-semibold">Error loading categories</div>
+          <p className="text-slate-400 font-medium">{error}</p>
+          <Button onClick={refetch} className="bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white shadow-lg shadow-red-500/25 border-0">
             <RefreshCw className="w-4 h-4 mr-2" />
             Retry
           </Button>
@@ -176,17 +143,19 @@ const CategoryManager = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
-            <h3 className="text-lg font-semibold text-white">Categories ({categoriesData.length})</h3>
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              Categories <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 ml-2">{categoriesData.length}</Badge>
+            </h3>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button onClick={refetch} variant="outline" className="border-slate-600 bg-transparent" size="sm">
+        <div className="flex space-x-3">
+          <Button onClick={refetch} variant="outline" className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 w-10 p-0" title="Refresh">
             <RefreshCw className="w-4 h-4" />
           </Button>
-          <Button onClick={handleAdd} className="bg-cyan-500 hover:bg-cyan-600">
+          <Button onClick={handleAdd} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
             <Plus className="w-4 h-4 mr-2" />
             Add Category
           </Button>
@@ -200,44 +169,44 @@ const CategoryManager = () => {
             key={item.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05 }}
           >
-            <Card className="bg-slate-700/30 border-slate-600/30">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div className="flex items-center space-x-3">
+            <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 shadow-lg group">
+              <CardHeader className="flex flex-row items-center justify-between p-4 sm:p-6">
+                <div className="flex items-center space-x-4">
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg"
-                    style={{ backgroundColor: item.color }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl shadow-[0_0_15px_rgba(0,0,0,0.2)] group-hover:scale-105 transition-transform duration-300"
+                    style={{ backgroundColor: item.color, boxShadow: `0 0 15px ${item.color}40` }}
                   >
                     {item.icon}
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <CardTitle className="text-lg text-white">{item.name}</CardTitle>
+                      <CardTitle className="text-lg text-white group-hover:text-cyan-400 transition-colors">{item.name}</CardTitle>
                       {!item.active && (
-                        <Badge variant="secondary" className="bg-slate-600/50 text-slate-300">
+                        <Badge variant="outline" className="text-[10px] bg-slate-900 border-slate-700 text-slate-500 uppercase px-1.5 font-semibold">
                           Inactive
                         </Badge>
                       )}
                     </div>
-                    <p className="text-slate-400 text-sm">{item.description}</p>
+                    <p className="text-slate-400 text-sm mt-1">{item.description}</p>
                   </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 opacity-80 group-hover:opacity-100 transition-opacity">
                   <Button
                     onClick={() => handleEdit(item)}
-                    size="sm"
-                    variant="outline"
-                    className="border-slate-600"
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg"
                     title="Edit category"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                   <Button
                     onClick={() => handleDelete(item.id)}
-                    size="sm"
-                    variant="outline"
-                    className="border-red-600 text-red-400 hover:bg-red-600"
+                    size="icon"
+                    variant="ghost"
+                    className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg"
                     title="Delete category"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -258,81 +227,21 @@ const CategoryManager = () => {
         footerActions={
           <>
             <Button
-              onClick={handleCancel}
-              variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 bg-transparent"
+               onClick={handleCancel}
+               variant="outline"
+               className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-cyan-500 hover:bg-cyan-600 text-white">
+            <Button onClick={handleSave} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
               <Save className="w-4 h-4 mr-2" />
               {isAdding ? "Add Category" : "Save Changes"}
             </Button>
           </>
         }
       >
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Category Name *</label>
-              <Input
-                value={editForm.name || ""}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500"
-                placeholder="e.g., Full Stack"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Description</label>
-            <Textarea
-              value={editForm.description || ""}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white focus:border-cyan-500 focus:ring-cyan-500 resize-none"
-              placeholder="Brief description of this category"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Color</label>
-            <div className="grid grid-cols-8 gap-2">
-              {colorOptions.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  onClick={() => handleInputChange("color", color)}
-                  className={`w-8 h-8 rounded-lg border-2 ${
-                    editForm.color === color ? "border-white" : "border-slate-600"
-                  }`}
-                  style={{ backgroundColor: color }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Icon</label>
-            <div className="grid grid-cols-10 gap-2">
-              {iconOptions.map((icon) => (
-                <button
-                  key={icon}
-                  type="button"
-                  onClick={() => handleInputChange("icon", icon)}
-                  className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center text-lg ${
-                    editForm.icon === icon ? "border-cyan-500 bg-cyan-500/20" : "border-slate-600 bg-slate-700"
-                  }`}
-                >
-                  {icon}
-                </button>
-              ))}
-            </div>
-          </div>
-
-        </div>
+        <CategoryForm editForm={editForm} handleInputChange={handleInputChange} />
       </EnhancedModal>
     </div>
   )

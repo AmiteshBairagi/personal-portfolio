@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useSkills } from "@/hooks/useSkills"
+import { SkillForm } from "./forms/SkillForm"
 import {
   Edit,
   Trash2,
@@ -113,8 +115,13 @@ const SkillsManager = () => {
       return
     }
 
+    const cleanedForm = {
+      ...editForm,
+      projects: editForm.projects ? editForm.projects.map(p => p.trim()).filter(Boolean) : []
+    }
+
     if (isAdding) {
-      const result = await addSkill(editForm as Omit<SkillItem, "created_at" | "updated_at">)
+      const result = await addSkill(cleanedForm as Omit<SkillItem, "created_at" | "updated_at">)
       if (result.success) {
         setSuccessMessage("Skill added successfully!")
         setIsAdding(false)
@@ -122,7 +129,7 @@ const SkillsManager = () => {
         setTimeout(() => setSuccessMessage(""), 3000)
       }
     } else if (editingItem) {
-      const result = await updateSkill(editingItem.id, editForm)
+      const result = await updateSkill(editingItem.id, cleanedForm)
       if (result.success) {
         setSuccessMessage("Skill updated successfully!")
         setIsEditing(false)
@@ -156,11 +163,7 @@ const SkillsManager = () => {
   }
 
   const handleProjectsChange = (value: string) => {
-    const projects = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-    setEditForm((prev) => ({ ...prev, projects }))
+    setEditForm((prev) => ({ ...prev, projects: value.split(",") }))
   }
 
   const getTotalSkills = () => {
@@ -174,9 +177,9 @@ const SkillsManager = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="flex items-center space-x-2 text-cyan-400">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span>Loading skills data...</span>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
+          <span className="text-slate-400 font-medium pt-2">Loading skills data...</span>
         </div>
       </div>
     )
@@ -185,16 +188,15 @@ const SkillsManager = () => {
   return (
     <div className="space-y-6">
       {/* Header with Status */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div>
-          <div className="flex items-center space-x-3">
-            <h3 className="text-lg font-semibold text-white">
-              Skills ({getActiveSkills()}/{getTotalSkills()})
-            </h3>
-          </div>
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Code className="w-5 h-5 text-cyan-400" />
+            Skills <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 ml-2">{getActiveSkills()}/{getTotalSkills()} Active</Badge>
+          </h3>
         </div>
         <div className="flex items-center space-x-2">
-          <Button onClick={handleAdd} className="bg-cyan-500 hover:bg-cyan-600" disabled={isSaving}>
+          <Button onClick={handleAdd} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0" disabled={isSaving}>
             <Plus className="w-4 h-4 mr-2" />
             Add Skill
           </Button>
@@ -202,12 +204,12 @@ const SkillsManager = () => {
       </div>
 
       {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 p-1 bg-slate-900/50 rounded-xl border border-slate-800 inline-flex">
         <Button
           onClick={() => setSelectedCategory("All")}
-          variant={selectedCategory === "All" ? "default" : "outline"}
+          variant={selectedCategory === "All" ? "default" : "ghost"}
           size="sm"
-          className={selectedCategory === "All" ? "bg-cyan-500" : "border-slate-600"}
+          className={selectedCategory === "All" ? "bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 hover:text-cyan-200" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"}
         >
           All ({allSkills.length})
         </Button>
@@ -217,9 +219,9 @@ const SkillsManager = () => {
             <Button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              variant={selectedCategory === category ? "default" : "outline"}
+              variant={selectedCategory === category ? "default" : "ghost"}
               size="sm"
-              className={selectedCategory === category ? "bg-cyan-500" : "border-slate-600"}
+              className={selectedCategory === category ? "bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 hover:text-cyan-200" : "text-slate-400 hover:text-slate-200 hover:bg-slate-800"}
             >
               {category} ({count})
             </Button>
@@ -252,71 +254,72 @@ const SkillsManager = () => {
       )}
 
       {/* Skills by Category */}
-      <div className="space-y-6">
+      <div className="space-y-8">
         {Object.entries(groupedSkills).map(([category, skills]) => (
-          <div key={category}>
-            <h4 className="text-lg font-semibold text-cyan-400 mb-4">
-              {category} ({skills.length})
-            </h4>
-            <div className="grid gap-4">
+          <div key={category} className="bg-slate-900/20 p-6 rounded-xl border border-slate-800/50">
+            <div className="flex items-center gap-3 mb-6 pb-2 border-b border-slate-800">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center border border-cyan-500/20">
+                <Code className="w-4 h-4 text-cyan-400" />
+              </div>
+              <h4 className="text-xl font-semibold text-white">
+                {category} <span className="text-slate-500 text-sm font-normal ml-1">({skills.length})</span>
+              </h4>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {skills.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: index * 0.05 }}
                 >
-                  <Card className={`bg-slate-700/30 border-slate-600/30 ${!item.is_active ? "opacity-50" : ""}`}>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-lg flex items-center justify-center">
-                          <Code className="w-5 h-5 text-cyan-400" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg text-white flex items-center space-x-2">
-                            <span>{item.name}</span>
-                            {!item.is_active && (
-                              <span className="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">Hidden</span>
-                            )}
-                          </CardTitle>
-                          <p className="text-cyan-400">{item.experience} experience</p>
+                  <Card className={`bg-slate-800/40 backdrop-blur-md border hover:bg-slate-800/60 transition-all duration-300 shadow-lg group h-full flex flex-col pt-2 ${!item.is_active ? "border-slate-700/30 opacity-60" : "border-slate-700/50"}`}>
+                    <CardHeader className="flex flex-row items-start justify-between pb-2">
+                      <div className="flex flex-col space-y-2">
+                        <CardTitle className="text-lg text-white flex flex-wrap items-center gap-2 group-hover:text-cyan-400 transition-colors">
+                          <span>{item.name}</span>
+                          {!item.is_active && (
+                            <Badge variant="outline" className="text-[10px] bg-slate-900 border-slate-700 text-slate-500 uppercase px-1.5 font-semibold">Hidden</Badge>
+                          )}
+                        </CardTitle>
+                        <div className="flex items-center space-x-1.5 pt-1">
+                          <Badge className="bg-slate-900/50 text-slate-300 border-slate-700 hover:bg-slate-800 text-xs font-medium">Lv. {item.level}</Badge>
+                          <span className="text-xs text-slate-500 flex items-center gap-1"><Code className="w-3 h-3" /> {item.experience}</span>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">                        
-                        <div className="flex space-x-2">
-                          <Button
-                            onClick={() => handleEdit(item)}
-                            size="sm"
-                            variant="outline"
-                            className="border-slate-600"
-                            disabled={isSaving}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            onClick={() => handleDelete(item.id)}
-                            size="sm"
-                            variant="outline"
-                            className="border-red-600 text-red-400 hover:bg-red-600"
-                            disabled={isSaving}
-                          >
-                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                          </Button>
-                        </div>
+                      <div className="flex items-center space-x-1 opacity-60 group-hover:opacity-100 transition-opacity">                        
+                        <Button
+                          onClick={() => handleEdit(item)}
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg"
+                          disabled={isSaving}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          onClick={() => handleDelete(item.id)}
+                          size="icon"
+                          variant="ghost"
+                          className="h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-500/20 rounded-lg"
+                          disabled={isSaving}
+                        >
+                          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                        </Button>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <p className="text-sm text-slate-400 mb-2">Used in {item.projects?.length || 0} projects:</p>
-                        <div className="flex flex-wrap gap-2">
+                    <CardContent className="space-y-3 pt-2 mt-auto">
+                      <div className="bg-slate-900/30 rounded-lg p-3 border border-slate-800">
+                        <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wider">Used in {item.projects?.length || 0} projects:</p>
+                        <div className="flex flex-wrap gap-1.5">
                           {item.projects?.map((project) => (
                             <span
                               key={project}
-                              className="px-2 py-1 bg-slate-600/50 text-slate-300 text-xs rounded-full"
+                              className="px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 text-[11px] rounded transition-colors hover:border-cyan-500/50 hover:text-cyan-300"
                             >
                               {project}
                             </span>
-                          )) || <span className="text-slate-500 text-xs">No projects listed</span>}
+                          )) || <span className="text-slate-600 text-[11px] italic">No projects listed</span>}
                         </div>
                       </div>
                     </CardContent>
@@ -339,83 +342,24 @@ const SkillsManager = () => {
             <Button
               onClick={handleCancel}
               variant="outline"
-              className="border-slate-600 text-slate-300 bg-transparent"
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
               disabled={isSaving}
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleSave} className="bg-cyan-500 hover:bg-cyan-600" disabled={isSaving}>
+            <Button onClick={handleSave} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0" disabled={isSaving}>
               {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
               {isSaving ? "Saving..." : isAdding ? "Add Skill" : "Save Changes"}
             </Button>
           </>
         }
       >
-        <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Skill Name *</label>
-              <Input
-                value={editForm.name || ""}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., React, Node.js, Python"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Category *</label>
-              <select
-                value={editForm.category || "Frontend"}
-                onChange={(e) => handleInputChange("category", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 text-white rounded-md"
-                required
-              >
-                <option value="Frontend">Frontend</option>
-                <option value="Backend">Backend</option>
-                <option value="Database">Database</option>
-                <option value="Tools & Others">Tools & Others</option>
-                <option value="Mobile">Mobile</option>
-                <option value="DevOps">DevOps</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Experience *</label>
-              <Input
-                value={editForm.experience || ""}
-                onChange={(e) => handleInputChange("experience", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., 2+ years, 6 months"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Projects (comma-separated)</label>
-            <Textarea
-              value={editForm.projects?.join(", ") || ""}
-              onChange={(e) => handleProjectsChange(e.target.value)}
-              rows={3}
-              className="bg-slate-700 border-slate-600 text-white"
-              placeholder="E-Commerce Platform, Task Manager, Portfolio Website"
-            />
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="is_active"
-              checked={editForm.is_active !== false}
-              onChange={(e) => handleInputChange("is_active", e.target.checked)}
-              className="rounded border-slate-600"
-            />
-            <label htmlFor="is_active" className="text-sm text-slate-300">
-              Show on frontend
-            </label>
-          </div>
-        </div>
+        <SkillForm
+          editForm={editForm}
+          handleInputChange={handleInputChange}
+          handleProjectsChange={handleProjectsChange}
+        />
       </EnhancedModal>
     </div>
   )

@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
+import { CertificationForm } from "./forms/CertificationForm"
 import {
   Edit,
   Trash2,
@@ -19,8 +20,6 @@ import {
   X,
   Award,
   ExternalLink,
-  Upload,
-  ImageIcon,
   Search,
   Filter,
   RefreshCw,
@@ -65,12 +64,10 @@ const CertificationManager = () => {
   // UI states
   const [imagePreview, setImagePreview] = useState<string>("")
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [isUploadingImage, setIsUploadingImage] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [levelFilter, setLevelFilter] = useState<string>("all")
   const [featuredFilter, setFeaturedFilter] = useState<string>("all")
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Filter data based on search and filters
   const filteredData = certificationsData.filter((item) => {
@@ -130,33 +127,6 @@ const CertificationManager = () => {
     }
   }
 
-
-  // const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0]
-  //   if (!file) return
-
-  //   setIsUploadingImage(true)
-  //   try {
-  //     // Create a preview URL
-  //     const previewUrl = URL.createObjectURL(file)
-  //     setImagePreview(previewUrl)
-
-  //     // In a real app, you would upload to a service like Cloudinary, AWS S3, etc.
-  //     // For now, we'll simulate an upload and use a placeholder
-  //     await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  //     // Simulate getting back a URL from the upload service
-  //     const uploadedUrl = `/placeholder.svg?height=400&width=600&text=${encodeURIComponent(file.name)}`
-
-  //     setEditForm((prev) => ({ ...prev, image: uploadedUrl }))
-  //   } catch (error) {
-  //     console.error("Failed to upload image:", error)
-  //     alert("Failed to upload image. Please try again.")
-  //   } finally {
-  //     setIsUploadingImage(false)
-  //   }
-  // }
-
   const handleImageUpload = (file: File) => {
     if (file) {
       if (file.size <= 10 * 1024 * 1024) {
@@ -179,15 +149,20 @@ const CertificationManager = () => {
   const handleSave = async () => {
     setIsSaving(true)
     try {
+      const cleanedForm = {
+        ...editForm,
+        skills: editForm.skills ? editForm.skills.map(s => s.trim()).filter(Boolean) : []
+      }
+
       let result
       if (isAdding) {
-        result = await addCertification(editForm)
+        result = await addCertification(cleanedForm)
         if (result.success) {
           setIsAdding(false)
           alert("Certification added successfully!")
         }
       } else {
-        result = await updateCertification(editForm.id, editForm)
+        result = await updateCertification(cleanedForm.id, cleanedForm)
         if (result.success) {
           setIsEditing(false)
           alert("Certification updated successfully!")
@@ -239,11 +214,7 @@ const CertificationManager = () => {
   }
 
   const handleSkillsChange = (value: string) => {
-    const skills = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean)
-    setEditForm((prev) => ({ ...prev, skills }))
+    setEditForm((prev) => ({ ...prev, skills: value.split(",") }))
   }
 
   const getLevelColor = (level: string) => {
@@ -262,23 +233,25 @@ const CertificationManager = () => {
   return (
     <div className="space-y-6">
       {/* Header with Connection Status */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-4 rounded-xl shadow-lg">
         <div className="flex items-center space-x-4">
-          <h3 className="text-lg font-semibold text-white">Certifications ({certificationsData.length})</h3>
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Award className="w-5 h-5 text-cyan-400" />
+            Certifications <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 ml-2">{certificationsData.length}</Badge>
+          </h3>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           <Button
             onClick={refresh}
-            size="sm"
             variant="outline"
-            className="border-slate-600 text-slate-300 bg-transparent"
+            className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
             disabled={isLoading}
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button onClick={handleAdd} className="bg-cyan-500 hover:bg-cyan-600" disabled={isLoading}>
+          <Button onClick={handleAdd} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0" disabled={isLoading}>
             <Plus className="w-4 h-4 mr-2" />
             Add Certification
           </Button>
@@ -300,56 +273,42 @@ const CertificationManager = () => {
       {/* Search and Filters */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-cyan-400 w-4 h-4" />
           <Input
             placeholder="Search certifications..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-700 border-slate-600 text-white"
+            className="pl-10 bg-slate-900/50 border-slate-700 focus:border-cyan-500/50 focus:ring-cyan-500/20 text-white placeholder:text-slate-500"
           />
         </div>
 
         <Select value={levelFilter} onValueChange={setLevelFilter}>
-          <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+          <SelectTrigger className="bg-slate-900/50 border-slate-700 focus:border-cyan-500/50 focus:ring-cyan-500/20 text-white">
             <SelectValue placeholder="Filter by level" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-700 border-slate-600">
-            <SelectItem value="all" className="text-white">
-              All Levels
-            </SelectItem>
-            <SelectItem value="Associate" className="text-white">
-              Associate
-            </SelectItem>
-            <SelectItem value="Professional" className="text-white">
-              Professional
-            </SelectItem>
-            <SelectItem value="Expert" className="text-white">
-              Expert
-            </SelectItem>
+          <SelectContent className="bg-slate-800 border-slate-700 text-white">
+            <SelectItem value="all">All Levels</SelectItem>
+            <SelectItem value="Associate">Associate</SelectItem>
+            <SelectItem value="Professional">Professional</SelectItem>
+            <SelectItem value="Expert">Expert</SelectItem>
           </SelectContent>
         </Select>
 
         <Select value={featuredFilter} onValueChange={setFeaturedFilter}>
-          <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+          <SelectTrigger className="bg-slate-900/50 border-slate-700 focus:border-cyan-500/50 focus:ring-cyan-500/20 text-white">
             <SelectValue placeholder="Filter by featured" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-700 border-slate-600">
-            <SelectItem value="all" className="text-white">
-              All Certifications
-            </SelectItem>
-            <SelectItem value="featured" className="text-white">
-              Featured Only
-            </SelectItem>
-            <SelectItem value="not-featured" className="text-white">
-              Not Featured
-            </SelectItem>
+          <SelectContent className="bg-slate-800 border-slate-700 text-white">
+            <SelectItem value="all">All Certifications</SelectItem>
+            <SelectItem value="featured">Featured Only</SelectItem>
+            <SelectItem value="not-featured">Not Featured</SelectItem>
           </SelectContent>
         </Select>
 
-        <div className="flex items-center space-x-2 text-slate-400">
-          <Filter className="w-4 h-4" />
-          <span className="text-sm">
-            {filteredData.length} of {certificationsData.length}
+        <div className="flex items-center justify-center space-x-2 text-slate-400 bg-slate-900/30 rounded-lg border border-slate-800">
+          <Filter className="w-4 h-4 text-cyan-500/70" />
+          <span className="text-sm font-medium">
+            Showing <span className="text-slate-300">{filteredData.length}</span> of <span className="text-slate-300">{certificationsData.length}</span>
           </span>
         </div>
       </div>
@@ -371,11 +330,11 @@ const CertificationManager = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="bg-slate-700/30 border-slate-600/30">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div className="flex items-center space-x-3">
+            <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 shadow-lg group">
+              <CardHeader className="flex flex-row items-center justify-between border-b border-slate-700/50 pb-4">
+                <div className="flex items-center space-x-4">
                   {/* Certificate Image Preview */}
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.15)] group-hover:scale-105 transition-transform duration-300">
                     {item.image && item.image !== "/placeholder.svg?height=400&width=600" ? (
                       <img
                         src={item.image || "/placeholder.svg"}
@@ -383,27 +342,31 @@ const CertificationManager = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Award className="w-6 h-6 text-cyan-400" />
+                      <Award className="w-7 h-7 text-cyan-400" />
                     )}
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <CardTitle className="text-lg text-white">{item.title}</CardTitle>
-                      {item.featured && <Badge className="bg-purple-500/20 text-purple-300">Featured</Badge>}
-                      <Badge className={`${getLevelColor(item.level)} text-white text-xs border-0`}>{item.level}</Badge>
+                      <CardTitle className="text-lg text-white group-hover:text-cyan-400 transition-colors">{item.title}</CardTitle>
+                      {item.featured && <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">Featured</Badge>}
                     </div>
-                    <p className="text-cyan-400">{item.issuer}</p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <p className="text-slate-300 font-medium text-sm">{item.issuer}</p>
+                      <span className="text-slate-600">•</span>
+                      <Badge className={`${getLevelColor(item.level)} text-white text-[10px] px-2 py-0 uppercase tracking-wider font-semibold border-0 shadow-sm`}>{item.level}</Badge>
+                    </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 opacity-80 group-hover:opacity-100 transition-opacity">
                   {/* Reorder buttons */}
 
                   <Button
                     onClick={() => handleEdit(item)}
                     size="sm"
                     variant="outline"
-                    className="border-slate-600"
+                    className="bg-slate-800/50 border border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-8 w-8 p-0"
                     disabled={isLoading}
+                    title="Edit certification"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -411,38 +374,45 @@ const CertificationManager = () => {
                     onClick={() => handleDelete(item.id)}
                     size="sm"
                     variant="outline"
-                    className="border-red-600 text-red-400 hover:bg-red-600"
+                    className="bg-slate-800/50 border border-red-900/50 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/50 transition-all h-8 w-8 p-0"
                     disabled={isLoading}
+                    title="Delete certification"
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-slate-400 text-sm leading-relaxed">{item.description}</p>
+              <CardContent className="space-y-4 pt-4">
+                <p className="text-slate-300 text-sm leading-relaxed">{item.description}</p>
 
-                <div className="grid grid-cols-2 gap-4 text-sm text-slate-400">
-                  <div>
-                    <span className="font-medium">Date:</span> {item.date}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm bg-slate-900/30 p-4 rounded-xl border border-slate-800">
+                  <div className="flex flex-col">
+                    <span className="text-slate-500 text-xs mb-1 uppercase tracking-wider font-semibold">Date</span>
+                    <span className="text-slate-300">{item.date}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">Valid Until:</span> {item.valid_until}
+                  <div className="flex flex-col">
+                    <span className="text-slate-500 text-xs mb-1 uppercase tracking-wider font-semibold">Valid Until</span>
+                    <span className="text-slate-300">{item.valid_until || "No Expiry"}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">Score:</span> {item.exam_score}
+                  <div className="flex flex-col">
+                    <span className="text-slate-500 text-xs mb-1 uppercase tracking-wider font-semibold">Score</span>
+                    <span className="text-slate-300">{item.exam_score || "N/A"}</span>
                   </div>
-                  <div>
-                    <span className="font-medium">ID:</span> {item.credential_id}
+                  <div className="flex flex-col">
+                    <span className="text-slate-500 text-xs mb-1 uppercase tracking-wider font-semibold">Credential ID</span>
+                    <span className="text-slate-300 font-mono text-xs">{item.credential_id || "N/A"}</span>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {(item.skills || []).map((skill) => (
-                    <Badge key={skill} variant="secondary" className="bg-slate-600/50 text-slate-300">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
+                {item.skills && item.skills.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    {item.skills.map((skill) => (
+                      <Badge key={skill} variant="secondary" className="bg-slate-800 border border-slate-700 text-slate-300">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
 
                 <Button size="sm" variant="outline" className="border-slate-600 bg-transparent" asChild>
                   <a href={item.verification_url} target="_blank" rel="noopener noreferrer">
@@ -487,14 +457,14 @@ const CertificationManager = () => {
         size="xl"
         footerActions={
           <>
-            <Button onClick={handleCancel} variant="outline" className="border-slate-600 text-slate-300 bg-transparent">
+            <Button onClick={handleCancel} variant="outline" className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-cyan-500 hover:bg-cyan-600"
-              disabled={isLoading || isUploadingImage || isSaving}
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0"
+              disabled={isLoading || isSaving}
             >
               <Save className="w-4 h-4 mr-2" />
               {isSaving ? "Saving..." : isAdding ? "Add Certification" : "Save Changes"}
@@ -502,193 +472,13 @@ const CertificationManager = () => {
           </>
         }
       >
-        <div className="space-y-6 max-h-[70vh] overflow-y-auto">
-          {/* Image Upload Section */}
-          <div className="space-y-4">
-            <label className="text-sm font-medium text-slate-300 block">Certificate Image</label>
-            <div className="flex items-center space-x-4">
-              {/* Image Preview */}
-              <div className="w-24 h-24 rounded-lg overflow-hidden bg-slate-700 border border-slate-600 flex items-center justify-center">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview || "/placeholder.svg"}
-                    alt="Certificate preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="w-8 h-8 text-slate-400" />
-                )}
-              </div>
-
-              {/* Upload Button */}
-              <div className="flex-1">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleImageUpload(file)
-                  }}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  variant="outline"
-                  className="border-slate-600 text-slate-300"
-                  disabled={isUploadingImage}
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  {isUploadingImage ? "Uploading..." : "Upload Image"}
-                </Button>
-                <p className="text-xs text-slate-400 mt-1">Recommended: 600x400px, less than 10mb</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Basic Information */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Certification Title *</label>
-              <Input
-                value={editForm.title}
-                onChange={(e) => handleInputChange("title", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., AWS Certified Solutions Architect"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Issuing Organization *</label>
-              <Input
-                value={editForm.issuer}
-                onChange={(e) => handleInputChange("issuer", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., Amazon Web Services"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Issue Date *</label>
-              <Input
-                value={editForm.date}
-                onChange={(e) => handleInputChange("date", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., 2024, March 2024"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Valid Until *</label>
-              <Input
-                value={editForm.valid_until}
-                onChange={(e) => handleInputChange("valid_until", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., 2027, Lifetime"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Credential ID *</label>
-              <Input
-                value={editForm.credential_id}
-                onChange={(e) => handleInputChange("credential_id", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., AWS-SAA-2024-001"
-                required
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-slate-300 mb-2 block">Exam Score</label>
-              <Input
-                value={editForm.exam_score}
-                onChange={(e) => handleInputChange("exam_score", e.target.value)}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="e.g., 892/1000, 85%"
-              />
-            </div>
-          </div>
-
-          {/* Level Selection */}
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Certification Level *</label>
-            <Select
-              value={editForm.level}
-              onValueChange={(value: "Professional" | "Associate" | "Expert") => handleInputChange("level", value)}
-            >
-              <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                <SelectValue placeholder="Select certification level" />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-700 border-slate-600">
-                <SelectItem value="Associate" className="text-white">
-                  Associate
-                </SelectItem>
-                <SelectItem value="Professional" className="text-white">
-                  Professional
-                </SelectItem>
-                <SelectItem value="Expert" className="text-white">
-                  Expert
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Description *</label>
-            <Textarea
-              value={editForm.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              rows={4}
-              className="bg-slate-700 border-slate-600 text-white"
-              placeholder="Brief description of what this certification validates..."
-              required
-            />
-          </div>
-
-          {/* Skills */}
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">
-              Skills Validated (comma-separated) *
-            </label>
-            <Textarea
-              value={(editForm.skills || []).join(", ")}
-              onChange={(e) => handleSkillsChange(e.target.value)}
-              rows={2}
-              className="bg-slate-700 border-slate-600 text-white"
-              placeholder="AWS, Cloud Architecture, Security, etc."
-              required
-            />
-          </div>
-
-          {/* Verification URL */}
-          <div>
-            <label className="text-sm font-medium text-slate-300 mb-2 block">Verification URL *</label>
-            <Input
-              value={editForm.verification_url}
-              onChange={(e) => handleInputChange("verification_url", e.target.value)}
-              className="bg-slate-700 border-slate-600 text-white"
-              placeholder="https://verify.certification.com"
-              type="url"
-              required
-            />
-          </div>
-
-          {/* Featured Toggle */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="featured"
-              checked={editForm.featured}
-              onChange={(e) => handleInputChange("featured", e.target.checked)}
-              className="w-4 h-4 text-cyan-500 bg-slate-700 border-slate-600 rounded focus:ring-cyan-500"
-            />
-            <label htmlFor="featured" className="text-sm font-medium text-slate-300">
-              Featured Certification (Display prominently on the website)
-            </label>
-          </div>
-        </div>
+        <CertificationForm
+          editForm={editForm}
+          imagePreview={imagePreview}
+          handleInputChange={handleInputChange}
+          handleSkillsChange={handleSkillsChange}
+          handleImageUpload={handleImageUpload}
+        />
       </EnhancedModal>
     </div>
   )
