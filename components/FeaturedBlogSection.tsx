@@ -104,7 +104,7 @@ const FeaturedBlogSection = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Link href={`/blog/${post.slug}`}>
+              <Link href={`/interview-experience/${post.slug}`}>
                 <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50">
                   {/* Featured Image */}
                   {/* <div className="relative h-48 overflow-hidden rounded-t-lg">
@@ -173,7 +173,7 @@ const FeaturedBlogSection = () => {
           className="text-center"
         >
           <Button asChild size="lg" className="bg-cyan-500 hover:bg-cyan-600">
-            <Link href="/blog">
+            <Link href="/interview-experience">
               <span className="flex items-center">
                 <BookOpen className="w-5 h-5 mr-2" />
                 View All Articles

@@ -12,9 +12,8 @@ interface BlogPageProps {
   }
 }
 
-export default function BlogPage({ searchParams }: BlogPageProps) {
-  const category = searchParams.category || "All"
-  const searchTerm = searchParams.search || ""
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string, search?: string }> }) {
+  const { category = "All", search: searchTerm = "" } = await searchParams
 
   return (
     <Suspense fallback={<BlogPageSkeleton />}>

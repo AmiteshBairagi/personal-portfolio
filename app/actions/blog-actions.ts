@@ -63,8 +63,8 @@ export async function createPost(postData: Omit<BlogPost, "id" | "slug" | "publi
     saveBlogPost(newPost)
 
     // Revalidate the blog pages
-    revalidatePath("/blog")
-    revalidatePath(`/blog/${newPost.slug}`)
+    revalidatePath("/interview-experience")
+    revalidatePath(`/interview-experience/${newPost.slug}`)
     revalidatePath("/admin")
 
     return { success: true, post: newPost }
@@ -102,8 +102,8 @@ export async function updatePost(id: string, updates: Partial<BlogPost>) {
     saveBlogPost(updatedPost)
 
     // Revalidate the blog pages
-    revalidatePath("/blog")
-    revalidatePath(`/blog/${updatedPost.slug}`)
+    revalidatePath("/interview-experience")
+    revalidatePath(`/interview-experience/${updatedPost.slug}`)
     revalidatePath("/admin")
 
     return { success: true, post: updatedPost }
@@ -120,7 +120,7 @@ export async function deletePost(id: string) {
 
     if (success) {
       // Revalidate the blog pages
-      revalidatePath("/blog")
+      revalidatePath("/interview-experience")
       revalidatePath("/admin")
       return { success: true }
     } else {
@@ -147,8 +147,8 @@ export async function toggleFeatured(id: string) {
     saveBlogPost(post)
 
     // Revalidate the blog pages
-    revalidatePath("/blog")
-    revalidatePath(`/blog/${post.slug}`)
+    revalidatePath("/interview-experience")
+    revalidatePath(`/interview-experience/${post.slug}`)
     revalidatePath("/admin")
 
     return { success: true, featured: post.featured }
@@ -173,8 +173,8 @@ export async function togglePublished(id: string) {
     saveBlogPost(post)
 
     // Revalidate the blog pages
-    revalidatePath("/blog")
-    revalidatePath(`/blog/${post.slug}`)
+    revalidatePath("/interview-experience")
+    revalidatePath(`/interview-experience/${post.slug}`)
     revalidatePath("/admin")
 
     return { success: true, published: post.published }
