@@ -1,14 +1,20 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,12 +24,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { EnhancedModal } from "@/components/ui/enhanced-modal"
-import { useToast } from "@/hooks/use-toast"
-import { useBlogRealTime } from "@/hooks/use-blog-real-time"
-import type { BlogPost } from "@/lib/data/blog-data-manager"
-import { blogCategories } from "@/lib/blog-data"
+} from "@/components/ui/alert-dialog";
+import { EnhancedModal } from "@/components/ui/enhanced-modal";
+import { useToast } from "@/hooks/use-toast";
+import { useBlogRealTime } from "@/hooks/use-blog-real-time";
+import type { BlogPost } from "@/lib/data/blog-data-manager";
+import { blogCategories } from "@/lib/blog-data";
 import {
   Plus,
   Search,
@@ -46,11 +52,15 @@ import {
   Wifi,
   WifiOff,
   RefreshCw,
-} from "lucide-react"
-import { InterviewExperienceForm, type BlogFormData, initialFormData } from "./forms/InterviewExperienceForm"
+} from "lucide-react";
+import {
+  InterviewExperienceForm,
+  type BlogFormData,
+  initialFormData,
+} from "./forms/InterviewExperienceForm";
 
 const InterviewExperienceManager = () => {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const {
     posts,
     isLoading,
@@ -60,26 +70,65 @@ const InterviewExperienceManager = () => {
     createPost,
     updatePost,
     deletePost,
-    reorderPost,
     toggleFeatured,
     togglePublished,
     refreshData,
     getPostById,
-  } = useBlogRealTime()
+  } = useBlogRealTime();
 
   // Local state
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [showOnlyFeatured, setShowOnlyFeatured] = useState(false)
-  const [showOnlyPublished, setShowOnlyPublished] = useState(false)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null)
-  const [deletingPostId, setDeletingPostId] = useState<string | null>(null)
-  const [formData, setFormData] = useState<BlogFormData>(initialFormData)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showOnlyFeatured, setShowOnlyFeatured] = useState(false);
+  const [showOnlyPublished, setShowOnlyPublished] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<BlogFormData>(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+
+  // Handle image upload
+  const handleImageUpload = (file: File) => {
+    if (
+      file &&
+      (file.type === "image/jpeg" ||
+        file.type === "image/png" ||
+        file.type === "image/webp")
+    ) {
+      if (file.size <= 10 * 1024 * 1024) {
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          setImagePreview(result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast({
+          title: "Error",
+          description: "Image size should be less than 10MB.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Please select a valid image file (JPG, PNG or WebP).",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle image remove
+  const handleImageRemove = () => {
+    setImageFile(null);
+    setImagePreview("");
+  };
 
   // Filter and search posts
   const filteredPosts = useMemo(() => {
@@ -88,47 +137,61 @@ const InterviewExperienceManager = () => {
         !searchTerm ||
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        post.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
 
-      const matchesCategory = selectedCategory === "All" || post.category === selectedCategory
-      const matchesFeatured = !showOnlyFeatured || post.featured
-      const matchesPublished = !showOnlyPublished || post.published
+      const matchesCategory =
+        selectedCategory === "All" || post.category === selectedCategory;
+      const matchesFeatured = !showOnlyFeatured || post.featured;
+      const matchesPublished = !showOnlyPublished || post.published;
 
-      return matchesSearch && matchesCategory && matchesFeatured && matchesPublished
-    })
-  }, [posts, searchTerm, selectedCategory, showOnlyFeatured, showOnlyPublished])
+      return (
+        matchesSearch && matchesCategory && matchesFeatured && matchesPublished
+      );
+    });
+  }, [
+    posts,
+    searchTerm,
+    selectedCategory,
+    showOnlyFeatured,
+    showOnlyPublished,
+  ]);
 
   // Handle form input changes
-  const handleInputChange = (field: keyof BlogFormData, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+  const handleInputChange = (
+    field: keyof BlogFormData,
+    value: string | boolean,
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (formErrors[field]) {
-      setFormErrors((prev) => ({ ...prev, [field]: "" }))
+      setFormErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  }
+  };
 
   // Validate form
   const validateForm = (): boolean => {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      errors.title = "Title is required"
+      errors.title = "Title is required";
     }
 
     if (!formData.content.trim()) {
-      errors.content = "Content is required"
+      errors.content = "Content is required";
     }
 
     if (!formData.author.trim()) {
-      errors.author = "Author is required"
+      errors.author = "Author is required";
     }
 
     if (!formData.category) {
-      errors.category = "Category is required"
+      errors.category = "Category is required";
     }
 
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   // Handle create post
   const handleCreatePost = async () => {
@@ -137,11 +200,11 @@ const InterviewExperienceManager = () => {
         title: "Validation Error",
         description: "Please fill in all required fields.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       const postData = {
@@ -154,7 +217,8 @@ const InterviewExperienceManager = () => {
             .replace(/[^\w\s-]/g, "")
             .replace(/[\s_-]+/g, "-")
             .replace(/^-+|-+$/g, ""),
-        excerpt: formData.excerpt.trim() || formData.content.substring(0, 150) + "...",
+        excerpt:
+          formData.excerpt.trim() || formData.content.substring(0, 150) + "...",
         content: formData.content.trim(),
         author: formData.author.trim(),
         tags: formData.tags
@@ -162,35 +226,45 @@ const InterviewExperienceManager = () => {
           .map((tag) => tag.trim())
           .filter(Boolean),
         category: formData.category,
-        image: formData.image || "/placeholder.svg?height=400&width=600",
+        image: imageFile
+          ? ""
+          : imagePreview || "/placeholder.svg?height=400&width=600",
         featured: formData.featured,
         published: formData.published,
         published_at: new Date().toISOString().split("T")[0],
-        read_time: Math.max(1, Math.ceil(formData.content.trim().split(/\s+/).length / 200)),
-        is_active: true,
-      }
+        read_time: Math.max(
+          1,
+          Math.ceil(formData.content.trim().split(/\s+/).length / 200),
+        ),
+      };
 
-      const result = await createPost(postData)
+      // if (imageFile) {
+      //   delete postData.image;
+      // }
+      const result = await createPost(postData, imageFile || undefined);
 
       if (result) {
         toast({
           title: "Success!",
           description: "Blog post created successfully.",
-        })
-        resetCreateForm()
+        });
+        resetCreateForm();
       } else {
-        throw new Error("Failed to create post")
+        throw new Error("Failed to create post");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create blog post.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create blog post.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Handle edit post
   const handleEditPost = async () => {
@@ -199,11 +273,11 @@ const InterviewExperienceManager = () => {
         title: "Validation Error",
         description: "Please fill in all required fields.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
       const updates = {
@@ -216,7 +290,8 @@ const InterviewExperienceManager = () => {
             .replace(/[^\w\s-]/g, "")
             .replace(/[\s_-]+/g, "-")
             .replace(/^-+|-+$/g, ""),
-        excerpt: formData.excerpt.trim() || formData.content.substring(0, 150) + "...",
+        excerpt:
+          formData.excerpt.trim() || formData.content.substring(0, 150) + "...",
         content: formData.content.trim(),
         author: formData.author.trim(),
         tags: formData.tags
@@ -224,134 +299,125 @@ const InterviewExperienceManager = () => {
           .map((tag) => tag.trim())
           .filter(Boolean),
         category: formData.category,
-        image: formData.image || "/placeholder.svg?height=400&width=600",
+        image: imageFile ? "" : imagePreview,
         featured: formData.featured,
         published: formData.published,
-      }
+      };
 
-      const result = await updatePost(editingPost.id, updates)
+      const result = await updatePost(
+        editingPost.id,
+        updates,
+        imageFile || undefined,
+      );
 
       if (result) {
         toast({
           title: "Success!",
           description: "Blog post updated successfully.",
-        })
-        resetEditForm()
+        });
+        resetEditForm();
       } else {
-        throw new Error("Failed to update post")
+        throw new Error("Failed to update post");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update blog post.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to update blog post.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Handle delete post
   const handleDeletePost = async () => {
-    if (!deletingPostId) return
+    if (!deletingPostId) return;
 
     try {
-      const result = await deletePost(deletingPostId)
+      const result = await deletePost(deletingPostId);
 
       if (result) {
         toast({
           title: "Success!",
           description: "Blog post deleted successfully.",
-        })
+        });
       } else {
-        throw new Error("Failed to delete post")
+        throw new Error("Failed to delete post");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete blog post.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete blog post.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setDeletingPostId(null)
-      setIsDeleteDialogOpen(false)
+      setDeletingPostId(null);
+      setIsDeleteDialogOpen(false);
     }
-  }
-
-  // Handle reorder post
-  const handleReorderPost = async (postId: string, direction: "up" | "down") => {
-    try {
-      const result = await reorderPost(postId, direction)
-
-      if (result) {
-        toast({
-          title: "Success!",
-          description: `Post moved ${direction} successfully.`,
-        })
-      } else {
-        toast({
-          title: "Info",
-          description: `Cannot move post ${direction} any further.`,
-        })
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to reorder post.",
-        variant: "destructive",
-      })
-    }
-  }
+  };
 
   // Handle toggle featured
   const handleToggleFeatured = async (postId: string) => {
     try {
-      const result = await toggleFeatured(postId)
+      const result = await toggleFeatured(postId);
 
       if (result) {
-        const post = getPostById(postId)
+        const post = getPostById(postId);
         toast({
           title: "Success!",
           description: `Post ${post?.featured ? "added to" : "removed from"} featured section.`,
-        })
+        });
       } else {
-        throw new Error("Failed to toggle featured status")
+        throw new Error("Failed to toggle featured status");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update featured status.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to update featured status.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   // Handle toggle published
   const handleTogglePublished = async (postId: string) => {
     try {
-      const result = await togglePublished(postId)
+      const result = await togglePublished(postId);
 
       if (result) {
-        const post = getPostById(postId)
+        const post = getPostById(postId);
         toast({
           title: "Success!",
           description: `Post ${post?.published ? "published" : "unpublished"} successfully.`,
-        })
+        });
       } else {
-        throw new Error("Failed to toggle published status")
+        throw new Error("Failed to toggle published status");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update published status.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to update published status.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   // Open edit modal
   const openEditModal = (post: BlogPost) => {
-    setEditingPost(post)
+    setEditingPost(post);
     setFormData({
       title: post.title,
       slug: post.slug,
@@ -363,32 +429,36 @@ const InterviewExperienceManager = () => {
       author: post.author,
       featured: post.featured,
       published: post.published,
-    })
-    setFormErrors({})
-    setIsEditModalOpen(true)
-  }
+    });
+    setImagePreview(post.image || "");
+    setFormErrors({});
+    setIsEditModalOpen(true);
+  };
 
   // Open delete dialog
   const openDeleteDialog = (postId: string) => {
-    setDeletingPostId(postId)
-    setIsDeleteDialogOpen(true)
-  }
+    setDeletingPostId(postId);
+    setIsDeleteDialogOpen(true);
+  };
 
   // Reset create form
   const resetCreateForm = () => {
-    setFormData(initialFormData)
-    setFormErrors({})
-    setIsCreateModalOpen(false)
-  }
+    setFormData(initialFormData);
+    setImagePreview("");
+    setImageFile(null);
+    setFormErrors({});
+    setIsCreateModalOpen(false);
+  };
 
   // Reset edit form
   const resetEditForm = () => {
-    setFormData(initialFormData)
-    setEditingPost(null)
-    setFormErrors({})
-    setIsEditModalOpen(false)
-  }
-
+    setFormData(initialFormData);
+    setImagePreview("");
+    setImageFile(null);
+    setEditingPost(null);
+    setFormErrors({});
+    setIsEditModalOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -400,21 +470,33 @@ const InterviewExperienceManager = () => {
             Blog Management
           </h2>
           <p className="text-slate-400 text-sm mt-1">
-            Manage your blog posts with real-time updates. Changes are instantly reflected on the website.
+            Manage your blog posts with real-time updates. Changes are instantly
+            reflected on the website.
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={() => refreshData()} disabled={isLoading} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 px-3">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => refreshData()}
+            disabled={isLoading}
+            className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 px-3"
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
-          <Button onClick={() => setIsCreateModalOpen(true)} disabled={isLoading} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0 h-10 px-4">
+          <Button
+            onClick={() => setIsCreateModalOpen(true)}
+            disabled={isLoading}
+            className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0 h-10 px-4"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Add Post
           </Button>
         </div>
       </div>
-
 
       {/* Error Display */}
       {error && (
@@ -432,7 +514,9 @@ const InterviewExperienceManager = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-300">Total Posts</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-300">
+              Total Posts
+            </CardTitle>
             <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
               <FileText className="h-4 w-4 text-blue-400" />
             </div>
@@ -443,35 +527,47 @@ const InterviewExperienceManager = () => {
         </Card>
         <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-300">Published</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-300">
+              Published
+            </CardTitle>
             <div className="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center border border-green-500/20">
               <Eye className="h-4 w-4 text-green-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{posts.filter((post) => post.published).length}</div>
+            <div className="text-2xl font-bold text-white">
+              {posts.filter((post) => post.published).length}
+            </div>
           </CardContent>
         </Card>
         <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-300">Featured</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-300">
+              Featured
+            </CardTitle>
             <div className="w-8 h-8 bg-yellow-500/10 rounded-lg flex items-center justify-center border border-yellow-500/20">
               <Star className="h-4 w-4 text-yellow-500" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{posts.filter((post) => post.featured).length}</div>
+            <div className="text-2xl font-bold text-white">
+              {posts.filter((post) => post.featured).length}
+            </div>
           </CardContent>
         </Card>
         <Card className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all text-white shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-300">Drafts</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-300">
+              Drafts
+            </CardTitle>
             <div className="w-8 h-8 bg-slate-500/10 rounded-lg flex items-center justify-center border border-slate-500/20">
               <EyeOff className="h-4 w-4 text-slate-400" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{posts.filter((post) => !post.published).length}</div>
+            <div className="text-2xl font-bold text-white">
+              {posts.filter((post) => !post.published).length}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -486,7 +582,6 @@ const InterviewExperienceManager = () => {
         </CardHeader>
         <CardContent className="pt-4">
           <div className="flex flex-col sm:flex-row gap-6">
-
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-3 bg-slate-900/40 px-4 py-2 rounded-lg border border-slate-700/50">
                 <Switch
@@ -495,7 +590,10 @@ const InterviewExperienceManager = () => {
                   onCheckedChange={setShowOnlyFeatured}
                   className="data-[state=checked]:bg-cyan-500 bg-slate-600 border-transparent [&>span]:bg-white"
                 />
-                <Label htmlFor="featured-filter" className="text-sm text-slate-300 font-medium cursor-pointer">
+                <Label
+                  htmlFor="featured-filter"
+                  className="text-sm text-slate-300 font-medium cursor-pointer"
+                >
                   Featured Only
                 </Label>
               </div>
@@ -506,7 +604,10 @@ const InterviewExperienceManager = () => {
                   onCheckedChange={setShowOnlyPublished}
                   className="data-[state=checked]:bg-cyan-500 bg-slate-600 border-transparent [&>span]:bg-white"
                 />
-                <Label htmlFor="published-filter" className="text-sm text-slate-300 font-medium cursor-pointer">
+                <Label
+                  htmlFor="published-filter"
+                  className="text-sm text-slate-300 font-medium cursor-pointer"
+                >
                   Published Only
                 </Label>
               </div>
@@ -527,7 +628,7 @@ const InterviewExperienceManager = () => {
         )}
 
         {!isLoading && filteredPosts.length === 0 && (
-          <Card  >
+          <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <FileText className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts found</h3>
@@ -548,7 +649,10 @@ const InterviewExperienceManager = () => {
 
         {!isLoading &&
           filteredPosts.map((post, index) => (
-            <Card key={post.id} className="overflow-hidden bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 text-white shadow-lg group">
+            <Card
+              key={post.id}
+              className="overflow-hidden bg-slate-800/40 backdrop-blur-md border border-slate-700/50 hover:bg-slate-800/60 transition-all duration-300 text-white shadow-lg group"
+            >
               <CardContent className="p-6">
                 <div className="flex flex-col lg:flex-row gap-6">
                   {/* Post Image */}
@@ -567,10 +671,16 @@ const InterviewExperienceManager = () => {
                       {/* Title and Description */}
                       <div className="space-y-2 mb-4">
                         <div className="flex items-start justify-between gap-4">
-                          <h3 className="text-xl font-semibold line-clamp-2 text-white group-hover:text-cyan-400 transition-colors">{post.title}</h3>
-                          <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 whitespace-nowrap">{post.category}</Badge>
+                          <h3 className="text-xl font-semibold line-clamp-2 text-white group-hover:text-cyan-400 transition-colors">
+                            {post.title}
+                          </h3>
+                          <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 whitespace-nowrap">
+                            {post.category}
+                          </Badge>
                         </div>
-                        <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">{post.excerpt}</p>
+                        <p className="text-slate-400 text-sm line-clamp-2 leading-relaxed">
+                          {post.excerpt}
+                        </p>
                       </div>
 
                       {/* Post Meta */}
@@ -581,24 +691,35 @@ const InterviewExperienceManager = () => {
                         </div>
                         <div className="flex items-center gap-1.5 border-r border-slate-700 pr-4">
                           <Calendar className="h-3.5 w-3.5 text-cyan-500/70" />
-                          <span className="text-slate-300">{new Date(post.published_at).toLocaleDateString()}</span>
+                          <span className="text-slate-300">
+                            {new Date(post.published_at).toLocaleDateString()}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5 text-cyan-500/70" />
-                          <span className="text-slate-300">{post.read_time} min read</span>
+                          <span className="text-slate-300">
+                            {post.read_time} min read
+                          </span>
                         </div>
                       </div>
 
                       {/* Tags */}
                       <div className="flex flex-wrap items-center gap-2 mb-5">
                         {post.tags.slice(0, 3).map((tag) => (
-                          <Badge key={tag} variant="secondary" className="bg-slate-800 border-slate-700 text-slate-300 text-[11px] hover:bg-slate-700 transition-colors">
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="bg-slate-800 border-slate-700 text-slate-300 text-[11px] hover:bg-slate-700 transition-colors"
+                          >
                             <Tag className="h-2.5 w-2.5 mr-1" />
                             {tag}
                           </Badge>
                         ))}
                         {post.tags.length > 3 && (
-                          <Badge variant="secondary" className="bg-slate-800 border-slate-700 text-slate-400 text-[11px]">
+                          <Badge
+                            variant="secondary"
+                            className="bg-slate-800 border-slate-700 text-slate-400 text-[11px]"
+                          >
                             +{post.tags.length - 3} more
                           </Badge>
                         )}
@@ -607,28 +728,6 @@ const InterviewExperienceManager = () => {
 
                     {/* Action Buttons */}
                     <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-700/50">
-                      {/* Reorder buttons */}
-                      <div className="flex items-center gap-1 mr-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleReorderPost(post.id, "up")}
-                          disabled={index === 0}
-                          className="h-8 w-8 bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white"
-                        >
-                          <ArrowUp className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleReorderPost(post.id, "down")}
-                          disabled={index === filteredPosts.length - 1}
-                          className="h-8 w-8 bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white"
-                        >
-                          <ArrowDown className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-
                       <Button
                         variant={post.featured ? "default" : "outline"}
                         size="sm"
@@ -649,14 +748,23 @@ const InterviewExperienceManager = () => {
                         onClick={() => handleTogglePublished(post.id)}
                         className={`text-xs h-8 ${post.published ? "bg-green-500/20 text-green-400 hover:bg-green-500/30 border border-green-500/30" : "bg-slate-800/50 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500"}`}
                       >
-                        {post.published ? <Eye className="h-3.5 w-3.5 mr-1.5" /> : <EyeOff className="h-3.5 w-3.5 mr-1.5" />}
+                        {post.published ? (
+                          <Eye className="h-3.5 w-3.5 mr-1.5" />
+                        ) : (
+                          <EyeOff className="h-3.5 w-3.5 mr-1.5" />
+                        )}
                         {post.published ? "Published" : "Publish"}
                       </Button>
 
                       <div className="flex-1"></div>
 
                       <div className="opacity-80 group-hover:opacity-100 transition-opacity flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => openEditModal(post)} className="h-8 bg-slate-800/50 border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditModal(post)}
+                          className="h-8 bg-slate-800/50 border-slate-600 hover:bg-slate-700 text-slate-300 hover:text-white"
+                        >
                           <Edit className="h-3.5 w-3.5 mr-1.5" />
                           Edit
                         </Button>
@@ -687,11 +795,20 @@ const InterviewExperienceManager = () => {
         size="lg"
         footerActions={
           <>
-            <Button variant="outline" onClick={resetCreateForm} disabled={isSubmitting} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
+            <Button
+              variant="outline"
+              onClick={resetCreateForm}
+              disabled={isSubmitting}
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
+            >
               <X className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleCreatePost} disabled={isSubmitting} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
+            <Button
+              onClick={handleCreatePost}
+              disabled={isSubmitting}
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0"
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -707,7 +824,14 @@ const InterviewExperienceManager = () => {
           </>
         }
       >
-        <InterviewExperienceForm formData={formData} handleInputChange={handleInputChange} formErrors={formErrors} />
+        <InterviewExperienceForm
+          formData={formData}
+          handleInputChange={handleInputChange}
+          formErrors={formErrors}
+          imagePreview={imagePreview}
+          handleImageUpload={handleImageUpload}
+          handleImageRemove={handleImageRemove}
+        />
       </EnhancedModal>
 
       {/* Edit Modal */}
@@ -718,11 +842,20 @@ const InterviewExperienceManager = () => {
         size="lg"
         footerActions={
           <>
-            <Button variant="outline" onClick={resetEditForm} disabled={isSubmitting} className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all">
+            <Button
+              variant="outline"
+              onClick={resetEditForm}
+              disabled={isSubmitting}
+              className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all"
+            >
               <X className="h-4 w-4 mr-2" />
               Cancel
             </Button>
-            <Button onClick={handleEditPost} disabled={isSubmitting} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">
+            <Button
+              onClick={handleEditPost}
+              disabled={isSubmitting}
+              className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0"
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -738,21 +871,33 @@ const InterviewExperienceManager = () => {
           </>
         }
       >
-        <InterviewExperienceForm formData={formData} handleInputChange={handleInputChange} formErrors={formErrors} />
+        <InterviewExperienceForm
+          formData={formData}
+          handleInputChange={handleInputChange}
+          formErrors={formErrors}
+          imagePreview={imagePreview}
+          handleImageUpload={handleImageUpload}
+          handleImageRemove={handleImageRemove}
+        />
       </EnhancedModal>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Blog Post</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this blog post? This action cannot be undone and will immediately remove
-              the post from the website.
+              Are you sure you want to delete this blog post? This action cannot
+              be undone and will immediately remove the post from the website.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeletingPostId(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setDeletingPostId(null)}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeletePost}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -763,7 +908,7 @@ const InterviewExperienceManager = () => {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
-}
+  );
+};
 
-export default InterviewExperienceManager
+export default InterviewExperienceManager;

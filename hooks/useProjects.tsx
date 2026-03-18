@@ -23,94 +23,43 @@ export function useProjects() {
   useEffect(() => {
     // Initial load
     refetch()
-
-    // Subscribe to data service changes
-    const unsubscribe = projectsDataService.subscribe(refetch)
-
-    // Listen for custom events
-    const handleCustomEvent = (event: CustomEvent) => {
-      refetch()
-    }
-
-    // Listen for localStorage events (cross-tab sync)
-    const handleStorageEvent = (event: StorageEvent) => {
-      if (event.key === "projectsDataUpdate" || event.key === "projectsData") {
-        refetch()
-      }
-    }
-
-    // Listen for BroadcastChannel events
-    let broadcastChannel: BroadcastChannel | null = null
-    try {
-      broadcastChannel = new BroadcastChannel("projectsData")
-      broadcastChannel.onmessage = (event) => {
-        if (event.data.type === "UPDATE") {
-          refetch()
-        }
-      }
-    } catch (e) {
-      console.log("BroadcastChannel not supported")
-    }
-
-    // Listen for PostMessage events
-    const handlePostMessage = (event: MessageEvent) => {
-      if (event.data.type === "PROJECTS_DATA_UPDATE") {
-        refetch()
-      }
-    }
-
-    // Online/offline detection
-
-    // Add event listeners
-    window.addEventListener("projectsDataUpdated", handleCustomEvent as EventListener)
-    window.addEventListener("storage", handleStorageEvent)
-    window.addEventListener("message", handlePostMessage)
-
-    // Polling fallback for extra reliability
-    const pollInterval = setInterval(refetch, 30000) // 30 seconds
-
-    return () => {
-      unsubscribe()
-      window.removeEventListener("projectsDataUpdated", handleCustomEvent as EventListener)
-      window.removeEventListener("storage", handleStorageEvent)
-      window.removeEventListener("message", handlePostMessage)
-      broadcastChannel?.close()
-      clearInterval(pollInterval)
-    }
   }, [refetch])
 
-  const addProject = useCallback(async (project: Omit<ProjectData, "id">) => {
+  const addProject = useCallback(async (project: Omit<ProjectData, "id">, imageFile?: File) => {
     try {
       setError(null)
-      await projectsDataService.addProject(project)
+      await projectsDataService.addProject(project, imageFile)
+      refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to add project"
       setError(errorMessage)
       throw new Error(errorMessage)
     }
-  }, [])
+  }, [refetch])
 
-  const updateProject = useCallback(async (id: string, updates: Partial<ProjectData>) => {
+  const updateProject = useCallback(async (id: string, updates: Partial<ProjectData>, imageFile?: File) => {
     try {
       setError(null)
-      await projectsDataService.updateProject(id, updates)
+      await projectsDataService.updateProject(id, updates, imageFile)
+      refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to update project"
       setError(errorMessage)
       throw new Error(errorMessage)
     }
-  }, [])
+  }, [refetch])
 
   const deleteProject = useCallback(async (id: string) => {
     try {
       setError(null)
       await projectsDataService.deleteProject(id)
+      refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to delete project"
       setError(errorMessage)
       throw new Error(errorMessage)
     }
-  }, [])
+  }, [refetch])
 
   // const reorderProject = useCallback(async (id: string, direction: "up" | "down") => {
   //   try {

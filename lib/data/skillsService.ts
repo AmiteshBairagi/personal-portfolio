@@ -45,7 +45,7 @@ export const skillsService = {
         return skillsCache
       }
 
-      const { data } = await api.get<SkillItem[]>("/api/skills")
+      const { data } = await api.get<SkillItem[]>("/api/get-all-skills")
 
       // Group skills by category
       const groupedSkills: SkillCategory = {}
@@ -91,11 +91,10 @@ export const skillsService = {
   async addSkill(skill: Omit<SkillItem, "created_at" | "updated_at">): Promise<SkillItem> {
     try {
       const skillToInsert = {
-        ...skill,
-        is_active: skill.is_active ?? true,
+        ...skill
       }
 
-      const { data } = await api.post<SkillItem>("/api/skills", skillToInsert)
+      const { data } = await api.post<SkillItem>("/api/add-skill", skillToInsert)
 
       // Invalidate cache
       skillsCache = null
@@ -110,7 +109,7 @@ export const skillsService = {
   // Update a skill
   async updateSkill(skillId: string, updates: Partial<SkillItem>): Promise<SkillItem> {
     try {
-      const { data } = await api.put<SkillItem>(`/api/skills/${skillId}`, updates)
+      const { data } = await api.put<SkillItem>(`/api/update-skill/${skillId}`, updates)
 
       // Invalidate cache
       skillsCache = null
@@ -125,7 +124,7 @@ export const skillsService = {
   // Delete a skill
   async deleteSkill(skillId: string): Promise<void> {
     try {
-      await api.delete(`/api/skills/${skillId}`)
+      await api.delete(`/api/delete-skill/${skillId}`)
 
       // Invalidate cache
       skillsCache = null

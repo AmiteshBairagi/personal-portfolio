@@ -11,12 +11,9 @@ interface UseBlogRealTimeReturn {
   lastSyncTime: Date | null
 
   // CRUD operations
-  createPost: (
-    postData: Omit<BlogPost, "id" | "created_at" | "updated_at" | "display_order">,
-  ) => Promise<BlogPost | null>
-  updatePost: (id: string, updates: Partial<BlogPost>) => Promise<BlogPost | null>
+  createPost: (postData: Partial<BlogPost>, imageFile?: File) => Promise<BlogPost | null>
+  updatePost: (id: string, updates: Partial<BlogPost>, imageFile?: File) => Promise<BlogPost | null>
   deletePost: (id: string) => Promise<boolean>
-  reorderPost: (id: string, direction: "up" | "down") => Promise<boolean>
   toggleFeatured: (id: string) => Promise<boolean>
   togglePublished: (id: string) => Promise<boolean>
 
@@ -36,23 +33,15 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
   const [isOnline, setIsOnline] = useState(true)
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
 
-  // Handle real-time updates
-  const handleRealtimeUpdate = useCallback(() => {
-    console.log("Real-time update received for blog posts")
-    refreshData()
-  }, [])
 
-  // Initialize data and real-time subscription
+  // Initialize data
   const initializeData = useCallback(async () => {
     try {
       setIsLoading(true)
       setError(null)
 
-      // Initialize real-time subscription
-      blogDataManager.initializeSubscription(handleRealtimeUpdate)
-
       // Load initial data
-      const data = await blogDataManager.getAllBlogPosts(true)
+      const data = await blogDataManager.getAllBlogPosts()
       setPosts(data)
       setLastSyncTime(new Date())
       setIsOnline(true)
@@ -63,13 +52,13 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     } finally {
       setIsLoading(false)
     }
-  }, [handleRealtimeUpdate])
+  }, [])
 
   // Refresh data
   const refreshData = useCallback(async () => {
     try {
       setError(null)
-      const data = await blogDataManager.getAllBlogPosts(true)
+      const data = await blogDataManager.getAllBlogPosts()
       setPosts(data)
       setLastSyncTime(new Date())
       setIsOnline(true)
@@ -82,12 +71,10 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
 
   // CRUD Operations
   const createPost = useCallback(
-    async (
-      postData: Omit<BlogPost, "id" | "created_at" | "updated_at" | "display_order">,
-    ): Promise<BlogPost | null> => {
+    async (postData: Partial<BlogPost>, imageFile?: File): Promise<BlogPost | null> => {
       try {
         setError(null)
-        const newPost = await blogDataManager.createBlogPost(postData)
+        const newPost = await blogDataManager.createBlogPost(postData, imageFile)
         if (newPost) {
           await refreshData()
           return newPost
@@ -103,10 +90,10 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
   )
 
   const updatePost = useCallback(
-    async (id: string, updates: Partial<BlogPost>): Promise<BlogPost | null> => {
+    async (id: string, updates: Partial<BlogPost>, imageFile?: File): Promise<BlogPost | null> => {
       try {
         setError(null)
-        const updatedPost = await blogDataManager.updateBlogPost(id, updates)
+        const updatedPost = await blogDataManager.updateBlogPost(id, updates, imageFile)
         if (updatedPost) {
           await refreshData()
           return updatedPost
@@ -139,23 +126,6 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     [refreshData],
   )
 
-  const reorderPost = useCallback(
-    async (id: string, direction: "up" | "down"): Promise<boolean> => {
-      try {
-        setError(null)
-        const success = await blogDataManager.reorderBlogPost(id, direction)
-        if (success) {
-          await refreshData()
-        }
-        return success
-      } catch (err) {
-        console.error("Error reordering blog post:", err)
-        setError(err instanceof Error ? err.message : "Failed to reorder blog post")
-        return false
-      }
-    },
-    [refreshData],
-  )
 
   const toggleFeatured = useCallback(
     async (id: string): Promise<boolean> => {
@@ -202,12 +172,12 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
   )
 
   const getPublishedPosts = useCallback((): BlogPost[] => {
-    return posts.filter((post) => post.published && post.is_active)
+    return posts.filter((post) => post.published)
   }, [posts])
 
   const getFeaturedPosts = useCallback(
     (limit?: number): BlogPost[] => {
-      const featured = posts.filter((post) => post.featured && post.published && post.is_active)
+      const featured = posts.filter((post) => post.featured && post.published)
       return limit ? featured.slice(0, limit) : featured
     },
     [posts],
@@ -235,49 +205,10 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     }
   }, [])
 
-  // Network status monitoring
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true)
-      refreshData()
-    }
-
-    const handleOffline = () => {
-      setIsOnline(false)
-    }
-
-    window.addEventListener("online", handleOnline)
-    window.addEventListener("offline", handleOffline)
-
-    return () => {
-      window.removeEventListener("online", handleOnline)
-      window.removeEventListener("offline", handleOffline)
-    }
-  }, [refreshData])
-
   // Initialize on mount
   useEffect(() => {
     initializeData()
-
-    // Cleanup subscription on unmount
-    return () => {
-      blogDataManager.cleanup()
-    }
   }, [initializeData])
-
-  // Auto-refresh every 5 minutes when online
-  useEffect(() => {
-    if (!isOnline) return
-
-    const interval = setInterval(
-      () => {
-        refreshData()
-      },
-      5 * 60 * 1000,
-    ) // 5 minutes
-
-    return () => clearInterval(interval)
-  }, [isOnline, refreshData])
 
   return {
     posts,
@@ -288,7 +219,6 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     createPost,
     updatePost,
     deletePost,
-    reorderPost,
     toggleFeatured,
     togglePublished,
     refreshData,

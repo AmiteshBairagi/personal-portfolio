@@ -3,7 +3,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Plus, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { blogCategories } from "@/lib/blog-data"
 
 export interface BlogFormData {
@@ -36,12 +37,18 @@ export interface InterviewExperienceFormProps {
   formData: BlogFormData
   handleInputChange: (field: keyof BlogFormData, value: string | boolean) => void
   formErrors: Record<string, string>
+  imagePreview: string
+  handleImageUpload: (file: File) => void
+  handleImageRemove: () => void
 }
 
 export function InterviewExperienceForm({
   formData,
   handleInputChange,
   formErrors,
+  imagePreview,
+  handleImageUpload,
+  handleImageRemove,
 }: InterviewExperienceFormProps) {
   return (
     <div className="space-y-6">
@@ -166,14 +173,60 @@ export function InterviewExperienceForm({
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="image">Featured Image URL</Label>
-        <Input
-          id="image"
-          value={formData.image}
-          onChange={(e) => handleInputChange("image", e.target.value)}
-          placeholder="Enter image URL"
-          className="bg-slate-900/50 border-slate-700 text-white focus:border-cyan-500/50 focus:ring-cyan-500/20 placeholder:text-slate-500"
+      <div className="space-y-4">
+        <Label className="text-sm font-medium text-slate-300 mb-2 block">Featured Image</Label>
+
+        {imagePreview ? (
+          <div className="space-y-3">
+            <div className="relative w-full h-48 bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
+              <img
+                src={imagePreview || "/placeholder.svg"}
+                alt="Featured image preview"
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleImageRemove}
+                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 shadow-lg transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full bg-slate-800/50 border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white"
+              onClick={() => document.getElementById("blog-image-upload")?.click()}
+            >
+              Change Image
+            </Button>
+          </div>
+        ) : (
+          <div
+            className="border-2 border-dashed border-slate-700 bg-slate-900/30 rounded-lg p-8 text-center cursor-pointer hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all group"
+            onClick={() => document.getElementById("blog-image-upload")?.click()}
+          >
+            <div className="space-y-3">
+              <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center mx-auto group-hover:scale-110 transition-transform border border-slate-700 group-hover:border-cyan-500/50">
+                <Plus className="w-6 h-6 text-slate-400 group-hover:text-cyan-400" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-slate-300 font-medium group-hover:text-cyan-400 transition-colors">Click to upload featured image</p>
+                <p className="text-xs text-slate-500">JPG, PNG or WebP, max 10MB</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <input
+          id="blog-image-upload"
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (file) handleImageUpload(file)
+          }}
+          className="hidden"
         />
       </div>
 

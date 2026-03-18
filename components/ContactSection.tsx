@@ -26,7 +26,6 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    subject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -56,29 +55,23 @@ const ContactSection = () => {
     setIsSubmitting(true)
 
     try {
-      const service_id = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-      const template_id = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-      const user_id = process.env.NEXT_PUBLIC_EMAILJS_USER_ID;
+      // const service_id = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      // const template_id = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+      // const user_id = process.env.NEXT_PUBLIC_EMAILJS_USER_ID;
 
-      const template_params = {
-        name: formData.name,
-        email: formData.email,
-        message: formData.message
-      }
+      // const template_params = {
+      //   name: formData.name,
+      //   email: formData.email,
+      //   message: formData.message
+      // }
 
-      const response = await axios.post("https://api.emailjs.com/api/v1.0/email/send",
-        {
-          service_id: service_id,
-          template_id: template_id,
-          user_id: user_id,
-          template_params: template_params
-        }
-      );
+      const base_url = process.env.NEXT_PUBLIC_API_URL;
+
+      const response = await axios.post(`${base_url}/api/add-lead`, formData);
       if (response.status === 200) {
         setFormData({
           name: "",
           email: "",
-          subject: "",
           message: "",
         })
 
@@ -87,6 +80,7 @@ const ContactSection = () => {
 
       alert("Message sent successfully!")
     } catch (error) {
+      console.log(error);
       alert("Failed to send message. Please try again.")
     } finally {
       setIsSubmitting(false)

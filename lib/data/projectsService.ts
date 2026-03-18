@@ -34,7 +34,6 @@ class ProjectsDataService {
   private static instance: ProjectsDataService
   private cache: { data: ProjectData[]; timestamp: number } | null = null
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
-  private listeners: Set<() => void> = new Set()
 
   private constructor() {
     // Data is loaded lazily on first getData() call
@@ -58,8 +57,6 @@ class ProjectsDataService {
         data: transformedData,
         timestamp: Date.now(),
       }
-
-      this.notifyListeners()
     } catch (error) {
       console.error("Unexpected error fetching projects:", error)
     }
@@ -109,27 +106,6 @@ class ProjectsDataService {
     }
   }
 
-  private notifyListeners() {
-    this.listeners.forEach((listener) => listener())
-
-    // Broadcast to other tabs/windows
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("projectsDataUpdated"))
-      localStorage.setItem("projectsDataUpdate", Date.now().toString())
-
-      try {
-        const channel = new BroadcastChannel("projectsData")
-        channel.postMessage({ type: "UPDATE" })
-      } catch (e) {
-        // BroadcastChannel not supported
-      }
-    }
-  }
-
-  subscribe(listener: () => void) {
-    this.listeners.add(listener)
-    return () => this.listeners.delete(listener)
-  }
 
   getData(): ProjectData[] {
     // Check cache validity
@@ -142,10 +118,29 @@ class ProjectsDataService {
     return this.cache?.data ? [...this.cache.data] : []
   }
 
-  async addProject(project: Omit<ProjectData, "id">): Promise<void> {
+  async addProject(project: Omit<ProjectData, "id">, imageFile?: File): Promise<void> {
     try {
       const dbData = this.transformToDatabase(project)
-      await api.post("/api/projects", dbData)
+      const formData = new FormData()
+
+      Object.keys(dbData).forEach(key => {
+        const value = dbData[key]
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(v => formData.append(key, String(v)))
+          } else if (typeof value === 'boolean') {
+            formData.append(key, value.toString())
+          } else {
+            formData.append(key, String(value))
+          }
+        }
+      })
+
+      if (imageFile) {
+        formData.append('imageFile', imageFile)
+      }
+
+      await api.post("/api/projects", formData)
       await this.loadData()
     } catch (error) {
       console.error("Error adding project:", error)
@@ -153,10 +148,29 @@ class ProjectsDataService {
     }
   }
 
-  async updateProject(id: string, updates: Partial<ProjectData>): Promise<void> {
+  async updateProject(id: string, updates: Partial<ProjectData>, imageFile?: File): Promise<void> {
     try {
       const dbData = this.transformToDatabase(updates)
-      await api.put(`/api/projects/${id}`, dbData)
+      const formData = new FormData()
+
+      Object.keys(dbData).forEach(key => {
+        const value = dbData[key]
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(v => formData.append(key, String(v)))
+          } else if (typeof value === 'boolean') {
+            formData.append(key, value.toString())
+          } else {
+            formData.append(key, String(value))
+          }
+        }
+      })
+
+      if (imageFile) {
+        formData.append('imageFile', imageFile)
+      }
+
+      await api.put(`/api/projects/${id}`, formData)
       await this.loadData()
     } catch (error) {
       console.error("Error updating project:", error)

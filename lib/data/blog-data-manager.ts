@@ -1,318 +1,225 @@
-import { api } from '@/lib/axios'
+import { api } from "@/lib/axios";
 
 export interface BlogPost {
-  id: string
-  title: string
-  slug: string
-  excerpt: string
-  content: string
-  author: string
-  published_at: string
-  updated_at: string
-  created_at: string
-  read_time: number
-  tags: string[]
-  category: string
-  image: string
-  featured: boolean
-  published: boolean
-  display_order: number
-  is_active: boolean
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  published_at: string;
+  updated_at: string;
+  created_at: string;
+  read_time: number;
+  tags: string[];
+  category: string;
+  image: string;
+  featured: boolean;
+  published: boolean;
 }
 
-// Cache management
-let blogCache: BlogPost[] | null = null
-let cacheTimestamp: number = 0
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-
 export const blogDataManager = {
-  // Initialize subscription — now a no-op (no Supabase real-time)
-  initializeSubscription: (callback?: () => void) => {
-    // No real-time subscription; data refreshes on manual page reload
-  },
-
-  // Cleanup — no-op
-  cleanup: () => {},
-
-  // Get all blog posts with caching
-  getAllBlogPosts: async (forceRefresh = false): Promise<BlogPost[]> => {
-    const now = Date.now()
-
-    // Return cached data if valid and not forcing refresh
-    if (!forceRefresh && blogCache && (now - cacheTimestamp) < CACHE_DURATION) {
-      return blogCache
-    }
-
+  // Get all blog posts
+  getAllBlogPosts: async (): Promise<BlogPost[]> => {
     try {
-      const { data } = await api.get<BlogPost[]>('/api/blog-posts')
-
-      // Transform data
-      const transformedData = (data || []).map(post => ({
-        ...post,
-        tags: post.tags || []
-      }))
-
-      // Update cache
-      blogCache = transformedData
-      cacheTimestamp = now
-
-      return transformedData
+      const { data } = await api.get<BlogPost[]>("/api/blog-posts");
+      return data ?? [];
     } catch (error) {
-      console.error('Error in getAllBlogPosts:', error)
-      return blogCache || []
+      console.error("Error in getAllBlogPosts:", error);
+      return [];
     }
   },
 
   // Get published blog posts only
-  getPublishedBlogPosts: async (forceRefresh = false): Promise<BlogPost[]> => {
-    const allPosts = await blogDataManager.getAllBlogPosts(forceRefresh)
-    return allPosts.filter(post => post.published && post.is_active)
+  getPublishedBlogPosts: async (): Promise<BlogPost[]> => {
+    try {
+      const { data } = await api.get<BlogPost[]>("/api/blog-posts/published");
+      return data ?? [];
+    } catch (error) {
+      console.error("Error in getPublishedBlogPosts:", error);
+      return [];
+    }
   },
 
   // Get featured blog posts
   getFeaturedBlogPosts: async (limit?: number): Promise<BlogPost[]> => {
-    const allPosts = await blogDataManager.getAllBlogPosts()
-    const featured = allPosts.filter(post => post.featured && post.published && post.is_active)
-    return limit ? featured.slice(0, limit) : featured
+    try {
+      const { data } = await api.get<BlogPost[]>("/api/blog-posts/featured");
+      const featured = data ?? [];
+      return limit ? featured.slice(0, limit) : featured;
+    } catch (error) {
+      console.error("Error in getFeaturedBlogPosts:", error);
+      return [];
+    }
   },
 
   // Get blog post by slug
   getBlogPostBySlug: async (slug: string): Promise<BlogPost | null> => {
     try {
-      const { data } = await api.get<BlogPost>(`/api/blog-posts/slug/${slug}`)
-
-      if (!data) return null
-
-      return {
-        ...data,
-        tags: data.tags || []
-      }
+      const { data } = await api.get<BlogPost>(`/api/blog-posts/slug/${slug}`);
+      return data || null;
     } catch (error) {
-      console.error('Error in getBlogPostBySlug:', error)
-      return null
+      console.error("Error in getBlogPostBySlug:", error);
+      return null;
     }
   },
 
   // Get blog post by ID
   getBlogPostById: async (id: string): Promise<BlogPost | null> => {
     try {
-      const { data } = await api.get<BlogPost>(`/api/blog-posts/${id}`)
-
-      if (!data) return null
-
-      return {
-        ...data,
-        tags: data.tags || []
-      }
+      const { data } = await api.get<BlogPost>(`/api/blog-posts/${id}`);
+      return data || null;
     } catch (error) {
-      console.error('Error in getBlogPostById:', error)
-      return null
+      console.error("Error in getBlogPostById:", error);
+      return null;
     }
   },
 
   // Create new blog post
-  createBlogPost: async (postData: Omit<BlogPost, 'id' | 'created_at' | 'updated_at' | 'display_order'>): Promise<BlogPost | null> => {
+  async createBlogPost(postData: Partial<BlogPost>, imageFile?: File) {
     try {
-      // Generate slug if not provided
-      let slug = postData.slug
-      if (!slug) {
-        slug = postData.title
-          .toLowerCase()
-          .trim()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/[\s_-]+/g, '-')
-          .replace(/^-+|-+$/g, '')
+      const formData = new FormData();
+
+      // append all text fields
+      Object.entries(postData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach((v) => formData.append(key, v));
+          } else {
+            formData.append(key, value as string);
+          }
+        }
+      });
+
+      // append image file
+      if (imageFile) {
+        formData.append("image", imageFile);
       }
 
-      // Calculate read time
-      const readTime = Math.max(1, Math.ceil(postData.content.trim().split(/\s+/).length / 200))
+      const response = await api.post(
+        "http://localhost:8080/api/posts",
+        formData,
+      );
 
-      const { data } = await api.post<BlogPost>('/api/blog-posts', {
-        ...postData,
-        slug,
-        read_time: readTime,
-        tags: postData.tags || []
-      })
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return {
-        ...data,
-        tags: data.tags || []
-      }
+      return response.data;
     } catch (error) {
-      console.error('Error in createBlogPost:', error)
-      return null
+      console.error("Error creating blog post:", error);
+      return null;
     }
   },
 
   // Update blog post
-  updateBlogPost: async (id: string, updates: Partial<BlogPost>): Promise<BlogPost | null> => {
+  updateBlogPost: async (
+    id: string,
+    updates: Partial<BlogPost>,
+    imageFile?: File,
+  ): Promise<BlogPost | null> => {
     try {
-      // If title is being updated, regenerate slug
-      if (updates.title) {
-        const newSlug = updates.title
-          .toLowerCase()
-          .trim()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/[\s_-]+/g, '-')
-          .replace(/^-+|-+$/g, '')
-        updates.slug = newSlug
+      const formData = new FormData();
+
+      Object.keys(updates).forEach((key) => {
+        const value = updates[key as keyof BlogPost];
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach((v) => formData.append(key, v));
+          } else if (typeof value === "boolean") {
+            formData.append(key, value.toString());
+          } else {
+            formData.append(key, String(value));
+          }
+        }
+      });
+
+      if (imageFile) {
+        formData.append("imageFile", imageFile);
       }
 
-      // Recalculate read time if content is updated
-      if (updates.content) {
-        updates.read_time = Math.max(1, Math.ceil(updates.content.trim().split(/\s+/).length / 200))
-      }
-
-      const { data } = await api.put<BlogPost>(`/api/blog-posts/${id}`, updates)
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return {
-        ...data,
-        tags: data.tags || []
-      }
+      const { data } = await api.put<BlogPost>(
+        `/api/blog-posts/${id}`,
+        formData,
+      );
+      return data || null;
     } catch (error) {
-      console.error('Error in updateBlogPost:', error)
-      return null
+      console.error("Error in updateBlogPost:", error);
+      return null;
     }
   },
 
-  // Delete blog post (soft delete)
+  // Delete blog post
   deleteBlogPost: async (id: string): Promise<boolean> => {
     try {
-      await api.put(`/api/blog-posts/${id}`, { is_active: false })
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return true
+      await api.delete(`/api/blog-posts/${id}`);
+      return true;
     } catch (error) {
-      console.error('Error in deleteBlogPost:', error)
-      return false
-    }
-  },
-
-  // Reorder blog posts
-  reorderBlogPost: async (id: string, direction: 'up' | 'down'): Promise<boolean> => {
-    try {
-      // Get current post
-      const currentPost = await blogDataManager.getBlogPostById(id)
-      if (!currentPost) return false
-
-      // Get all posts ordered by display_order
-      const allPosts = await blogDataManager.getAllBlogPosts(true)
-      const currentIndex = allPosts.findIndex(post => post.id === id)
-
-      if (currentIndex === -1) return false
-
-      let targetIndex: number
-      if (direction === 'up' && currentIndex > 0) {
-        targetIndex = currentIndex - 1
-      } else if (direction === 'down' && currentIndex < allPosts.length - 1) {
-        targetIndex = currentIndex + 1
-      } else {
-        return false // Can't move further
-      }
-
-      const targetPost = allPosts[targetIndex]
-
-      // Swap display orders
-      await api.put(`/api/blog-posts/${currentPost.id}`, { display_order: targetPost.display_order })
-      await api.put(`/api/blog-posts/${targetPost.id}`, { display_order: currentPost.display_order })
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return true
-    } catch (error) {
-      console.error('Error in reorderBlogPost:', error)
-      return false
+      console.error("Error in deleteBlogPost:", error);
+      return false;
     }
   },
 
   // Toggle featured status
   toggleFeatured: async (id: string): Promise<boolean> => {
     try {
-      const currentPost = await blogDataManager.getBlogPostById(id)
-      if (!currentPost) return false
-
-      await api.put(`/api/blog-posts/${id}`, { featured: !currentPost.featured })
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return true
+      const currentPost = await blogDataManager.getBlogPostById(id);
+      if (!currentPost) return false;
+      await api.put(`/api/blog-posts/${id}`, {
+        featured: !currentPost.featured,
+      });
+      return true;
     } catch (error) {
-      console.error('Error in toggleFeatured:', error)
-      return false
+      console.error("Error in toggleFeatured:", error);
+      return false;
     }
   },
 
   // Toggle published status
   togglePublished: async (id: string): Promise<boolean> => {
     try {
-      const currentPost = await blogDataManager.getBlogPostById(id)
-      if (!currentPost) return false
-
-      await api.put(`/api/blog-posts/${id}`, { published: !currentPost.published })
-
-      // Invalidate cache
-      blogCache = null
-      cacheTimestamp = 0
-
-      return true
+      const currentPost = await blogDataManager.getBlogPostById(id);
+      if (!currentPost) return false;
+      await api.put(`/api/blog-posts/${id}`, {
+        published: !currentPost.published,
+      });
+      return true;
     } catch (error) {
-      console.error('Error in togglePublished:', error)
-      return false
+      console.error("Error in togglePublished:", error);
+      return false;
     }
   },
 
   // Search blog posts
-  searchBlogPosts: async (query: string, category?: string): Promise<BlogPost[]> => {
+  searchBlogPosts: async (
+    query: string,
+    category?: string,
+  ): Promise<BlogPost[]> => {
     try {
-      const params: Record<string, string> = {}
-      if (query.trim()) params.search = query
-      if (category && category !== 'All') params.category = category
+      const params: Record<string, string> = {};
+      if (query.trim()) params.search = query;
+      if (category && category !== "All") params.category = category;
 
-      const { data } = await api.get<BlogPost[]>('/api/blog-posts', { params })
-
-      return (data || []).map(post => ({
-        ...post,
-        tags: post.tags || []
-      }))
+      const { data } = await api.get<BlogPost[]>("/api/blog-posts/search", {
+        params,
+      });
+      return data ?? [];
     } catch (error) {
-      console.error('Error in searchBlogPosts:', error)
-      return []
+      console.error("Error in searchBlogPosts:", error);
+      return [];
     }
   },
 
   // Get blog posts by category
   getBlogPostsByCategory: async (category: string): Promise<BlogPost[]> => {
-    if (category === 'All') {
-      return blogDataManager.getPublishedBlogPosts()
+    if (category === "All") {
+      return blogDataManager.getPublishedBlogPosts();
     }
 
     try {
-      const { data } = await api.get<BlogPost[]>('/api/blog-posts', {
+      const { data } = await api.get<BlogPost[]>("/api/blog-posts/category", {
         params: { category },
-      })
-
-      return (data || []).map(post => ({
-        ...post,
-        tags: post.tags || []
-      }))
+      });
+      return data ?? [];
     } catch (error) {
-      console.error('Error in getBlogPostsByCategory:', error)
-      return []
+      console.error("Error in getBlogPostsByCategory:", error);
+      return [];
     }
-  }
-}
+  },
+};

@@ -161,6 +161,7 @@ const ProjectManager = () => {
       const cleanedTechnologies = editForm.technologies ? editForm.technologies.map(t => t.trim()).filter(Boolean) : []
       const projectData: Partial<ProjectData> = {
         ...editForm,
+        image: imageFile ? "" : imagePreview,
         technologies: cleanedTechnologies,
         details: {
           problem: editForm.details?.problem || "",
@@ -173,11 +174,11 @@ const ProjectManager = () => {
       }
 
       if (isAdding) {
-        await addProject(projectData as Omit<ProjectData, "id">)
+        await addProject(projectData as Omit<ProjectData, "id">, imageFile || undefined)
         toast.success("Project added successfully!")
         setIsAdding(false)
       } else if (editingItem) {
-        await updateProject(editingItem.id, projectData)
+        await updateProject(editingItem.id, projectData, imageFile || undefined)
         toast.success("Project updated successfully!")
         setIsEditing(false)
       }

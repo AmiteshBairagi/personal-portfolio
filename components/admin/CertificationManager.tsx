@@ -149,23 +149,28 @@ const CertificationManager = () => {
   const handleSave = async () => {
     setIsSaving(true)
     try {
+      const skillsArray = typeof editForm.skills === "string" 
+        ? (editForm.skills as string).split(",").map(s => s.trim()).filter(Boolean)
+        : editForm.skills.map(s => s.trim()).filter(Boolean)
+
       const cleanedForm = {
         ...editForm,
-        skills: editForm.skills ? editForm.skills.map(s => s.trim()).filter(Boolean) : []
+        image: imageFile ? "" : imagePreview,
+        skills: skillsArray
       }
 
       let result
       if (isAdding) {
-        result = await addCertification(cleanedForm)
+        result = await addCertification(cleanedForm, imageFile || undefined)
         if (result.success) {
           setIsAdding(false)
-          alert("Certification added successfully!")
+          toast.success("Certification added successfully!")
         }
       } else {
-        result = await updateCertification(cleanedForm.id, cleanedForm)
+        result = await updateCertification(cleanedForm.id, cleanedForm, imageFile || undefined)
         if (result.success) {
           setIsEditing(false)
-          alert("Certification updated successfully!")
+          toast.success("Certification updated successfully!")
         }
       }
 

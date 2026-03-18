@@ -32,9 +32,12 @@ const useCertifications = () => {
   }, [loadData])
 
   const addCertification = useCallback(
-    async (certification: Omit<CertificationItem, "id" | "created_at" | "updated_at">) => {
+    async (
+      certification: Omit<CertificationItem, "id" | "created_at" | "updated_at">,
+      imageFile?: File
+    ) => {
       try {
-        const result = await certificationService.addItem(certification)
+        const result = await certificationService.addItem(certification, imageFile)
         if (result.success) {
           // Data will be updated via real-time subscription
           return { success: true, data: result.data }
@@ -52,23 +55,28 @@ const useCertifications = () => {
     [],
   )
 
-  const updateCertification = useCallback(async (id: string, updates: Partial<CertificationItem>) => {
-    try {
-      const result = await certificationService.updateItem(id, updates)
-      if (result.success) {
-        // Data will be updated via real-time subscription
-        return { success: true }
-      } else {
-        setError(result.error || "Failed to update certification")
-        return { success: false, error: result.error }
+  const updateCertification = useCallback(
+    async (
+      id: string, 
+      updates: Partial<CertificationItem>,
+      imageFile?: File
+    ) => {
+      try {
+        const result = await certificationService.updateItem(id, updates, imageFile)
+        if (result.success) {
+          // Data will be updated via real-time subscription
+          return { success: true }
+        } else {
+          setError(result.error || "Failed to update certification")
+          return { success: false, error: result.error }
+        }
+      } catch (err) {
+        const errorMsg = "Failed to update certification"
+        setError(errorMsg)
+        console.error("Error updating certification:", err)
+        return { success: false, error: errorMsg }
       }
-    } catch (err) {
-      const errorMsg = "Failed to update certification"
-      setError(errorMsg)
-      console.error("Error updating certification:", err)
-      return { success: false, error: errorMsg }
-    }
-  }, [])
+    }, [])
 
   const deleteCertification = useCallback(async (id: string) => {
     try {

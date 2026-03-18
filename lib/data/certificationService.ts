@@ -80,12 +80,27 @@ export const certificationService = {
   // Add new certification
   async addItem(
     item: Omit<CertificationItem, "id" | "created_at" | "updated_at">,
+    imageFile?: File
   ): Promise<{ success: boolean; error?: string; data?: CertificationItem }> {
     try {
-      const { data } = await api.post<CertificationItem>("/api/certifications", {
-        ...item,
-        skills: item.skills || [],
+      const formData = new FormData()
+      
+      Object.keys(item).forEach(key => {
+        const value = item[key as keyof typeof item]
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(v => formData.append(key, v))
+          } else {
+            formData.append(key, String(value))
+          }
+        }
       })
+
+      if (imageFile) {
+        formData.append('imageFile', imageFile)
+      }
+
+      const { data } = await api.post<CertificationItem>("/api/certifications", formData)
 
       // Clear cache
       cachedData = null
@@ -101,12 +116,33 @@ export const certificationService = {
   },
 
   // Update certification
-  async updateItem(id: string, updates: Partial<CertificationItem>): Promise<{ success: boolean; error?: string }> {
+  async updateItem(
+    id: string, 
+    updates: Partial<CertificationItem>,
+    imageFile?: File
+  ): Promise<{ success: boolean; error?: string }> {
     try {
+      const formData = new FormData()
+      
       // Remove readonly fields
       const { created_at, updated_at, ...updateData } = updates
 
-      await api.put(`/api/certifications/${id}`, updateData)
+      Object.keys(updateData).forEach(key => {
+        const value = updateData[key as keyof typeof updateData]
+        if (value !== undefined && value !== null) {
+          if (Array.isArray(value)) {
+            value.forEach(v => formData.append(key, v))
+          } else {
+            formData.append(key, String(value))
+          }
+        }
+      })
+
+      if (imageFile) {
+        formData.append('imageFile', imageFile)
+      }
+
+      await api.put(`/api/certifications/${id}`, formData)
 
       // Clear cache
       cachedData = null
