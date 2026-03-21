@@ -15,11 +15,14 @@ interface BlogStore {
   deletePost: (id: string) => boolean
   toggleFeatured: (id: string) => boolean
   togglePublished: (id: string) => boolean
+  fetchPostsByCategory: (category: string) => Promise<void>
+  isLoading: boolean
 }
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
   posts: [],
   isLoaded: false,
+  isLoading: false,
 
   initializeStore: () => {
     const state = get()
@@ -58,6 +61,37 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     return posts
       .filter((post) => post.category === category && post.published)
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  },
+
+  fetchPostsByCategory: async (category: string) => {
+    const { blogDataManager } = await import("@/lib/data/blog-data-manager")
+    set({ isLoading: true })
+    try {
+      const posts = await blogDataManager.getBlogPostsByCategory(category)
+      // Map API response to BlogPost type if necessary
+      // Note: API fields are snake_case, project uses camelCase
+      const formattedPosts: BlogPost[] = posts.map(p => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        excerpt: p.excerpt,
+        content: p.content,
+        author: p.author,
+        publishedAt: p.published_at,
+        updatedAt: p.updated_at,
+        readTime: p.read_time,
+        tags: p.tags,
+        category: p.category,
+        image: p.image,
+        featured: p.featured,
+        published: p.published
+      }))
+      set({ posts: formattedPosts, isLoaded: true })
+    } catch (error) {
+      console.error("Failed to fetch posts:", error)
+    } finally {
+      set({ isLoading: false })
+    }
   },
 
   addPost: (postData) => {

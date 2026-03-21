@@ -18,20 +18,20 @@ interface BlogPageClientProps {
 }
 
 export default function BlogPageClient({ categories, initialCategory, initialSearchTerm }: BlogPageClientProps) {
-  const { posts, isLoaded, initializeStore, getPublishedPosts, getPostsByCategory } = useBlogStore()
+  const { posts, isLoaded, isLoading, fetchPostsByCategory, getPublishedPosts, getPostsByCategory } = useBlogStore()
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
   const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [filteredPosts, setFilteredPosts] = useState<BlogPost[]>([])
 
-  // Initialize store on mount
+  // Initialize store and fetch initial posts
   useEffect(() => {
-    initializeStore()
-  }, [initializeStore])
+    fetchPostsByCategory(selectedCategory)
+  }, [fetchPostsByCategory, selectedCategory])
 
   // Update filtered posts when store loads or filters change
   useEffect(() => {
-    if (!isLoaded || posts.length === 0) return
+    if (!isLoaded) return
 
     let basePosts = selectedCategory === "All" ? getPublishedPosts() : getPostsByCategory(selectedCategory)
 
@@ -95,18 +95,49 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
             Back to Portfolio
           </Link>
         </motion.div>
-        
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
+
+        {/* <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h1 className="text-4xl md:text-4xl font-bold text-white mb-6">My Interview Experiences</h1>
+        </motion.div> */}
+
+        {/* Category Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  setSelectedCategory(category)
+                  // The useEffect handles the store update/filtering
+                }}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  selectedCategory === category
+                    ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 border-cyan-400"
+                    : "bg-slate-800/50 text-slate-400 border-slate-700/50 hover:bg-slate-800 hover:text-slate-200 border"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
-        {/* Filters */}
+        {/* Filters and Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-12 flex justify-end"
+          className="mb-12 flex flex-col md:flex-row gap-4 items-center justify-between"
         >
+          <div className="text-slate-400 text-sm">
+            Showing <span className="text-cyan-400 font-semibold">{filteredPosts.length}</span> articles
+          </div>
+          
           <Card className="bg-slate-800/50 border-slate-700/50 w-full lg:w-1/3">
             <CardContent className="p-2">
               <div className="flex flex-col lg:flex-row gap-4">
@@ -121,15 +152,32 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                     />
                   </div>
                 </div>
-
-
               </div>
             </CardContent>
           </Card>
         </motion.div>
 
         {/* Posts Grid */}
-        {filteredPosts.length === 0 ? (
+        {isLoading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="bg-slate-800/50 border-slate-700/50 animate-pulse">
+                <div className="h-48 bg-slate-700 rounded-t-lg"></div>
+                <CardHeader>
+                  <div className="h-4 bg-slate-700 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-slate-700 rounded w-full"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-slate-700 rounded"></div>
+                    <div className="h-3 bg-slate-700 rounded w-5/6"></div>
+                    <div className="h-3 bg-slate-700 rounded w-4/5"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredPosts.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
             <Card className="bg-slate-800/50 border-slate-700/50 p-12 text-center">
               <BookOpen className="w-16 h-16 text-slate-500 mx-auto mb-4" />

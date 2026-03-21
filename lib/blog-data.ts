@@ -501,6 +501,9 @@ This stack provides a powerful foundation for modern web applications with minim
 export const blogCategories = [
   "All",
   "Interview Experience",
+  "Technical Guidance",
+  "My Journey",
+  "About Life",
   "Technical Tutorial",
   "Career Advice",
   "Web Development",
