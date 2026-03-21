@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Github, Linkedin, Twitter, Mail, ArrowDown, Sparkles, Router } from "lucide-react"
+import { SiGeeksforgeeks, SiLeetcode } from "react-icons/si";
 import Image from "next/image"
 import Link from "next/link"
 import { ReactTyped } from "react-typed"
@@ -9,30 +10,35 @@ import { ReactTyped } from "react-typed"
 
 const HeroSection = () => {
 
-  const skills = ["React", "Node.js", "TypeScript", "Python", "Next.js", "MongoDB"]
-  const description = "Crafting digital experiences with modern technologies. Passionate about clean code, innovative solutions, and turning ideas into reality."
+  const skills = ["Java", "Spring Boot", "React", "PostgreSQL", "MySQL", "MongoDB"]
+  const description = "Building scalable, real-world software with modern technologies. Focused on clean architecture, performance, and delivering impactful solutions."
 
 
   // Use heroData with fallbacks
   const socialIcons = [
     {
       icon: Github,
-      href: "#",
+      href: "https://github.com/AmiteshBairagi?tab=repositories",
       label: "GitHub",
     },
     {
       icon: Linkedin,
-      href: "#",
+      href: "https://www.linkedin.com/in/amitesh-bairagi/",
       label: "LinkedIn",
     },
     {
-      icon: Twitter,
-      href: "#",
-      label: "Twitter",
+      icon: SiLeetcode,
+      href: "https://leetcode.com/u/AmiteshBairagi/",
+      label: "Leetcode",
+    },
+    {
+      icon: SiGeeksforgeeks ,
+      href: "https://www.geeksforgeeks.org/profile/amiteshbairagi?tab=activity",
+      label: "GFG",
     },
     {
       icon: Mail,
-      href: "#",
+      href: "#contact",
       label: "Email",
     },
   ]
