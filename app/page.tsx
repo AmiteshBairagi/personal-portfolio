@@ -48,12 +48,6 @@ export default function Home() {
             </section>
           </OptimizedAnimation>
 
-          {/* <OptimizedAnimation delay={0.1}>
-            <section id="blog">
-              <FeaturedBlogSection />
-            </section>
-          </OptimizedAnimation> */}
-
           <OptimizedAnimation delay={0.1}>
             <section id="contact">
               <ContactSection />
