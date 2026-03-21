@@ -12,9 +12,9 @@ const AboutSection = () => {
     description:
       "I'm a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable solutions and turning complex problems into simple, beautiful designs.",
     skills: ["React", "Node.js", "TypeScript", "Python", "Next.js", "MongoDB"],
-    experience_years: 5,
+    experience_years: 2,
     image_url: "/new-hero-image-removebg-preview.png",
-    no_of_projects: 10
+    no_of_projects: 7
   }
 
   const skills = aboutData.skills
