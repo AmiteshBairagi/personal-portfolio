@@ -76,11 +76,11 @@ export function useSkills() {
 
   // Update skill
   const updateSkill = useCallback(
-    async (skillId: string, updates: Partial<SkillItem>) => {
+    async (updates: Partial<SkillItem>) => {
       try {
         setIsSaving(true)
         setError(null)
-        await skillsService.updateSkill(skillId, updates)
+        await skillsService.updateSkill(updates)
         await loadData()
         await loadAllSkills()
         return { success: true }

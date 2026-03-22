@@ -4,8 +4,6 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useCategories } from "@/hooks/useCategories"
@@ -18,11 +16,11 @@ const CategoryManager = () => {
   const {
     data: categoriesData,
     isLoading,
-    error,
+    // error,
     addCategory,
     updateCategory,
     deleteCategory,
-    refetch,
+    refreshData,
   } = useCategories()
 
   const [isEditing, setIsEditing] = useState(false)
@@ -112,31 +110,31 @@ const CategoryManager = () => {
     setEditForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
-          <span className="text-slate-400 font-medium pt-2">Loading categories data...</span>
-        </div>
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center py-12">
+  //       <div className="flex flex-col items-center space-y-4">
+  //         <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(6,182,212,0.5)]"></div>
+  //         <span className="text-slate-400 font-medium pt-2">Loading categories data...</span>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center space-y-4 bg-slate-800/40 backdrop-blur-md border border-red-500/20 p-6 rounded-xl shadow-lg">
-          <div className="text-red-400 text-lg font-semibold">Error loading categories</div>
-          <p className="text-slate-400 font-medium">{error}</p>
-          <Button onClick={refetch} className="bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white shadow-lg shadow-red-500/25 border-0">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Retry
-          </Button>
-        </div>
-      </div>
-    )
-  }
+  // if (error) {
+  //   return (
+  //     <div className="flex items-center justify-center py-12">
+  //       <div className="text-center space-y-4 bg-slate-800/40 backdrop-blur-md border border-red-500/20 p-6 rounded-xl shadow-lg">
+  //         <div className="text-red-400 text-lg font-semibold">Error loading categories</div>
+  //         <p className="text-slate-400 font-medium">{error}</p>
+  //         <Button onClick={refetch} className="bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-400 hover:to-rose-400 text-white shadow-lg shadow-red-500/25 border-0">
+  //           <RefreshCw className="w-4 h-4 mr-2" />
+  //           Retry
+  //         </Button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   const sortedCategories = [...categoriesData].sort((a, b) => a.order - b.order)
 
@@ -152,7 +150,7 @@ const CategoryManager = () => {
           </div>
         </div>
         <div className="flex space-x-3">
-          <Button onClick={refetch} variant="outline" className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 w-10 p-0" title="Refresh">
+          <Button onClick={refreshData} variant="outline" className="bg-slate-800/50 border border-slate-700 hover:bg-slate-700 text-slate-300 hover:text-white transition-all h-10 w-10 p-0" title="Refresh">
             <RefreshCw className="w-4 h-4" />
           </Button>
           <Button onClick={handleAdd} className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-lg shadow-cyan-500/25 border-0">

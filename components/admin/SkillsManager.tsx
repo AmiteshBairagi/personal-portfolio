@@ -4,8 +4,6 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useSkills } from "@/hooks/useSkills"
@@ -41,11 +39,11 @@ const SkillsManager = () => {
   const [editForm, setEditForm] = useState<Partial<SkillItem>>({
     id: "",
     name: "",
-    level: 0,
+    //level: 0,
     projects: [],
     yearsOfExperience: "",
-    category: "Frontend",
-    is_active: true,
+    category: "",
+    //is_active: true,
   })
   const [successMessage, setSuccessMessage] = useState<string>("")
   const [availableCategories, setAvailableCategories] = useState<string[]>([])
@@ -88,7 +86,7 @@ const SkillsManager = () => {
       projects: [],
       yearsOfExperience: "",
       category: "Frontend",
-      is_active: true,
+      //is_active: true,
     })
     setIsAdding(true)
   }
@@ -129,7 +127,8 @@ const SkillsManager = () => {
         setTimeout(() => setSuccessMessage(""), 3000)
       }
     } else if (editingItem) {
-      const result = await updateSkill(editingItem.id, cleanedForm)
+      console.log(cleanedForm);
+      const result = await updateSkill(cleanedForm as Omit<SkillItem, "created_at" | "updated_at">)
       if (result.success) {
         setSuccessMessage("Skill updated successfully!")
         setIsEditing(false)
@@ -143,11 +142,11 @@ const SkillsManager = () => {
     setEditForm({
       id: "",
       name: "",
-      level: 0,
+      //level: 0,
       projects: [],
       yearsOfExperience: "",
-      category: "Frontend",
-      is_active: true,
+      category: "",
+      //is_active: true,
     })
     setEditingItem(null)
   }

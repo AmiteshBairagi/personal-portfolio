@@ -1,75 +1,74 @@
 "use client"
 
-import { useCallback } from "react"
-import { useCategoriesRealTime } from "./use-categories-real-time"
-import type { CategoryData } from "@/lib/data/categoryService"
+import { useCallback, useState } from "react"
+import { categoryService, type CategoryData } from "@/lib/data/categoryService"
+
 
 export function useCategories() {
-  const {
-    data,
-    isLoading,
-    error,
-    createCategory: createCategoryRT,
-    updateCategory: updateCategoryRT,
-    deleteCategory: deleteCategoryRT,
-    getActiveCategories: getActiveCategoriesRT,
-    getCategoryByName: getCategoryByNameRT,
-    refreshData,
-  } = useCategoriesRealTime()
+  const [data, setData] = useState<CategoryData[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  
 
   const addCategory = useCallback(
     async (category: Omit<CategoryData, "id" | "created_at" | "updated_at">) => {
-      await createCategoryRT(category)
+      await categoryService.createCategory(category);
     },
-    [createCategoryRT],
+    [],
   )
+
+  const fetchData = useCallback(async () => {
+    try{
+        const categoryData = await categoryService.getCategoriesData();
+        setData(categoryData);
+        setIsLoading(false);
+      }catch(err){
+        console.error("Failed to fetch categories data");
+      }finally{
+        setIsLoading(false);
+      }
+  },[])
 
   const updateCategory = useCallback(
     async (id: string, updates: Partial<CategoryData>) => {
-      await updateCategoryRT(id, updates)
+      await categoryService.updateCategory(id,updates);
     },
-    [updateCategoryRT],
+    [],
   )
 
   const deleteCategory = useCallback(
     async (id: string) => {
-      await deleteCategoryRT(id)
+      await categoryService.deleteCategory(id);
     },
-    [deleteCategoryRT],
+    [],
   )
 
-  // const getCategory = useCallback(
-  //   (id: string) => {
-  //     return data.find((item) => item.id === id)
-  //   },
-  //   [data],
-  // )
+ 
 
   const getActiveCategories = useCallback(() => {
-    return getActiveCategoriesRT()
-  }, [getActiveCategoriesRT])
+    return categoryService.getActiveCategories();
+  }, [])
 
   const getCategoryByName = useCallback(
     (name: string) => {
-      return getCategoryByNameRT(name)
+      return categoryService.getCategoryByName(name);
     },
-    [getCategoryByNameRT],
+    [],
   )
 
-  const refetch = useCallback(() => {
-    refreshData()
-  }, [refreshData])
+  const refreshData = useCallback(() => {
+    fetchData();
+  },[fetchData])
+
+  
 
   return {
     data,
     isLoading,
-    error,
     addCategory,
     updateCategory,
     deleteCategory,
-    // getCategory,
     getActiveCategories,
     getCategoryByName,
-    refetch,
+    refreshData
   }
 }

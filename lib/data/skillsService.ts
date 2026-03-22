@@ -98,9 +98,9 @@ export const skillsService = {
   },
 
   // Update a skill
-  async updateSkill(skillId: string, updates: Partial<SkillItem>): Promise<SkillItem> {
+  async updateSkill(updates: Partial<SkillItem>): Promise<SkillItem> {
     try {
-      const { data } = await api.put<SkillItem>(`/api/update-skill/${skillId}`, updates)
+      const { data } = await api.put<SkillItem>("/api/update-skill", updates)
 
       // Invalidate cache
       skillsCache = null
