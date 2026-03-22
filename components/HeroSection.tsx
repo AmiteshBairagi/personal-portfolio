@@ -57,7 +57,7 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-[100dvh] relative overflow-hidden py-10 sm:py-16 lg:py-20 bg-slate-950 flex items-center"
+      className="min-h-[80dvh] relative overflow-hidden py-4 sm:py-4 lg:py-16 bg-slate-950 flex items-center"
     >
       {/* Absolute Ambient Lighting & Grids */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
