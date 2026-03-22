@@ -15,7 +15,7 @@ export default function Home() {
     <ThemeProvider>
       <div className="min-h-screen">
         <Navbar />
-        <main className="pt-24 md:pt-16 lg:pt-0">
+        <main className="pt-16 md:pt-16 lg:pt-0">
           <HeroSection />
 
           <OptimizedAnimation>
