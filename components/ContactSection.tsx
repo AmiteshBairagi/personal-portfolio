@@ -24,6 +24,7 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +45,7 @@ const ContactSection = () => {
         setFormData({
           name: "",
           email: "",
+          phone: "",
           message: "",
         });
 
@@ -305,6 +307,28 @@ const ContactSection = () => {
                         }
                         className="w-full"
                         placeholder="Give Your Email Address :"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Phone No
+                      </label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel" 
+                        required
+                        pattern="[0-9]{10}" 
+                        maxLength={10} 
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
+                        className="w-full"
+                        placeholder="Enter your phone number"
                       />
                     </div>
                   </div>
