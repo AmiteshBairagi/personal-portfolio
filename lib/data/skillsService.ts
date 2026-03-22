@@ -39,12 +39,7 @@ export const skillsService = {
   // Get all skills data with caching
   async getSkillsData(): Promise<SkillCategory> {
     try {
-      // Check cache first
-      const now = Date.now()
-      if (skillsCache && now - cacheTimestamp < CACHE_DURATION) {
-        return skillsCache
-      }
-
+      
       const { data } = await api.get<SkillItem[]>("/api/get-all-skills")
 
       // Group skills by category
@@ -62,10 +57,6 @@ export const skillsService = {
             })
           })
       }
-
-      // Update cache
-      skillsCache = groupedSkills
-      cacheTimestamp = now
 
       return groupedSkills
     } catch (error) {
