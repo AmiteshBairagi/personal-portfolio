@@ -5,7 +5,6 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
   ArrowLeft,
@@ -150,10 +149,10 @@ function AdminContent() {
       iconColor: "text-pink-400",
     },
     {
-      id: "contact",
-      label: "Contact",
+      id: "lead",
+      label: "Leads",
       icon: Mail,
-      description: "Manage contact information",
+      description: "Manage leads information",
       component: ContactManager,
       color: "from-indigo-500/20 to-blue-500/20",
       iconColor: "text-indigo-400",

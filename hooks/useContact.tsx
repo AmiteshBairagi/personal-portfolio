@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { contactManager, type ContactData, type ContactFormData } from "@/lib/data/contactService"
+import { contactManager, type LeadData } from "@/lib/data/contactService"
 
 export function useContact() {
-  const [contactData, setContactData] = useState<ContactData | null>(null)
+  const [contactData, setContactData] = useState<LeadData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,48 +25,48 @@ export function useContact() {
   }, [])
 
   // Create contact data
-  const createContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
-    try {
-      setError(null)
-      const newContact = await contactManager.createContactData(formData)
-      //setContactData(newContact)
-      // setLastSyncTime(new Date())
-      return newContact
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to create contact"
-      setError(errorMessage)
-      throw err
-    }
-  }, [])
+  // const createContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
+  //   try {
+  //     setError(null)
+  //     const newContact = await contactManager.createContactData(formData)
+  //     //setContactData(newContact)
+  //     // setLastSyncTime(new Date())
+  //     return newContact
+  //   } catch (err) {
+  //     const errorMessage = err instanceof Error ? err.message : "Failed to create contact"
+  //     setError(errorMessage)
+  //     throw err
+  //   }
+  // }, [])
 
   // Update contact data
-  const updateContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
-    try {
-      setError(null)
-      const updatedContact = await contactManager.updateContactData(formData)
-      setContactData(updatedContact)
-      // setLastSyncTime(new Date())
-      return updatedContact
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update contact"
-      setError(errorMessage)
-      throw err
-    }
-  }, [])
+  // const updateContact = useCallback(async (formData: ContactFormData): Promise<ContactData> => {
+  //   try {
+  //     setError(null)
+  //     const updatedContact = await contactManager.updateContactData(formData)
+  //     setContactData(updatedContact)
+  //     // setLastSyncTime(new Date())
+  //     return updatedContact
+  //   } catch (err) {
+  //     const errorMessage = err instanceof Error ? err.message : "Failed to update contact"
+  //     setError(errorMessage)
+  //     throw err
+  //   }
+  // }, [])
 
   // Delete contact data
-  const deleteContact = useCallback(async (id: string): Promise<void> => {
-    try {
-      setError(null)
-      await contactManager.deleteContactData(id)
-      setContactData(null)
-      // setLastSyncTime(new Date())
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to delete contact"
-      setError(errorMessage)
-      throw err
-    }
-  }, [])
+  // const deleteContact = useCallback(async (id: string): Promise<void> => {
+  //   try {
+  //     setError(null)
+  //     await contactManager.deleteContactData(id)
+  //     setContactData(null)
+  //     // setLastSyncTime(new Date())
+  //   } catch (err) {
+  //     const errorMessage = err instanceof Error ? err.message : "Failed to delete contact"
+  //     setError(errorMessage)
+  //     throw err
+  //   }
+  // }, [])
 
   // Refresh data manually
   const refreshData = useCallback(async () => {
@@ -82,9 +82,9 @@ export function useContact() {
     contactData,
     loading,
     error,
-    createContact,
-    updateContact,
-    deleteContact,
-    refreshData,
+    // createContact,
+    // updateContact,
+    // deleteContact,
+     refreshData,
   }
 }
