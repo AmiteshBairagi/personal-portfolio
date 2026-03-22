@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+// import { Input } from "@/components/ui/input"
+// import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useSkills } from "@/hooks/useSkills"
@@ -43,7 +43,7 @@ const SkillsManager = () => {
     name: "",
     level: 0,
     projects: [],
-    experience: "",
+    yearsOfExperience: "",
     category: "Frontend",
     is_active: true,
   })
@@ -82,11 +82,11 @@ const SkillsManager = () => {
 
   const handleAdd = () => {
     setEditForm({
-      id: `skill_${Date.now()}`,
+      //id: `skill_${Date.now()}`,
       name: "",
-      level: 0,
+      //level: 0,
       projects: [],
-      experience: "",
+      yearsOfExperience: "",
       category: "Frontend",
       is_active: true,
     })
@@ -110,7 +110,7 @@ const SkillsManager = () => {
   }
 
   const handleSave = async () => {
-    if (!editForm.name || !editForm.category || editForm.level === undefined) {
+    if (!editForm.name || !editForm.category ) {
       alert("Please fill in all required fields")
       return
     }
@@ -145,7 +145,7 @@ const SkillsManager = () => {
       name: "",
       level: 0,
       projects: [],
-      experience: "",
+      yearsOfExperience: "",
       category: "Frontend",
       is_active: true,
     })
@@ -284,7 +284,7 @@ const SkillsManager = () => {
                         </CardTitle>
                         <div className="flex items-center space-x-1.5 pt-1">
                           <Badge className="bg-slate-900/50 text-slate-300 border-slate-700 hover:bg-slate-800 text-xs font-medium">Lv. {item.level}</Badge>
-                          <span className="text-xs text-slate-500 flex items-center gap-1"><Code className="w-3 h-3" /> {item.experience}</span>
+                          <span className="text-xs text-slate-500 flex items-center gap-1"><Code className="w-3 h-3" /> {item.yearsOfExperience}</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 opacity-60 group-hover:opacity-100 transition-opacity">                        

@@ -158,7 +158,7 @@ const SkillsSection = () => {
                           <Progress value={skill.level} className="h-2 bg-gradient-to-r from-cyan-200 via-purple-200 to-pink-200" />
                           <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                             <span className="font-semibold text-cyan-600 dark:text-cyan-400">Proficiency</span>
-                            <span className="font-semibold text-pink-600 dark:text-pink-400">{skill.experience}</span>
+                            <span className="font-semibold text-pink-600 dark:text-pink-400">{skill.yearsOfExperience}</span>
                           </div>
                         </div>
 

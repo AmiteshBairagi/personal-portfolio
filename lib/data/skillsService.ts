@@ -5,7 +5,7 @@ export interface SkillItem {
   name: string
   level: number
   projects: string[]
-  experience: string
+  yearsOfExperience: string
   category: string
   display_order?: number
   is_active?: boolean
@@ -68,7 +68,7 @@ export const skillsService = {
   // Get all skills for admin (including inactive)
   async getAllSkillsForAdmin(): Promise<SkillItem[]> {
     try {
-      const { data } = await api.get<SkillItem[]>("/api/skills", {
+      const { data } = await api.get<SkillItem[]>("/api/get-all-skills", {
         params: { includeInactive: true },
       })
       return data || []
@@ -128,7 +128,7 @@ export const skillsService = {
   // Get available categories
   async getCategories(): Promise<string[]> {
     try {
-      const { data } = await api.get<SkillItem[]>("/api/skills")
+      const { data } = await api.get<SkillItem[]>("/api/get-all-skills")
 
       const categories = [...new Set((data || []).filter((item) => item.is_active !== false).map((item) => item.category))]
       return categories.sort()
@@ -139,8 +139,8 @@ export const skillsService = {
   },
 
   // Clear cache (useful for testing)
-  clearCache(): void {
-    skillsCache = null
-    cacheTimestamp = 0
-  },
+  // clearCache(): void {
+  //   skillsCache = null
+  //   cacheTimestamp = 0
+  // },
 }
