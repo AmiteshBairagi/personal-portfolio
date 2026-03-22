@@ -135,7 +135,7 @@ const ProjectCard = memo(
 
 ProjectCard.displayName = "ProjectCard"
 
-export default function AllProjectsPage() {
+export default async function AllProjectsPage() {
   const { data: projectsData, isLoading } = useProjects()
   const { getActiveCategories, getCategoryByName } = useCategories()
   const [selectedProject, setSelectedProject] = useState<any | null>(null)
@@ -146,8 +146,8 @@ export default function AllProjectsPage() {
   const publishedProjects = useMemo(() => projectsData.filter((project) => project.published !== false), [projectsData])
 
   // Get dynamic categories from active categories
-  const categoriesList = useMemo(() => {
-    const activeCategories = getActiveCategories().map((cat) => cat.name)
+  const categoriesList = useMemo(async () => {
+    const activeCategories = (await getActiveCategories()).map((cat) => cat.name)
     return ["All", ...activeCategories]
   }, [getActiveCategories])
 
@@ -229,7 +229,7 @@ export default function AllProjectsPage() {
 
               {/* Category Filter */}
               <div className="flex flex-wrap gap-2">
-                {categoriesList.map((category) => (
+                {(await categoriesList).map((category) => (
                   <Button
                     key={category}
                     variant={selectedCategory === category ? "default" : "outline"}
