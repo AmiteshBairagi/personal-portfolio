@@ -24,7 +24,7 @@ export interface CertificationItem {
 export const certificationService = {
   async getData(): Promise<CertificationItem[]> {
     try {
-      const { data } = await api.get<CertificationItem[]>("/api/certifications")
+      const { data } = await api.get<CertificationItem[]>("/api/get-all-certifications")
 
       const transformedData: CertificationItem[] = (data || []).map((item) => ({
         id: item.id,
@@ -74,7 +74,7 @@ export const certificationService = {
         formData.append('imageFile', imageFile)
       }
 
-      const { data } = await api.post<CertificationItem>("/api/certifications", formData)
+      const { data } = await api.post<CertificationItem>("/api/add-certification", formData)
 
       return { success: true, data }
     } catch (error) {
@@ -108,7 +108,7 @@ export const certificationService = {
         formData.append('imageFile', imageFile)
       }
 
-      await api.put(`/api/certifications/${id}`, formData)
+      await api.put(`/api/update-certification/${id}`, formData)
 
       return { success: true }
     } catch (error) {
@@ -119,7 +119,7 @@ export const certificationService = {
 
   async deleteItem(id: string): Promise<{ success: boolean; error?: string }> {
     try {
-      await api.delete(`/api/certifications/${id}`)
+      await api.delete(`/api/delete-certification/${id}`)
 
       return { success: true }
     } catch (error) {
