@@ -36,16 +36,7 @@ export function useSkills() {
     }
   }, [])
 
-  // Initialize real-time updates
-  useEffect(() => {
-    const cleanup = skillsService.initializeRealtime((newData) => {
-      setSkillsData(newData)
-      // Also reload all skills for admin
-      loadAllSkills()
-    })
 
-    return cleanup
-  }, [loadAllSkills])
 
   // Initial data load
   useEffect(() => {
