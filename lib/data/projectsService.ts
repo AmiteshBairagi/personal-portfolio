@@ -72,7 +72,7 @@ const transformToDatabase = (projectData: Partial<ProjectData>): any => ({
 
 export const projectsDataService = {
   async getProjects(): Promise<ProjectData[]> {
-    const { data } = await api.get<any[]>("/api/projects")
+    const { data } = await api.get<any[]>("/api/get-all-projects")
     return data?.map(transformFromDatabase) || []
   },
 
