@@ -8,9 +8,10 @@ export function useProjects() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const refetch = useCallback(() => {
+  const refetch = useCallback(async () => {
     try {
-      const newData = projectsDataService.getData()
+      setIsLoading(true)
+      const newData = await projectsDataService.getProjects()
       setData(newData)
       setError(null)
     } catch (err) {
@@ -29,7 +30,7 @@ export function useProjects() {
     try {
       setError(null)
       await projectsDataService.addProject(project, imageFile)
-      refetch()
+      await refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to add project"
       setError(errorMessage)
@@ -41,7 +42,7 @@ export function useProjects() {
     try {
       setError(null)
       await projectsDataService.updateProject(id, updates, imageFile)
-      refetch()
+      await refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to update project"
       setError(errorMessage)
@@ -53,7 +54,7 @@ export function useProjects() {
     try {
       setError(null)
       await projectsDataService.deleteProject(id)
-      refetch()
+      await refetch()
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to delete project"
       setError(errorMessage)
@@ -65,27 +66,20 @@ export function useProjects() {
   //   try {
   //     setError(null)
   //     await projectsDataService.reorderProject(id, direction)
+  //     await refetch()
   //   } catch (err) {
   //     const errorMessage = err instanceof Error ? err.message : "Failed to reorder project"
   //     setError(errorMessage)
   //     throw new Error(errorMessage)
   //   }
-  // }, [])
+  // }, [refetch])
 
-  const getProject = useCallback((id: string) => {
-    return projectsDataService.getProject(id)
+  const getProject = useCallback(async (id: string) => {
+    return await projectsDataService.getProject(id)
   }, [])
 
   const refresh = useCallback(async () => {
-    try {
-      setError(null)
-      setIsLoading(true)
-      await projectsDataService.refresh()
-      refetch()
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to refresh projects"
-      setError(errorMessage)
-    }
+    await refetch()
   }, [refetch])
 
   return {
