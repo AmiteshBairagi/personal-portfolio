@@ -1,5 +1,6 @@
 import { api } from "@/lib/axios";
 
+// Matches Spring Boot Blog model (Jackson camelCase serialization)
 export interface BlogPost {
   id: string;
   title: string;
@@ -7,22 +8,22 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   author: string;
-  published_at: string;
-  updated_at: string;
-  created_at: string;
-  read_time: number;
+  publishedAt: string;
+  updatedAt: string;
+  createdAt: string;
+  readTime: number;
   tags: string[];
   category: string;
-  image: string;
+  imageUrl: string;
   featured: boolean;
   published: boolean;
 }
 
 export const blogDataManager = {
-  // Get all blog posts
+  // GET /api/get-all-blogs
   getAllBlogPosts: async (): Promise<BlogPost[]> => {
     try {
-      const { data } = await api.get<BlogPost[]>("/api/blog-posts");
+      const { data } = await api.get<BlogPost[]>("/api/get-all-blogs");
       return data ?? [];
     } catch (error) {
       console.error("Error in getAllBlogPosts:", error);
@@ -30,85 +31,71 @@ export const blogDataManager = {
     }
   },
 
-  // Get published blog posts only
-  getPublishedBlogPosts: async (): Promise<BlogPost[]> => {
+  // GET /api/get-blogs-by-category/{category}
+  getBlogPostsByCategory: async (category: string): Promise<BlogPost[]> => {
+    if (category === "All") {
+      return blogDataManager.getAllBlogPosts();
+    }
+
     try {
-      const { data } = await api.get<BlogPost[]>("/api/blog-posts/published");
+      const { data } = await api.get<BlogPost[]>(
+        `/api/get-blogs-by-category/${encodeURIComponent(category)}`,
+      );
       return data ?? [];
     } catch (error) {
-      console.error("Error in getPublishedBlogPosts:", error);
+      console.error("Error in getBlogPostsByCategory:", error);
       return [];
     }
   },
 
-  // Get featured blog posts
-  getFeaturedBlogPosts: async (limit?: number): Promise<BlogPost[]> => {
-    try {
-      const { data } = await api.get<BlogPost[]>("/api/blog-posts/featured");
-      const featured = data ?? [];
-      return limit ? featured.slice(0, limit) : featured;
-    } catch (error) {
-      console.error("Error in getFeaturedBlogPosts:", error);
-      return [];
-    }
-  },
-
-  // Get blog post by slug
-  getBlogPostBySlug: async (slug: string): Promise<BlogPost | null> => {
-    try {
-      const { data } = await api.get<BlogPost>(`/api/blog-posts/slug/${slug}`);
-      return data || null;
-    } catch (error) {
-      console.error("Error in getBlogPostBySlug:", error);
-      return null;
-    }
-  },
-
-  // Get blog post by ID
-  getBlogPostById: async (id: string): Promise<BlogPost | null> => {
-    try {
-      const { data } = await api.get<BlogPost>(`/api/blog-posts/${id}`);
-      return data || null;
-    } catch (error) {
-      console.error("Error in getBlogPostById:", error);
-      return null;
-    }
-  },
-
-  // Create new blog post
-  async createBlogPost(postData: Partial<BlogPost>, imageFile?: File) {
+  // POST /api/add-blog
+  // Backend expects: @RequestPart("data") Blog + @RequestPart("image") MultipartFile
+  createBlogPost: async (
+    postData: Partial<BlogPost>,
+    imageFile?: File,
+  ): Promise<BlogPost | null> => {
     try {
       const formData = new FormData();
 
-      // append all text fields
-      Object.entries(postData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            value.forEach((v) => formData.append(key, v));
-          } else {
-            formData.append(key, value as string);
-          }
-        }
-      });
+      // Send the blog data as a JSON blob with content type application/json
+      const blogJson = JSON.stringify(postData);
+      formData.append(
+        "data",
+        new Blob([blogJson], { type: "application/json" }),
+      );
 
-      // append image file
+      // Append image file
       if (imageFile) {
         formData.append("image", imageFile);
       }
 
-      const response = await api.post(
-        "http://localhost:8080/api/posts",
-        formData,
-      );
+      const { data } = await api.post<BlogPost>("/api/add-blog", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      return response.data;
+      return data || null;
     } catch (error) {
       console.error("Error creating blog post:", error);
       return null;
     }
   },
 
-  // Update blog post
+  // DELETE /api/delete-blog/{id}
+  deleteBlogPost: async (id: string): Promise<boolean> => {
+    try {
+      await api.delete(`/api/delete-blog/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Error in deleteBlogPost:", error);
+      return false;
+    }
+  },
+
+  // --- Placeholder methods (backend endpoints not yet available) ---
+
+  // Update blog post (needs backend endpoint)
   updateBlogPost: async (
     id: string,
     updates: Partial<BlogPost>,
@@ -117,26 +104,25 @@ export const blogDataManager = {
     try {
       const formData = new FormData();
 
-      Object.keys(updates).forEach((key) => {
-        const value = updates[key as keyof BlogPost];
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            value.forEach((v) => formData.append(key, v));
-          } else if (typeof value === "boolean") {
-            formData.append(key, value.toString());
-          } else {
-            formData.append(key, String(value));
-          }
-        }
-      });
+      const blogJson = JSON.stringify(updates);
+      formData.append(
+        "data",
+        new Blob([blogJson], { type: "application/json" }),
+      );
 
       if (imageFile) {
-        formData.append("imageFile", imageFile);
+        formData.append("image", imageFile);
       }
 
+      // TODO: Update this endpoint when backend adds PUT/PATCH support
       const { data } = await api.put<BlogPost>(
-        `/api/blog-posts/${id}`,
+        `/api/update-blog/${id}`,
         formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
       return data || null;
     } catch (error) {
@@ -145,25 +131,11 @@ export const blogDataManager = {
     }
   },
 
-  // Delete blog post
-  deleteBlogPost: async (id: string): Promise<boolean> => {
-    try {
-      await api.delete(`/api/blog-posts/${id}`);
-      return true;
-    } catch (error) {
-      console.error("Error in deleteBlogPost:", error);
-      return false;
-    }
-  },
-
-  // Toggle featured status
+  // Toggle featured status (needs backend endpoint)
   toggleFeatured: async (id: string): Promise<boolean> => {
     try {
-      const currentPost = await blogDataManager.getBlogPostById(id);
-      if (!currentPost) return false;
-      await api.put(`/api/blog-posts/${id}`, {
-        featured: !currentPost.featured,
-      });
+      // TODO: Update when backend adds toggle/update endpoint
+      await api.put(`/api/update-blog/${id}/featured`);
       return true;
     } catch (error) {
       console.error("Error in toggleFeatured:", error);
@@ -171,55 +143,15 @@ export const blogDataManager = {
     }
   },
 
-  // Toggle published status
+  // Toggle published status (needs backend endpoint)
   togglePublished: async (id: string): Promise<boolean> => {
     try {
-      const currentPost = await blogDataManager.getBlogPostById(id);
-      if (!currentPost) return false;
-      await api.put(`/api/blog-posts/${id}`, {
-        published: !currentPost.published,
-      });
+      // TODO: Update when backend adds toggle/update endpoint
+      await api.put(`/api/update-blog/${id}/published`);
       return true;
     } catch (error) {
       console.error("Error in togglePublished:", error);
       return false;
-    }
-  },
-
-  // Search blog posts
-  searchBlogPosts: async (
-    query: string,
-    category?: string,
-  ): Promise<BlogPost[]> => {
-    try {
-      const params: Record<string, string> = {};
-      if (query.trim()) params.search = query;
-      if (category && category !== "All") params.category = category;
-
-      const { data } = await api.get<BlogPost[]>("/api/blog-posts/search", {
-        params,
-      });
-      return data ?? [];
-    } catch (error) {
-      console.error("Error in searchBlogPosts:", error);
-      return [];
-    }
-  },
-
-  // Get blog posts by category
-  getBlogPostsByCategory: async (category: string): Promise<BlogPost[]> => {
-    if (category === "All") {
-      return blogDataManager.getPublishedBlogPosts();
-    }
-
-    try {
-      const { data } = await api.get<BlogPost[]>("/api/blog-posts/category", {
-        params: { category },
-      });
-      return data ?? [];
-    } catch (error) {
-      console.error("Error in getBlogPostsByCategory:", error);
-      return [];
     }
   },
 };

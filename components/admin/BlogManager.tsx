@@ -2,19 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +21,6 @@ import { EnhancedModal } from "@/components/ui/enhanced-modal";
 import { useToast } from "@/hooks/use-toast";
 import { useBlogRealTime } from "@/hooks/use-blog-real-time";
 import type { BlogPost } from "@/lib/data/blog-data-manager";
-import { blogCategories } from "@/lib/blog-data";
 import {
   Plus,
   Search,
@@ -47,10 +38,6 @@ import {
   X,
   AlertCircle,
   Loader2,
-  ArrowUp,
-  ArrowDown,
-  Wifi,
-  WifiOff,
   RefreshCw,
 } from "lucide-react";
 import {
@@ -65,8 +52,6 @@ const InterviewExperienceManager = () => {
     posts,
     isLoading,
     error,
-    isOnline,
-    lastSyncTime,
     createPost,
     updatePost,
     deletePost,
@@ -226,13 +211,10 @@ const InterviewExperienceManager = () => {
           .map((tag) => tag.trim())
           .filter(Boolean),
         category: formData.category,
-        image: imageFile
-          ? ""
-          : imagePreview || "/placeholder.svg?height=400&width=600",
         featured: formData.featured,
         published: formData.published,
-        published_at: new Date().toISOString().split("T")[0],
-        read_time: Math.max(
+        publishedAt: new Date().toISOString().split("T")[0],
+        readTime: Math.max(
           1,
           Math.ceil(formData.content.trim().split(/\s+/).length / 200),
         ),
@@ -299,7 +281,6 @@ const InterviewExperienceManager = () => {
           .map((tag) => tag.trim())
           .filter(Boolean),
         category: formData.category,
-        image: imageFile ? "" : imagePreview,
         featured: formData.featured,
         published: formData.published,
       };
@@ -425,12 +406,12 @@ const InterviewExperienceManager = () => {
       content: post.content,
       category: post.category,
       tags: post.tags.join(", "),
-      image: post.image,
+      image: post.imageUrl || "",
       author: post.author,
       featured: post.featured,
       published: post.published,
     });
-    setImagePreview(post.image || "");
+    setImagePreview(post.imageUrl || "");
     setFormErrors({});
     setIsEditModalOpen(true);
   };
@@ -658,7 +639,7 @@ const InterviewExperienceManager = () => {
                   {/* Post Image */}
                   <div className="lg:w-56 flex-shrink-0 relative rounded-xl overflow-hidden border border-slate-700/50 group/image">
                     <img
-                      src={post.image || "/placeholder.svg"}
+                      src={post.imageUrl || "/placeholder.svg"}
                       alt={post.title}
                       className="w-full h-40 lg:h-full object-cover transition-transform duration-500 group-hover/image:scale-105"
                     />
@@ -692,13 +673,13 @@ const InterviewExperienceManager = () => {
                         <div className="flex items-center gap-1.5 border-r border-slate-700 pr-4">
                           <Calendar className="h-3.5 w-3.5 text-cyan-500/70" />
                           <span className="text-slate-300">
-                            {new Date(post.published_at).toLocaleDateString()}
+                            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "N/A"}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-3.5 w-3.5 text-cyan-500/70" />
                           <span className="text-slate-300">
-                            {post.read_time} min read
+                            {post.readTime} min read
                           </span>
                         </div>
                       </div>

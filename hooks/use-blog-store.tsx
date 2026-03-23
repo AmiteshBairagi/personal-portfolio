@@ -67,22 +67,22 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     const { blogDataManager } = await import("@/lib/data/blog-data-manager")
     set({ isLoading: true })
     try {
-      const posts = await blogDataManager.getBlogPostsByCategory(category)
-      // Map API response to BlogPost type if necessary
-      // Note: API fields are snake_case, project uses camelCase
-      const formattedPosts: BlogPost[] = posts.map(p => ({
+      const apiPosts = await blogDataManager.getBlogPostsByCategory(category)
+      // API returns camelCase fields matching our BlogPost type
+      // Map imageUrl to image for local BlogPost compatibility
+      const formattedPosts: BlogPost[] = apiPosts.map(p => ({
         id: p.id,
         title: p.title,
         slug: p.slug,
         excerpt: p.excerpt,
         content: p.content,
         author: p.author,
-        publishedAt: p.published_at,
-        updatedAt: p.updated_at,
-        readTime: p.read_time,
+        publishedAt: p.publishedAt,
+        updatedAt: p.updatedAt,
+        readTime: p.readTime,
         tags: p.tags,
         category: p.category,
-        image: p.image,
+        image: p.imageUrl || "",
         featured: p.featured,
         published: p.published
       }))

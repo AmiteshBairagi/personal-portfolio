@@ -3,12 +3,10 @@
 import { useState, useEffect, useCallback } from "react"
 import { blogDataManager, type BlogPost } from "@/lib/data/blog-data-manager"
 
-interface UseBlogRealTimeReturn {
+interface UseBlogReturn {
   posts: BlogPost[]
   isLoading: boolean
   error: string | null
-  isOnline: boolean
-  lastSyncTime: Date | null
 
   // CRUD operations
   createPost: (postData: Partial<BlogPost>, imageFile?: File) => Promise<BlogPost | null>
@@ -17,59 +15,39 @@ interface UseBlogRealTimeReturn {
   toggleFeatured: (id: string) => Promise<boolean>
   togglePublished: (id: string) => Promise<boolean>
 
-  // Data fetching
+  // Helpers
   refreshData: () => Promise<void>
   getPostById: (id: string) => BlogPost | null
   getPublishedPosts: () => BlogPost[]
   getFeaturedPosts: (limit?: number) => BlogPost[]
-  searchPosts: (query: string, category?: string) => Promise<BlogPost[]>
-  getPostsByCategory: (category: string) => Promise<BlogPost[]>
 }
 
-export function useBlogRealTime(): UseBlogRealTimeReturn {
+export function useBlogRealTime(): UseBlogReturn {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isOnline, setIsOnline] = useState(true)
-  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
 
-
-  // Initialize data
-  const initializeData = useCallback(async () => {
+  // Fetch all posts from API
+  const refreshData = useCallback(async () => {
     try {
-      setIsLoading(true)
       setError(null)
-
-      // Load initial data
+      setIsLoading(true)
       const data = await blogDataManager.getAllBlogPosts()
       setPosts(data)
-      setLastSyncTime(new Date())
-      setIsOnline(true)
     } catch (err) {
-      console.error("Error initializing blog data:", err)
+      console.error("Error fetching blog data:", err)
       setError(err instanceof Error ? err.message : "Failed to load blog posts")
-      setIsOnline(false)
     } finally {
       setIsLoading(false)
     }
   }, [])
 
-  // Refresh data
-  const refreshData = useCallback(async () => {
-    try {
-      setError(null)
-      const data = await blogDataManager.getAllBlogPosts()
-      setPosts(data)
-      setLastSyncTime(new Date())
-      setIsOnline(true)
-    } catch (err) {
-      console.error("Error refreshing blog data:", err)
-      setError(err instanceof Error ? err.message : "Failed to refresh blog posts")
-      setIsOnline(false)
-    }
-  }, [])
+  // Load on mount
+  useEffect(() => {
+    refreshData()
+  }, [refreshData])
 
-  // CRUD Operations
+  // CRUD
   const createPost = useCallback(
     async (postData: Partial<BlogPost>, imageFile?: File): Promise<BlogPost | null> => {
       try {
@@ -81,7 +59,6 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
         }
         return null
       } catch (err) {
-        console.error("Error creating blog post:", err)
         setError(err instanceof Error ? err.message : "Failed to create blog post")
         return null
       }
@@ -100,7 +77,6 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
         }
         return null
       } catch (err) {
-        console.error("Error updating blog post:", err)
         setError(err instanceof Error ? err.message : "Failed to update blog post")
         return null
       }
@@ -113,12 +89,9 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
       try {
         setError(null)
         const success = await blogDataManager.deleteBlogPost(id)
-        if (success) {
-          await refreshData()
-        }
+        if (success) await refreshData()
         return success
       } catch (err) {
-        console.error("Error deleting blog post:", err)
         setError(err instanceof Error ? err.message : "Failed to delete blog post")
         return false
       }
@@ -126,18 +99,14 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     [refreshData],
   )
 
-
   const toggleFeatured = useCallback(
     async (id: string): Promise<boolean> => {
       try {
         setError(null)
         const success = await blogDataManager.toggleFeatured(id)
-        if (success) {
-          await refreshData()
-        }
+        if (success) await refreshData()
         return success
       } catch (err) {
-        console.error("Error toggling featured status:", err)
         setError(err instanceof Error ? err.message : "Failed to toggle featured status")
         return false
       }
@@ -150,12 +119,9 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
       try {
         setError(null)
         const success = await blogDataManager.togglePublished(id)
-        if (success) {
-          await refreshData()
-        }
+        if (success) await refreshData()
         return success
       } catch (err) {
-        console.error("Error toggling published status:", err)
         setError(err instanceof Error ? err.message : "Failed to toggle published status")
         return false
       }
@@ -163,59 +129,29 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     [refreshData],
   )
 
-  // Data access methods
+  // Local data helpers
   const getPostById = useCallback(
-    (id: string): BlogPost | null => {
-      return posts.find((post) => post.id === id) || null
-    },
+    (id: string): BlogPost | null => posts.find((p) => p.id === id) || null,
     [posts],
   )
 
-  const getPublishedPosts = useCallback((): BlogPost[] => {
-    return posts.filter((post) => post.published)
-  }, [posts])
+  const getPublishedPosts = useCallback(
+    (): BlogPost[] => posts.filter((p) => p.published),
+    [posts],
+  )
 
   const getFeaturedPosts = useCallback(
     (limit?: number): BlogPost[] => {
-      const featured = posts.filter((post) => post.featured && post.published)
+      const featured = posts.filter((p) => p.featured && p.published)
       return limit ? featured.slice(0, limit) : featured
     },
     [posts],
   )
 
-  const searchPosts = useCallback(async (query: string, category?: string): Promise<BlogPost[]> => {
-    try {
-      setError(null)
-      return await blogDataManager.searchBlogPosts(query, category)
-    } catch (err) {
-      console.error("Error searching blog posts:", err)
-      setError(err instanceof Error ? err.message : "Failed to search blog posts")
-      return []
-    }
-  }, [])
-
-  const getPostsByCategory = useCallback(async (category: string): Promise<BlogPost[]> => {
-    try {
-      setError(null)
-      return await blogDataManager.getBlogPostsByCategory(category)
-    } catch (err) {
-      console.error("Error getting posts by category:", err)
-      setError(err instanceof Error ? err.message : "Failed to get posts by category")
-      return []
-    }
-  }, [])
-
-  // Initialize on mount
-  useEffect(() => {
-    initializeData()
-  }, [initializeData])
-
   return {
     posts,
     isLoading,
     error,
-    isOnline,
-    lastSyncTime,
     createPost,
     updatePost,
     deletePost,
@@ -225,7 +161,5 @@ export function useBlogRealTime(): UseBlogRealTimeReturn {
     getPostById,
     getPublishedPosts,
     getFeaturedPosts,
-    searchPosts,
-    getPostsByCategory,
   }
 }

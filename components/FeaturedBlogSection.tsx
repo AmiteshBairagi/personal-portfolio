@@ -4,12 +4,12 @@ import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight, BookOpen, Wifi, WifiOff } from "lucide-react"
+import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react"
 import Link from "next/link"
 import { useBlogRealTime } from "@/hooks/use-blog-real-time"
 
 const FeaturedBlogSection = () => {
-  const { posts, isLoading, error, isOnline, lastSyncTime, getFeaturedPosts } = useBlogRealTime()
+  const { posts, isLoading, error, getFeaturedPosts } = useBlogRealTime()
 
   if (isLoading) {
     return (
@@ -68,20 +68,7 @@ const FeaturedBlogSection = () => {
   return (
     <section className="py-20 bg-slate-800/30">
       <div className="container mx-auto px-4">
-        {/* Connection Status */}
-        <div className="flex justify-center mb-4">
-          <div
-            className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs ${
-              isOnline
-                ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                : "bg-red-500/20 text-red-400 border border-red-500/30"
-            }`}
-          >
-            {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
-            {isOnline ? "Live" : "Offline"}
-            {lastSyncTime && <span className="text-slate-400">• Last sync: {lastSyncTime.toLocaleTimeString()}</span>}
-          </div>
-        </div>
+
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +112,7 @@ const FeaturedBlogSection = () => {
                       <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">{post.category}</Badge>
                       <div className="flex items-center text-sm text-slate-500">
                         <Clock className="w-4 h-4 mr-1" />
-                        {post.read_time} min read
+                        {post.readTime} min read
                       </div>
                     </div>
                     <CardTitle className="text-xl text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
@@ -139,7 +126,7 @@ const FeaturedBlogSection = () => {
                     <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
                       <div className="flex items-center">
                         <Calendar className="w-4 h-4 mr-1" />
-                        {new Date(post.published_at).toLocaleDateString()}
+                        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "N/A"}
                       </div>
                       <span className="text-cyan-400">By {post.author}</span>
                     </div>
