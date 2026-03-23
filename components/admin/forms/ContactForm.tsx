@@ -1,6 +1,16 @@
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import type { ContactFormData } from "@/lib/data/contactService"
+export interface ContactFormData {
+  email: string
+  phone?: string
+  location?: string
+  bio?: string
+  github_url?: string
+  linkedin_url?: string
+  twitter_url?: string
+  website_url?: string
+  resume_url?: string
+}
 
 export interface ContactFormProps {
   editForm: ContactFormData

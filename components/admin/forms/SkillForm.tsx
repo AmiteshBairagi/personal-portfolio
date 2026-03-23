@@ -45,8 +45,8 @@ export function SkillForm({
         <div>
           <label className="text-sm font-medium text-slate-300 mb-2 block">Experience *</label>
           <Input
-            value={editForm.experience || ""}
-            onChange={(e) => handleInputChange("experience", e.target.value)}
+            value={editForm.yearsOfExperience || ""}
+            onChange={(e) => handleInputChange("yearsOfExperience", e.target.value)}
             className="bg-slate-900/50 border-slate-700 text-white focus:border-cyan-500/50 focus:ring-cyan-500/20 placeholder:text-slate-500"
             placeholder="e.g., 2+ years, 6 months"
             required

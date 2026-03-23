@@ -4,8 +4,6 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { EnhancedModal } from "@/components/ui/enhanced-modal"
 import { useProjects } from "@/hooks/useProjects"
@@ -42,6 +40,29 @@ const ProjectManager = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [editingItem, setEditingItem] = useState<ProjectData | null>(null)
+  
+  // Handle async categories
+  const [activeCategories, setActiveCategories] = useState<any[]>([])
+  const [categoriesMap, setCategoriesMap] = useState<Record<string, any>>({})
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await getActiveCategories()
+        setActiveCategories(categories)
+        
+        // Build map for synchronous rendering lookup
+        const map: Record<string, any> = {}
+        for (const cat of categories) {
+          map[cat.name] = cat
+        }
+        setCategoriesMap(map)
+      } catch (err) {
+        console.error("Failed to fetch categories list", err)
+      }
+    }
+    fetchCategories()
+  }, [getActiveCategories])
 
   const [editForm, setEditForm] = useState<Partial<ProjectData>>({
     title: "",
@@ -273,8 +294,6 @@ const ProjectManager = () => {
     )
   }
 
-  const activeCategories = getActiveCategories()
-
   return (
     <div className="space-y-6">
 
@@ -301,7 +320,7 @@ const ProjectManager = () => {
       {/* Projects List */}
       <div className="grid gap-4">
         {projectsData.map((item, index) => {
-          const category = getCategoryByName(item.category)
+          const category = categoriesMap[item.category]
           return (
             <motion.div
               key={item.id}
