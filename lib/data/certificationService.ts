@@ -21,32 +21,11 @@ export interface CertificationItem {
   updated_at?: string
 }
 
-// Cache management
-let cachedData: CertificationItem[] | null = null
-let cacheTimestamp = 0
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-
-// Subscription management
-const subscribers = new Set<() => void>()
-
-const notifySubscribers = () => {
-  subscribers.forEach((callback) => callback())
-}
-
 export const certificationService = {
-  // Get all certifications with caching
   async getData(): Promise<CertificationItem[]> {
-    const now = Date.now()
-
-    // Return cached data if still valid
-    if (cachedData && now - cacheTimestamp < CACHE_DURATION) {
-      return cachedData
-    }
-
     try {
       const { data } = await api.get<CertificationItem[]>("/api/certifications")
 
-      // Transform data to match interface
       const transformedData: CertificationItem[] = (data || []).map((item) => ({
         id: item.id,
         title: item.title,
@@ -66,18 +45,13 @@ export const certificationService = {
         updated_at: item.updated_at,
       }))
 
-      // Update cache
-      cachedData = transformedData
-      cacheTimestamp = now
-
       return transformedData
     } catch (error) {
       console.error("Unexpected error fetching certifications:", error)
-      return cachedData || []
+      return []
     }
   },
 
-  // Add new certification
   async addItem(
     item: Omit<CertificationItem, "id" | "created_at" | "updated_at">,
     imageFile?: File
@@ -102,12 +76,6 @@ export const certificationService = {
 
       const { data } = await api.post<CertificationItem>("/api/certifications", formData)
 
-      // Clear cache
-      cachedData = null
-
-      // Notify subscribers
-      notifySubscribers()
-
       return { success: true, data }
     } catch (error) {
       console.error("Error adding certification:", error)
@@ -115,7 +83,6 @@ export const certificationService = {
     }
   },
 
-  // Update certification
   async updateItem(
     id: string, 
     updates: Partial<CertificationItem>,
@@ -124,7 +91,6 @@ export const certificationService = {
     try {
       const formData = new FormData()
       
-      // Remove readonly fields
       const { created_at, updated_at, ...updateData } = updates
 
       Object.keys(updateData).forEach(key => {
@@ -144,12 +110,6 @@ export const certificationService = {
 
       await api.put(`/api/certifications/${id}`, formData)
 
-      // Clear cache
-      cachedData = null
-
-      // Notify subscribers
-      notifySubscribers()
-
       return { success: true }
     } catch (error) {
       console.error("Error updating certification:", error)
@@ -157,16 +117,9 @@ export const certificationService = {
     }
   },
 
-  // Delete certification
   async deleteItem(id: string): Promise<{ success: boolean; error?: string }> {
     try {
       await api.delete(`/api/certifications/${id}`)
-
-      // Clear cache
-      cachedData = null
-
-      // Notify subscribers
-      notifySubscribers()
 
       return { success: true }
     } catch (error) {
@@ -175,7 +128,6 @@ export const certificationService = {
     }
   },
 
-  // Reorder certifications
   async reorderItems(items: CertificationItem[]): Promise<{ success: boolean; error?: string }> {
     try {
       const updates = items.map((item, index) => ({
@@ -187,12 +139,6 @@ export const certificationService = {
         await api.put(`/api/certifications/${update.id}`, { display_order: update.display_order })
       }
 
-      // Clear cache
-      cachedData = null
-
-      // Notify subscribers
-      notifySubscribers()
-
       return { success: true }
     } catch (error) {
       console.error("Error reordering certifications:", error)
@@ -200,49 +146,6 @@ export const certificationService = {
     }
   },
 
-  // Move item up in order
-  async moveItemUp(id: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const data = await this.getData()
-      const currentIndex = data.findIndex((item) => item.id === id)
-
-      if (currentIndex <= 0) {
-        return { success: false, error: "Item is already at the top" }
-      }
-
-      // Swap with previous item
-      const newData = [...data]
-      ;[newData[currentIndex - 1], newData[currentIndex]] = [newData[currentIndex], newData[currentIndex - 1]]
-
-      return await this.reorderItems(newData)
-    } catch (error) {
-      console.error("Error moving certification up:", error)
-      return { success: false, error: "Failed to move certification up" }
-    }
-  },
-
-  // Move item down in order
-  async moveItemDown(id: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const data = await this.getData()
-      const currentIndex = data.findIndex((item) => item.id === id)
-
-      if (currentIndex >= data.length - 1 || currentIndex === -1) {
-        return { success: false, error: "Item is already at the bottom" }
-      }
-
-      // Swap with next item
-      const newData = [...data]
-      ;[newData[currentIndex], newData[currentIndex + 1]] = [newData[currentIndex + 1], newData[currentIndex]]
-
-      return await this.reorderItems(newData)
-    } catch (error) {
-      console.error("Error moving certification down:", error)
-      return { success: false, error: "Failed to move certification down" }
-    }
-  },
-
-  // Search certifications
   async searchItems(query: string): Promise<CertificationItem[]> {
     try {
       const { data } = await api.get<CertificationItem[]>("/api/certifications", {
@@ -273,7 +176,6 @@ export const certificationService = {
     }
   },
 
-  // Get featured certifications
   async getFeaturedItems(): Promise<CertificationItem[]> {
     try {
       const { data } = await api.get<CertificationItem[]>("/api/certifications", {
@@ -302,28 +204,5 @@ export const certificationService = {
       console.error("Error fetching featured certifications:", error)
       return []
     }
-  },
-
-  // Subscribe to changes (local subscriber pattern only, no real-time)
-  subscribe(callback: () => void): () => void {
-    subscribers.add(callback)
-    return () => {
-      subscribers.delete(callback)
-    }
-  },
-
-  // Clear cache manually
-  clearCache(): void {
-    cachedData = null
-    cacheTimestamp = 0
-  },
-
-  // Get cache status
-  getCacheStatus(): { cached: boolean; age: number } {
-    const now = Date.now()
-    return {
-      cached: cachedData !== null,
-      age: cachedData ? now - cacheTimestamp : 0,
-    }
-  },
+  }
 }
