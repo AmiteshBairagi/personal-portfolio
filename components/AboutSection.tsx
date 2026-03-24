@@ -1,141 +1,144 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { User, Calendar,} from "lucide-react"
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { motion, Variants } from "framer-motion"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { ArrowRight } from "lucide-react"
 
 const AboutSection = () => {
-  const router = useRouter();
-  const aboutData = {
-    title: "About",
-    description:
-      "I'm a passionate full-stack developer with expertise in modern web technologies. I love creating efficient, scalable solutions and turning complex problems into simple, beautiful designs.",
-    skills: ["React", "Node.js", "TypeScript", "Python", "Next.js", "MongoDB"],
-    experience_years: 2,
-    image_url: "/new-hero-image-removebg-preview.png",
-    no_of_projects: 7
+  const router = useRouter()
+
+  const images = [
+    { src: "/profile-photo.jpg", alt: "Profile Photo" },
+    { src: "/new-hero-image.jpg", alt: "Hero Photo" },
+    { src: "/snu-image.jpg", alt: "SNU Image" },
+    { src: "/my-photography/morning-bird.jpg", alt: "Nature Photography" },
+    { src: "/my-photography/rail-track.jpg", alt: "Rail Track Photography" },
+    { src: "/my-photography/rainfall.jpg", alt: "Rainfall Photography" },
+  ]
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
   }
 
-  const skills = aboutData.skills
-
-  if (!aboutData) {
-    console.warn("About section error: no about data present")
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.9, y: 20 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut" as any,
+      },
+    },
   }
 
   return (
-    <section id="about" className="py-20 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            <span className="gradient-text">{aboutData.title}</span> Me
-          </h2>
-        </motion.div>
+    <section id="about" className="relative py-20 bg-slate-50 dark:bg-slate-950 overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px] -z-10 -translate-x-1/2 translate-y-1/2"></div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Image Section */}
-          <div className="flex justify-center items-center order-1 lg:order-none">
-            <motion.div 
-               initial={{ opacity: 0, scale: 0.8 }}
-               whileInView={{ opacity: 1, scale: 1 }}
-               transition={{ duration: 0.6, delay: 0.2 }}
-               viewport={{ once: true }}
-               className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-[380px] lg:h-[380px] xl:w-[400px] xl:h-[400px] rounded-full flex-shrink-0"
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="flex justify-end mb-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <button
+              onClick={() => router.push("/more-about-me")}
+              className="group flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-cyan-500/25 border border-white/10 hover:shadow-cyan-500/40 hover:-translate-y-1 active:scale-95"
+            >
+              <span className="text-sm sm:text-base tracking-wide">More About Me</span>
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ArrowRight size={20} />
+              </motion.div>
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Big Screen Grid (2 rows, 3 columns) */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="hidden md:grid grid-cols-3 gap-6"
+        >
+          {images.map((image, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.03, 
+                rotateZ: index % 2 === 0 ? 1 : -1,
+                transition: { duration: 0.2 } 
+              }}
+              className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer"
             >
               <Image
-                src={aboutData.image_url} 
-                alt="Profile"
+                src={image.src}
+                alt={image.alt}
                 fill
-                className="rounded-full object-cover border-4 border-cyan-500/30 dark:border-cyan-500/20 shadow-xl shadow-cyan-500/10 transition-transform duration-500 hover:scale-105"
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              {/* Decorative absolute border glow to match the new theme */}
-              <div className="absolute inset-0 rounded-full border border-cyan-400/30 backdrop-blur-sm -z-10 scale-[1.03]"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                <p className="text-white font-medium tracking-wide translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                  {image.alt}
+                </p>
+              </div>
+              <div className="absolute inset-0 border border-white/10 rounded-2xl pointer-events-none"></div>
             </motion.div>
-          </div>
+          ))}
+        </motion.div>
 
-
-          {/* Content Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <div className="space-y-4">
-              <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">{aboutData.description}</p>
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-6 py-6">
-                <div className="text-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg mb-2 mx-auto">
-                    <Calendar className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">{aboutData.experience_years}+</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
-                </div>
-
-                <div className="text-center">
-                  <div className="flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg mb-2 mx-auto">
-                    <User className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">{aboutData.no_of_projects}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Projects Completed</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Skills */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Core Technologies</h3>
-              <div className="flex flex-wrap gap-3">
-                {skills.map((skill, index) => (
-                  <motion.span
-                    key={skill}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
-                    viewport={{ once: true }}
-                    whileHover={{ scale: 1.05 }}
-                    className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-default"
-                  >
-                    {skill}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              viewport={{ once: true }}
-              className="pt-4"
+        {/* Mobile Slider */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="md:hidden -mx-4 px-4 flex overflow-x-auto gap-4 scrollbar-hide snap-x no-scrollbar pb-6"
+        >
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className="flex-none w-[280px] aspect-[4/3] relative rounded-2xl overflow-hidden shadow-xl snap-center"
             >
-              <button
-                onClick={() => {
-                  router.push("/more-about-me")
-                }}
-                className="inline-flex items-center px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-lg transition-colors shadow-lg hover:shadow-xl"
-              >
-                <span>More About Me</span>
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                  className="ml-2"
-                >
-                  →
-                </motion.div>
-              </button>
-            </motion.div>
-          </motion.div>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent flex items-end p-4">
+                 <p className="text-white text-sm font-medium">{image.alt}</p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+        
+        {/* Mobile Swipe Indicator */}
+        <div className="md:hidden flex justify-center mt-2">
+           <div className="w-12 h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <motion.div 
+                animate={{ x: [-24, 24, -24] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" as any }}
+                className="w-1/2 h-full bg-cyan-500 rounded-full"
+              />
+           </div>
         </div>
       </div>
     </section>
@@ -143,3 +146,4 @@ const AboutSection = () => {
 }
 
 export default AboutSection
+
