@@ -9,7 +9,7 @@ const AboutSection = () => {
   const router = useRouter()
 
   const images = [
-    { src: "/profile-photo.jpg", alt: "Profile Photo" },
+    { src: "/navbar_pic.jpeg", alt: "Profile Photo" },
     { src: "/new-hero-image.jpg", alt: "Hero Photo" },
     { src: "/snu-image.jpg", alt: "SNU Image" },
     { src: "/my-photography/morning-bird.jpg", alt: "Nature Photography" },
