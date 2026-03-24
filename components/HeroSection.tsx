@@ -148,7 +148,7 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.98 }}
                   className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-xl font-medium transition-all text-sm sm:text-base shadow-lg shadow-cyan-500/25 border border-white/10 flex items-center justify-center gap-2"
                 >
-                  View My Work
+                  <span>🙈​</span> View My Work
                 </motion.button>
               </Link>
 
@@ -158,7 +158,7 @@ const HeroSection = () => {
                   whileTap={{ scale: 0.98 }}
                   className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium transition-all text-sm sm:text-base shadow-lg shadow-purple-500/25 border border-white/10 flex items-center justify-center gap-2"
                 >
-                  <span>💡</span> Interviews
+                  <span>💡</span> Blogs & Articles
                 </motion.button>
               </Link>
             </motion.div>
