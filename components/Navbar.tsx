@@ -32,7 +32,7 @@ const Navbar = () => {
             <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 p-[2px] translate-y-1">
               <div className="w-full h-full rounded-full overflow-hidden bg-dark-900">
                 <Image
-                  src="/new-hero-image-removebg-preview.png"
+                  src="/navbar_pic.jpeg"
                   alt="Amitesh portrait"
                   width={40}
                   height={40}
