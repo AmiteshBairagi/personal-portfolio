@@ -1,5 +1,7 @@
 "use client";
 import Image from "next/image";
+import { motion } from "framer-motion";
+import { Maximize2 } from "lucide-react";
 
 const photos = [
   {
@@ -52,39 +54,98 @@ const photos = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } as const },
+};
+
 export default function MyPhotography() {
   return (
-    <section className="min-h-screen bg-slate-900 text-white py-12 px-6">
-      <h2 className="text-3xl font-bold text-center mb-10 text-cyan-400">
-        My Photography
-      </h2>
-
-      {/* Masonry layout */}
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-        {photos.map((photo) => (
-          <div
-            key={photo.id}
-            className="relative overflow-hidden rounded-xl group"
-          >
-            <Image
-              src={photo.src}
-              alt={photo.alt}
-              width={600}
-              height={400}
-              className="w-full h-auto rounded-xl transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center rounded-xl">
-              <p className="text-sm text-slate-100 p-3 text-center">
-                {photo.caption}
-              </p>
-            </div>
-          </div>
-        ))}
+    <section className="max-w-7xl mx-auto px-4 py-16">
+      <div className="text-center mb-16">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500 mb-4"
+        >
+          My Photography
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-slate-400 max-w-2xl mx-auto"
+        >
+          Capturing fleeting moments and distinct perspectives. A visual diary of the world through my lens.
+        </motion.p>
       </div>
 
-      <p className="text-center text-slate-400 mt-8 text-sm">
-        Click on any image to explore the full story behind the shot 📷
-      </p>
+      {/* Masonry layout */}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
+      >
+        {photos.map((photo) => (
+          <motion.div
+            key={photo.id}
+            variants={itemVariants}
+            className="break-inside-avoid relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg shadow-black/20"
+          >
+            {/* Image Wrapper for Ken Burns Effect */}
+            <div className="overflow-hidden bg-slate-800">
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                width={600}
+                height={400}
+                className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              />
+            </div>
+            
+            {/* Frosted Glass Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+              
+              {/* Top-right Interaction Icon */}
+              <div className="absolute top-4 right-4 bg-black/30 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                <Maximize2 className="w-5 h-5 text-cyan-400" />
+              </div>
+
+              {/* Caption Content sliding up */}
+              <div className="transform translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                <div className="w-8 h-1 bg-cyan-500 mb-3 rounded-full"></div>
+                <p className="text-lg font-semibold text-white drop-shadow-md">
+                  {photo.caption}
+                </p>
+                <p className="text-sm text-cyan-300 mt-1 drop-shadow-sm opacity-80">
+                  View Full Image
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.p 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.5 }}
+        className="text-center text-slate-500 mt-12 text-sm italic"
+      >
+        "Photography is the story I fail to put into words."
+      </motion.p>
     </section>
   );
 }

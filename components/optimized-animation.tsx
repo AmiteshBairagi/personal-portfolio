@@ -74,7 +74,7 @@ export default memo(function OptimizedAnimation({
     backfaceVisibility: "hidden" as const,
   }
 
-  const MotionTag = motion[tag as keyof typeof motion]
+  const MotionTag = motion(tag as any) as any;
 
   if (!shouldAnimate) {
     return <div className={className}>{children}</div>

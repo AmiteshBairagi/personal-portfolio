@@ -57,7 +57,7 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-[80dvh] relative overflow-hidden py-4 sm:py-4 lg:py-16 bg-slate-950 flex items-center"
+      className="min-h-[100dvh] relative overflow-hidden  bg-slate-950 flex items-center"
     >
       {/* Absolute Ambient Lighting & Grids */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -135,7 +135,7 @@ const HeroSection = () => {
                   onClick={handleDownloadResume}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                    className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium transition-all text-sm sm:text-base shadow-lg shadow-amber-500/25 border border-white/10 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium transition-all text-sm sm:text-base shadow-lg shadow-amber-500/25 border border-white/10 flex items-center justify-center gap-2"
                 >
                   <span>📖</span> View Resume
                 </motion.button>

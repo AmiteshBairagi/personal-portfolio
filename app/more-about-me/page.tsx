@@ -1,11 +1,14 @@
 "use client"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import MyPhotograpy from "./MyPhotograpy";
 import MyHobbies from "./MyHobbies";
 import MyGoals from "./MyGoals";
 import MyEducationJourney from "./MyEducationJourney";
 import Friends from "./Friends"
+import AboutMeSection from "./AboutMeSection";
 
 const tabs = ["About Me", "Goals", "Hobbies", "Photography", "Education Journey", "Friends"];
 
@@ -16,13 +19,7 @@ export default function MoreAboutMe() {
     switch (tab) {
       case "About Me":
         return (
-          <div className="space-y-3">
-            <h2 className="text-2xl font-semibold text-cyan-400">About Me</h2>
-            <p className="text-slate-300">
-              I’m Amitesh Bairagi — a passionate software developer who loves blending logic and creativity. 
-              My journey began with curiosity about how things work, evolving into a career in tech.
-            </p>
-          </div>
+          <AboutMeSection />
         );
       case "Goals":
         return (
@@ -54,7 +51,14 @@ export default function MoreAboutMe() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white py-12 px-6">
+    <div className="min-h-screen bg-slate-900 text-white pt-24 pb-12 px-6 relative md:pt-16">
+      <Link
+        href="/"
+        className="fixed top-6 left-6 z-50 p-2 rounded-full bg-slate-800/50 border border-slate-700 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 transition-all duration-200 backdrop-blur-sm group"
+      >
+        <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+      </Link>
+
       {/* Tabs */}
       <div className="flex flex-wrap justify-center gap-4 mb-10">
         {tabs.map((tab) => (
