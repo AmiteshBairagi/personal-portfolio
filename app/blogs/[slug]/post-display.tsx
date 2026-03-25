@@ -12,12 +12,12 @@ import type { BlogPost } from "@/lib/blog-types"
 import { cn } from "@/lib/utils"
 import { CodeBlock } from "@/components/code-block"
 
-interface BlogPostClientProps {
+interface PostDisplayProps {
   post: BlogPost
   relatedPosts: BlogPost[]
 }
 
-export default function BlogPostClient({ post, relatedPosts }: BlogPostClientProps) {
+export default function PostDisplay({ post, relatedPosts }: PostDisplayProps) {
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 50) + 10)
 

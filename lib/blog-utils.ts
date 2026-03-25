@@ -32,6 +32,18 @@ export function slugify(text: string): string {
 }
 
 /**
+ * Normalize a slug for comparison.
+ * Handles cases where slug might have inconsistent casing or formatting.
+ *   "My-IBM-Interview-Experience" -> "my-ibm-interview-experience"
+ */
+export function normalizeSlug(slug: string): string {
+  return slug
+    .toLowerCase()
+    .trim()
+    .replace(/[\s_]+/g, "-") // collapse whitespace/underscores → "-"
+}
+
+/**
  * True if the blog-post matches a free-text search.
  * We use simple string methods instead of RegExp to avoid
  * any runtime pattern-creation errors.

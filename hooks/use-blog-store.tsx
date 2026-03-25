@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import type { BlogPost } from "@/lib/blog-types"
 import { blogPosts as initialBlogPosts } from "@/lib/blog-data"
+import { normalizeSlug } from "@/lib/blog-utils"
 
 interface BlogStore {
   posts: BlogPost[]
@@ -20,8 +21,8 @@ interface BlogStore {
 }
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
-  posts: [],
-  isLoaded: false,
+  posts: [...initialBlogPosts],
+  isLoaded: true,
   isLoading: false,
 
   initializeStore: () => {
@@ -50,7 +51,8 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
 
   getPostBySlug: (slug: string) => {
     const { posts } = get()
-    return posts.find((post) => post.slug === slug) || null
+    const normalizedInputSlug = normalizeSlug(slug)
+    return posts.find((post) => normalizeSlug(post.slug) === normalizedInputSlug) || null
   },
 
   getPostsByCategory: (category: string) => {
