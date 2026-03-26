@@ -223,7 +223,7 @@ export default function PostDisplay({ post, relatedPosts }: PostDisplayProps) {
             </Button>
 
             <Button asChild className="bg-cyan-500 hover:bg-cyan-600">
-              <Link href="/blog">
+              <Link href="/blogs">
                 <BookOpen className="w-4 h-4 mr-2" />
                 More Articles
               </Link>
