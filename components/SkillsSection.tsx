@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useSkills } from "@/hooks/useSkills"
-import { Loader2, Wifi, WifiOff } from "lucide-react"
+import { Loader2, Wifi, WifiOff, ChevronRight } from "lucide-react"
 
 const SkillsSection = () => {
   const { skillsData, isLoading, error } = useSkills()
@@ -89,34 +89,44 @@ const SkillsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-6 gap-6 lg:gap-8">
           {/* Categories Sidebar */}
           <div className="lg:col-span-1">
-            <div className="flex flex-row lg:flex-col gap-1 lg:gap-2 lg:space-y-2 lg:space-x-0 sticky top-24 pb-2 lg:pb-0">
-              <div className="hidden lg:block bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 rounded-md font-semibold text-xs lg:text-base h-[40px] p-2 pl-6">Select Category</div>
-              {categories.map((category) => (
-                <motion.button
-                  key={category}
-                  whileHover={{ scale: 1.04, y: -2 }}
-                  whileTap={{ scale: 0.98, y: 1 }}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`w-full text-left px-3 py-2 lg:px-4 lg:py-3 rounded-xl font-semibold transition-all duration-300 shadow-sm border-2 focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer group
-                    ${selectedCategory === category
-                      ? "bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 text-white border-primary-500 shadow-lg"
-                      : "bg-white dark:bg-dark-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-dark-700 hover:bg-gradient-to-r hover:from-cyan-100 hover:via-purple-100 hover:to-pink-100 hover:border-primary-400"}
-                  `}
-                  style={{ minWidth: '80px' }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs lg:text-base font-bold group-hover:text-cyan-600 group-hover:dark:text-cyan-400 transition-colors">
-                      {category}
-                    </span>
-                    {/* <span className="md:hidden ml-2 text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-200 via-purple-200 to-pink-200 text-gray-700 dark:text-gray-900 font-semibold">
-                      {skillsData[category]?.length || 0}
-                    </span> */}
-                  </div>
-                  <div className="text-xs lg:text-sm opacity-75 mt-1 group-hover:text-pink-600 group-hover:dark:text-pink-400 transition-colors">
-                    {skillsData[category]?.length || 0} skills
-                  </div>
-                </motion.button>
-              ))}
+            <div className="relative">
+              <div className="flex flex-row lg:flex-col gap-1 lg:gap-2 lg:space-y-2 lg:space-x-0 sticky top-24 pb-2 lg:pb-0 overflow-x-auto lg:overflow-x-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
+                <div className="hidden lg:block bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 rounded-md font-semibold text-xs lg:text-base h-[40px] p-2 pl-6">Select Category</div>
+                {categories.map((category) => (
+                  <motion.button
+                    key={category}
+                    whileHover={{ scale: 1.04, y: -2 }}
+                    whileTap={{ scale: 0.98, y: 1 }}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`flex-shrink-0 text-left px-3 py-2 lg:px-4 lg:py-3 lg:w-full rounded-xl font-semibold transition-all duration-300 shadow-sm border-2 focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer group
+                      ${selectedCategory === category
+                        ? "bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 text-white border-primary-500 shadow-lg"
+                        : "bg-white dark:bg-dark-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-dark-700 hover:bg-gradient-to-r hover:from-cyan-100 hover:via-purple-100 hover:to-pink-100 hover:border-primary-400"}
+                    `}
+                    style={{ minWidth: '80px' }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs lg:text-base font-bold group-hover:text-cyan-600 group-hover:dark:text-cyan-400 transition-colors">
+                        {category}
+                      </span>
+                      {/* <span className="md:hidden ml-2 text-[10px] lg:text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-200 via-purple-200 to-pink-200 text-gray-700 dark:text-gray-900 font-semibold">
+                        {skillsData[category]?.length || 0}
+                      </span> */}
+                    </div>
+                    <div className="text-xs lg:text-sm opacity-75 mt-1 group-hover:text-pink-600 group-hover:dark:text-pink-400 transition-colors">
+                      {skillsData[category]?.length || 0} skills
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+              {/* Scroll Arrow Hint - Mobile Only */}
+              <motion.div
+                className="absolute right-4 lg:hidden top-1/2 transform -translate-y-1/2"
+                animate={{ x: [0, 8, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <ChevronRight className="w-5 h-5 text-primary-500" />
+              </motion.div>
             </div>
           </div>
 
