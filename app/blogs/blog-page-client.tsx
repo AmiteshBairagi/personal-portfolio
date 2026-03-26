@@ -209,7 +209,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
               >
-                <Link href={`/blog/${post.slug}`} className="block h-full">
+                <Link href={`/blogs/${post.slug}`} className="block h-full">
                   <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50 cursor-pointer">
 
                     <CardHeader>
