@@ -179,7 +179,7 @@ const HeroSection = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.0 + index * 0.1 }}
                     whileHover={{ scale: 1.15, y: -4, backgroundColor: "rgba(6,182,212,0.15)", borderColor: "rgba(6,182,212,0.4)" }}
-                    className="w-10 sm:w-12 h-10 sm:h-12 bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-full flex items-center justify-center text-slate-400 hover:text-cyan-400 transition-all shadow-lg"
+                    className="w-10 sm:w-12 h-10 sm:h-12 bg-slate-800/75 backdrop-blur-md border border-slate-700/70 rounded-full flex items-center justify-center text-slate-300 hover:text-cyan-400 transition-all shadow-lg"
                   >
                     <social.icon className="w-4 sm:w-5 h-4 sm:h-5" />
                   </motion.a>
