@@ -10,7 +10,7 @@ import { ReactTyped } from "react-typed"
 
 const HeroSection = () => {
 
-  const skills = ["Java", "Spring Boot", "React", "PostgreSQL", "MySQL", "MongoDB"]
+  const skills = ["Java","C","C++","Python","NextJs","HTML","CSS", "Spring Boot", "React", "PostgreSQL", "MySQL", "MongoDB"]
   const description = "Building scalable, real-world software with modern technologies. Focused on clean architecture, performance, and delivering impactful solutions."
 
 
@@ -194,7 +194,43 @@ const HeroSection = () => {
               transition={{ delay: 1.2 }}
               className="pt-2"
             >
-              <div className="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start">
+              {/* Mobile: Scrolling carousel, Desktop: Grid */}
+              <div className="lg:hidden -mx-4 sm:mx-0">
+                {/* Mobile skills carousel - scrolling from right to left */}
+                <div className="overflow-hidden bg-gradient-to-r from-slate-950 via-slate-950/0 to-slate-950 relative">
+                  <motion.div
+                    animate={{ x: ["60%", "-100%"] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 5 + skills.length,
+                      ease: "linear",
+                    }}
+                    className="flex gap-2 sm:gap-3 whitespace-nowrap px-4"
+                  >
+                    {/* First set of skills */}
+                    {skills.map((skill, index) => (
+                      <motion.div
+                        key={`${skill}-${index}`}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-400 flex-shrink-0"
+                      >
+                        {skill}
+                      </motion.div>
+                    ))}
+                    {/* Duplicate set for seamless loop */}
+                    {skills.map((skill, index) => (
+                      <motion.div
+                        key={`${skill}-${index}-duplicate`}
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-400 flex-shrink-0"
+                      >
+                        {skill}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Desktop: Static grid layout */}
+              <div className="hidden lg:flex flex-wrap gap-2 sm:gap-3 justify-start">
                 {skills.map((skill, index) => (
                   <motion.div
                     key={`${skill}-${index}`}
