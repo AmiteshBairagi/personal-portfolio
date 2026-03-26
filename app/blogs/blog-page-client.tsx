@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, Search, Filter, BookOpen, ArrowRight, ArrowLeft } from "lucide-react"
+import { Calendar, Clock, Search, Filter, BookOpen, ArrowRight, ArrowLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { useBlogStore } from "@/hooks/use-blog-store"
 import type { BlogPost } from "@/lib/blog-types"
@@ -105,7 +105,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
+          className="mb-8 relative"
         >
           <div className="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
             {categories.map((category) => (
@@ -125,6 +125,14 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
               </button>
             ))}
           </div>
+          {/* Scroll Arrow Hint - Mobile Only */}
+          <motion.div
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 md:hidden"
+            animate={{ x: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <ChevronRight className="w-5 h-5 text-cyan-400" />
+          </motion.div>
         </motion.div>
 
         {/* Filters and Search */}

@@ -2,7 +2,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ThemeProvider } from "@/contexts/theme-context";
+import Navbar from "@/components/Navbar";
 import MyPhotograpy from "./MyPhotograpy";
 import MyHobbies from "./MyHobbies";
 import MyGoals from "./MyGoals";
@@ -51,30 +53,37 @@ export default function MoreAboutMe() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white pt-24 pb-12 px-6 relative md:pt-16">
-      <Link
-        href="/"
-        className="fixed top-6 left-6 z-50 p-2 rounded-full bg-slate-800/50 border border-slate-700 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 transition-all duration-200 backdrop-blur-sm group"
-      >
-        <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-      </Link>
+    <ThemeProvider>
+      <div className="min-h-screen bg-slate-900 text-white pb-12 px-6 relative">
+        <Navbar />
+        <div className="pt-28 md:pt-24"></div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap justify-center gap-4 mb-10">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-full border transition-all duration-200 
-              ${
-                activeTab === tab
-                  ? "bg-cyan-500 text-white border-cyan-500"
-                  : "border-slate-600 text-slate-300 hover:border-cyan-400 hover:text-cyan-400"
-              }`}
-          >
-            {tab}
-          </button>
-        ))}
+      {/* Tabs - Horizontally Scrollable */}
+      <div className="relative mb-10">
+        <div className="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-shrink-0 px-4 py-2 rounded-full border transition-all duration-200 whitespace-nowrap
+                ${
+                  activeTab === tab
+                    ? "bg-cyan-500 text-white border-cyan-500"
+                    : "border-slate-600 text-slate-300 hover:border-cyan-400 hover:text-cyan-400"
+                }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        {/* Scroll Arrow Hint - Mobile Only */}
+        <motion.div
+          className="absolute right-6 top-1/2 transform -translate-y-1/2 md:hidden"
+          animate={{ x: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ChevronRight className="w-5 h-5 text-cyan-400" />
+        </motion.div>
       </div>
 
       {/* Content */}
@@ -90,6 +99,7 @@ export default function MoreAboutMe() {
           {renderContent(activeTab)}
         </motion.div>
       </AnimatePresence>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
