@@ -10,7 +10,7 @@ export interface BlogPost {
   readTime: number
   tags: string[]
   category: string
-  image: string
+  imageUrl: string
   featured: boolean
   published: boolean
 }
@@ -123,7 +123,7 @@ Good luck with your interviews!`,
     readTime: 8,
     tags: ["Interview", "Google", "Career", "Technical Interview"],
     category: "Interview Experience",
-    image: "/placeholder.svg?height=400&width=600",
+    imageUrl: "/placeholder.svg?height=400&width=600",
     featured: true,
     published: true,
   },
@@ -208,7 +208,7 @@ Building scalable React applications requires thoughtful architecture, proper st
     readTime: 12,
     tags: ["React", "JavaScript", "Architecture", "Performance"],
     category: "Technical Tutorial",
-    image: "/placeholder.svg?height=400&width=600",
+    imageUrl: "/placeholder.svg?height=400&width=600",
     featured: true,
     published: true,
   },
@@ -283,7 +283,7 @@ TypeScript's type system is powerful and can significantly improve code quality.
     readTime: 10,
     tags: ["TypeScript", "JavaScript", "Programming", "Web Development"],
     category: "Technical Tutorial",
-    image: "/placeholder.svg?height=400&width=600",
+    imageUrl: "/placeholder.svg?height=400&width=600",
     featured: true,
     published: true,
   },
@@ -347,7 +347,7 @@ Amazon's leadership principles aren't just interview topics—they're deeply emb
     readTime: 6,
     tags: ["Interview", "Amazon", "Leadership", "Career"],
     category: "Interview Experience",
-    image: "/placeholder.svg?height=400&width=600",
+    imageUrl: "/placeholder.svg?height=400&width=600",
     featured: false,
     published: true,
   },
@@ -492,7 +492,7 @@ This stack provides a powerful foundation for modern web applications with minim
     readTime: 15,
     tags: ["Next.js", "Supabase", "Full-Stack", "Tutorial"],
     category: "Technical Tutorial",
-    image: "/placeholder.svg?height=400&width=600",
+    imageUrl: "/placeholder.svg?height=400&width=600",
     featured: false,
     published: true,
   },

@@ -155,6 +155,23 @@ export default function PostDisplay({ post, relatedPosts }: PostDisplayProps) {
           </div>
         </motion.div>
 
+        {/* Featured Image */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="max-w-4xl mx-auto mb-12"
+        >
+          <div className="relative overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-800/40">
+            <img
+              src={post.imageUrl || "/placeholder.svg?height=800&width=1200"}
+              alt={post.title}
+              className="w-full h-full max-h-[460px] object-cover"
+              loading="lazy"
+            />
+          </div>
+        </motion.div>
+
         {/* Article Content */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -70,25 +70,7 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     set({ isLoading: true })
     try {
       const apiPosts = await blogDataManager.getBlogPostsByCategory(category)
-      // API returns camelCase fields matching our BlogPost type
-      // Map imageUrl to image for local BlogPost compatibility
-      const formattedPosts: BlogPost[] = apiPosts.map(p => ({
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        excerpt: p.excerpt,
-        content: p.content,
-        author: p.author,
-        publishedAt: p.publishedAt,
-        updatedAt: p.updatedAt,
-        readTime: p.readTime,
-        tags: p.tags,
-        category: p.category,
-        image: p.imageUrl || "",
-        featured: p.featured,
-        published: p.published
-      }))
-      set({ posts: formattedPosts, isLoaded: true })
+      set({ posts: apiPosts, isLoaded: true })
     } catch (error) {
       console.error("Failed to fetch posts:", error)
     } finally {

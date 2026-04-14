@@ -10,7 +10,7 @@ export interface BlogPost {
   readTime: number
   tags: string[]
   category: string
-  image: string
+  imageUrl: string
   featured: boolean
   published: boolean
 }
