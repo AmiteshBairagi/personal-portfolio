@@ -213,7 +213,7 @@ const InterviewExperienceManager = () => {
         category: formData.category,
         featured: formData.featured,
         published: formData.published,
-        publishedAt: new Date().toISOString().split("T")[0],
+        // publishedAt: new Date().toISOString().split("T")[0],
         readTime: Math.max(
           1,
           Math.ceil(formData.content.trim().split(/\s+/).length / 200),
