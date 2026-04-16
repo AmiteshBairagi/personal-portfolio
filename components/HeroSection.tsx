@@ -57,17 +57,17 @@ const HeroSection = () => {
   return (
     <section
       id="home"
-      className="min-h-[100dvh] relative overflow-hidden  bg-slate-950 flex items-center"
+      className="min-h-[100dvh] relative overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center"
     >
       {/* Absolute Ambient Lighting & Grids */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Subtle geometric dot grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(14,116,144,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(14,116,144,0.08)_1px,transparent_1px)] bg-[size:50px_50px] dark:bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)]"></div>
 
         {/* Glowing Orbs */}
-        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] bg-cyan-500/10 rounded-full blur-[100px] sm:blur-[120px]"></div>
-        <div className="absolute bottom-1/4 right-1/4 translate-x-1/4 translate-y-1/4 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-blue-600/10 rounded-full blur-[100px] sm:blur-[150px]"></div>
-        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-purple-500/10 rounded-full blur-[100px]"></div>
+        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] bg-cyan-500/20 dark:bg-cyan-500/10 rounded-full blur-[100px] sm:blur-[120px]"></div>
+        <div className="absolute bottom-1/4 right-1/4 translate-x-1/4 translate-y-1/4 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-blue-500/20 dark:bg-blue-600/10 rounded-full blur-[100px] sm:blur-[150px]"></div>
+        <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[300px] h-[300px] bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-[100px]"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
@@ -82,10 +82,10 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="inline-flex items-center space-x-2 bg-slate-900/50 border border-slate-700/50 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 backdrop-blur-sm self-start"
+              className="inline-flex items-center space-x-2 bg-white/70 dark:bg-slate-900/50 border border-slate-200/70 dark:border-slate-700/50 rounded-full px-3 py-1.5 sm:px-4 sm:py-2 backdrop-blur-sm self-start"
             >
               <div className="w-2 sm:w-2.5 h-2 sm:h-2.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
-              <span className="text-xs sm:text-sm font-medium text-slate-300">Available for Work</span>
+              <span className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">Available for Work</span>
             </motion.div>
 
             {/* Enhanced heading with better typography */}
@@ -96,15 +96,15 @@ const HeroSection = () => {
               className="space-y-4 text-center lg:text-left"
             >
               <div className="space-y-4">
-                <h3 className="text-slate-400 font-medium tracking-wide uppercase text-sm sm:text-base">Hello World ...</h3>
-                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+                <h3 className="text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase text-sm sm:text-base">Hello World ...</h3>
+                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
                   I'm{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)] block sm:inline mt-2 sm:mt-0">
                     Amitesh Bairagi
                   </span>
                 </h1>
                 <ReactTyped
-                  className="text-xl sm:text-2xl text-cyan-400/90 font-medium h-8 block"
+                  className="text-xl sm:text-2xl text-cyan-600 dark:text-cyan-400/90 font-medium h-8 block"
                   strings={[
                     "I’m a Software Engineer",
                     "I’m a Web Developer",
@@ -118,7 +118,7 @@ const HeroSection = () => {
                 />
               </div>
 
-              <p className="text-sm sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-4">
+              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-4">
                 {description}
               </p>
             </motion.div>
@@ -179,7 +179,7 @@ const HeroSection = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.0 + index * 0.1 }}
                     whileHover={{ scale: 1.15, y: -4, backgroundColor: "rgba(6,182,212,0.15)", borderColor: "rgba(6,182,212,0.4)" }}
-                    className="w-10 sm:w-12 h-10 sm:h-12 bg-slate-800/75 backdrop-blur-md border border-slate-700/70 rounded-full flex items-center justify-center text-slate-300 hover:text-cyan-400 transition-all shadow-lg"
+                    className="w-10 sm:w-12 h-10 sm:h-12 bg-white/80 dark:bg-slate-800/75 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/70 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 transition-all shadow-lg"
                   >
                     <social.icon className="w-4 sm:w-5 h-4 sm:h-5" />
                   </motion.a>
@@ -197,7 +197,7 @@ const HeroSection = () => {
               {/* Mobile: Scrolling carousel, Desktop: Grid */}
               <div className="lg:hidden -mx-4 sm:mx-0">
                 {/* Mobile skills carousel - scrolling from right to left */}
-                <div className="overflow-hidden bg-gradient-to-r from-slate-950 via-slate-950/0 to-slate-950 relative">
+                <div className="overflow-hidden bg-gradient-to-r from-slate-50 via-slate-50/0 to-slate-50 dark:from-slate-950 dark:via-slate-950/0 dark:to-slate-950 relative">
                   <motion.div
                     animate={{ x: ["60%", "-100%"] }}
                     transition={{
@@ -211,7 +211,7 @@ const HeroSection = () => {
                     {skills.map((skill, index) => (
                       <motion.div
                         key={`${skill}-${index}`}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-400 flex-shrink-0"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-500 dark:hover:text-cyan-400 flex-shrink-0"
                       >
                         {skill}
                       </motion.div>
@@ -220,7 +220,7 @@ const HeroSection = () => {
                     {skills.map((skill, index) => (
                       <motion.div
                         key={`${skill}-${index}-duplicate`}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-400 flex-shrink-0"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-500 dark:hover:text-cyan-400 flex-shrink-0"
                       >
                         {skill}
                       </motion.div>
@@ -238,7 +238,7 @@ const HeroSection = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.4 + index * 0.1 }}
                     whileHover={{ scale: 1.05, y: -2, borderColor: "rgba(6,182,212,0.5)", backgroundColor: "rgba(6,182,212,0.1)" }}
-                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-400"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/80 dark:bg-slate-900/60 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/50 rounded-xl text-[11px] sm:text-xs font-medium text-slate-600 dark:text-slate-300 transition-all cursor-default shadow-sm hover:shadow-[0_0_10px_rgba(6,182,212,0.2)] hover:text-cyan-500 dark:hover:text-cyan-400"
                   >
                     {skill}
                   </motion.div>
@@ -253,7 +253,7 @@ const HeroSection = () => {
               transition={{ delay: 2.2 }}
               className="text-center lg:text-left pt-6 lg:pt-10"
             >
-              <p className="text-xs sm:text-sm text-slate-500 flex items-center justify-center lg:justify-start">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-500 flex items-center justify-center lg:justify-start">
                 <ArrowDown className="w-3 h-3 mr-2 animate-bounce text-cyan-500" />
                 Scroll to explore my work
               </p>
