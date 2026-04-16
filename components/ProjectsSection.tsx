@@ -33,7 +33,7 @@ const ProjectCard = memo(
         whileHover={{ y: -10 }}
         className="group cursor-pointer h-full"
       >
-        <Card className="h-full bg-white dark:bg-dark-800 border-gray-200 dark:border-dark-700 overflow-hidden hover:shadow-2xl transition-all duration-300 group-hover:border-primary-500/50">
+        <Card className="h-full bg-white dark:bg-dark-800 border-slate-200 dark:border-dark-700 overflow-hidden shadow-sm shadow-slate-200/80 hover:shadow-xl hover:shadow-slate-300/40 dark:hover:shadow-2xl transition-all duration-300 group-hover:border-primary-500/50">
           {/* Project Image */}
           <div className="relative h-48 overflow-hidden">
             <Image
@@ -73,15 +73,15 @@ const ProjectCard = memo(
               </div>
               <div >
                 <div className="flex space-x-4">
-                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30">
+                  <Button size="usm" className="bg-slate-100/90 text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-200/90 dark:bg-white/20 dark:text-white dark:border-transparent dark:hover:bg-white/30">
                     <Eye className="w-4 h-4" />
                   </Button>
-                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
+                  <Button size="usm" className="bg-slate-100/90 text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-200/90 dark:bg-white/20 dark:text-white dark:border-transparent dark:hover:bg-white/30" asChild>
                     <a href={project.githubUrl || project.github_url} target="_blank" rel="noopener noreferrer">
                       <Github className="w-4 h-4" />
                     </a>
                   </Button>
-                  <Button size="usm" className="bg-white/20 backdrop-blur-sm hover:bg-white/30" asChild>
+                  <Button size="usm" className="bg-slate-100/90 text-slate-700 border border-slate-200 shadow-sm hover:bg-slate-200/90 dark:bg-white/20 dark:text-white dark:border-transparent dark:hover:bg-white/30" asChild>
                     <a href={project.liveUrl || project.live_url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="w-4 h-4" />
                     </a>
