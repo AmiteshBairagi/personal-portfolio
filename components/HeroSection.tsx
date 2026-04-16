@@ -1,9 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Github, Linkedin, Twitter, Mail, ArrowDown, Sparkles, Router } from "lucide-react"
+import { Github, Linkedin, Twitter, Mail, ArrowDown } from "lucide-react"
 import { SiGeeksforgeeks, SiLeetcode } from "react-icons/si";
-import Image from "next/image"
 import Link from "next/link"
 import { ReactTyped } from "react-typed"
 
@@ -75,7 +74,7 @@ const HeroSection = () => {
 
 
           {/* Enhanced content section with better spacing */}
-          <div className="order-2 lg:order-1 lg:col-span-7 space-y-6 sm:space-y-8 w-full z-10">
+          <div className="order-2 lg:order-1 w-full z-10 lg:col-span-7 lg:text-left lg:pr-6">
 
             {/* Status Badge */}
             <motion.div
@@ -93,11 +92,11 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="space-y-4 text-center lg:text-left"
+              className="space-y-5 text-center lg:text-left"
             >
               <div className="space-y-4">
-                <h3 className="text-slate-500 dark:text-slate-400 font-medium tracking-wide uppercase text-sm sm:text-base">Hello World ...</h3>
-                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+                <h3 className="text-slate-500 dark:text-slate-400 font-medium tracking-[0.3em] uppercase text-xs sm:text-sm">Hello World</h3>
+                <h1 className="text-4xl sm:text-6xl xl:text-7xl font-bold tracking-tight text-slate-900 dark:text-white leading-[1.05]">
                   I'm{" "}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.3)] block sm:inline mt-2 sm:mt-0">
                     Amitesh Bairagi
@@ -118,7 +117,7 @@ const HeroSection = () => {
                 />
               </div>
 
-              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-4">
+              <p className="text-sm sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 {description}
               </p>
             </motion.div>
@@ -128,7 +127,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4"
+              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-5"
             >
               <Link href="https://drive.google.com/file/d/1Wcio_BmvUzE1uZTsj4IwEWwgyZJn3Z-m/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto block">
                 <motion.button
@@ -168,7 +167,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6 pt-4"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6 pt-5 lg:hidden"
             >
               <div className="flex space-x-4">
                 {socialIcons.map((social, index) => (
@@ -192,7 +191,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2 }}
-              className="pt-2"
+              className="pt-2 lg:hidden"
             >
               {/* Mobile: Scrolling carousel, Desktop: Grid */}
               <div className="lg:hidden -mx-4 sm:mx-0">
@@ -251,7 +250,7 @@ const HeroSection = () => {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.2 }}
-              className="text-center lg:text-left pt-6 lg:pt-10"
+              className="text-center lg:text-left pt-6 lg:pt-8"
             >
               <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-500 flex items-center justify-center lg:justify-start">
                 <ArrowDown className="w-3 h-3 mr-2 animate-bounce text-cyan-500" />
@@ -260,54 +259,60 @@ const HeroSection = () => {
             </motion.div>
           </div>
 
-          {/* Desktop Hero Image (Phase 3: Image & Flairs) */}
-          <div className="hidden lg:flex order-1 lg:order-2 lg:col-span-5 relative w-full h-[500px] xl:h-[600px] items-center justify-center -mt-10 xl:-mt-20">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 80, rotateX: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-              transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
-              className="relative z-10 w-full max-w-[450px]"
-            >
-              {/* Image Glow Backdrop */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl transform scale-90"></div>
+          {/* Desktop-only layout panel */}
+          <div className="hidden lg:flex lg:col-span-5 w-full">
+            <div className="w-full rounded-3xl border border-slate-200/70 dark:border-slate-800/70 bg-white/60 dark:bg-slate-900/50 backdrop-blur-xl p-8 shadow-[0_30px_90px_-70px_rgba(15,23,42,0.8)]">
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Focus Areas</p>
+                  <h3 className="text-2xl font-semibold text-slate-900 dark:text-white mt-2">Building reliable, elegant products</h3>
+                </div>
 
-              {/* Floating Tech Flair 1 (React) */}
-              <motion.div
-                animate={{ y: [-15, 15, -15], rotate: [0, 10, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                className="absolute top-10 -left-10 w-16 h-16 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/10 z-20"
-              >
-                <Router className="w-8 h-8 text-cyan-400" />
-              </motion.div>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { label: "Projects", value: "15+" },
+                    { label: "Years", value: "3+" },
+                    { label: "Tech Stack", value: "10+" },
+                    { label: "Certs", value: "5+" },
+                  ].map((stat) => (
+                    <div key={stat.label} className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-950/60 p-4">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
 
-              {/* Floating Tech Flair 2 (Node) */}
-              <motion.div
-                animate={{ y: [15, -15, 15], rotate: [0, -10, 10, 0] }}
-                transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-20 -right-10 w-14 h-14 bg-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/10 z-20"
-              >
-                <Sparkles className="w-6 h-6 text-purple-400" />
-              </motion.div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Tech Stack</p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {skills.slice(0, 8).map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-950/60 px-3 py-1 text-xs text-slate-700 dark:text-slate-300"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-              {/* The actual Image */}
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                className="relative z-10 drop-shadow-[0_20px_50px_rgba(6,182,212,0.3)]"
-              >
-                <Image
-                  src="/new-hero-image-removebg-preview.png"
-                  alt="Amitesh portrait"
-                  width={450}
-                  height={450}
-                  className="object-contain w-full h-auto"
-                  priority
-                />
-              </motion.div>
-
-              {/* Decorative Bottom Base */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-black/40 blur-xl rounded-[100%]"></div>
-            </motion.div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Connect</p>
+                  <div className="flex items-center gap-3 mt-3">
+                    {socialIcons.map((social, index) => (
+                      <motion.a
+                        key={`${social.label}-desktop-${index}`}
+                        href={social.href}
+                        whileHover={{ scale: 1.08, y: -2 }}
+                        className="w-10 h-10 rounded-full border border-slate-200/70 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/80 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-cyan-500"
+                      >
+                        <social.icon className="w-4 h-4" />
+                      </motion.a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

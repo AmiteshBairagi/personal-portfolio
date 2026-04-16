@@ -79,7 +79,13 @@ const EducationSection = () => {
               whileHover={{ y: -10 }}
               className="group"
             >
-              <Card className="h-full bg-white dark:bg-dark-800 border-gray-200 dark:border-dark-700 overflow-hidden hover:shadow-2xl transition-all duration-300 group-hover:border-primary-500/50">
+              <Card
+                className={`h-full bg-white dark:bg-dark-800 border-gray-200 dark:border-dark-700 overflow-hidden hover:shadow-2xl transition-all duration-300 group-hover:border-primary-500/50 ${
+                  index < 3
+                    ? "shadow-[0_20px_45px_-30px_rgba(14,116,144,0.55)] dark:shadow-[0_20px_45px_-30px_rgba(6,182,212,0.35)]"
+                    : ""
+                }`}
+              >
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <Image

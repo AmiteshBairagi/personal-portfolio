@@ -98,7 +98,7 @@ const SkillsSection = () => {
                     onClick={() => setSelectedCategory(category)}
                     className={`flex-shrink-0 text-left px-3 py-2 lg:px-4 lg:py-3 lg:w-full rounded-xl font-semibold transition-all duration-300 shadow-sm border-2 focus:outline-none focus:ring-2 focus:ring-primary-400 cursor-pointer group
                       ${selectedCategory === category
-                        ? "bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border-cyan-500/60 shadow-lg shadow-cyan-500/10"
+                        ? "bg-gradient-to-r from-cyan-50 via-white to-cyan-100 text-slate-900 border-cyan-400/60 shadow-lg shadow-cyan-500/10 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 dark:text-white"
                         : "bg-white/80 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800/80 hover:bg-white hover:dark:bg-slate-900 hover:border-cyan-400/50 hover:shadow-md"}
                     `}
                     style={{ minWidth: '80px' }}
