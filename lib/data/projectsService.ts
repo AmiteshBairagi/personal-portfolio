@@ -34,17 +34,17 @@ const transformFromDatabase = (dbData: any): ProjectData => ({
   id: dbData.id,
   title: dbData.title,
   description: dbData.description,
-  short_description: dbData.short_description,
+  short_description: dbData.short_description ?? dbData.shortDescription,
   technologies: dbData.technologies || [],
-  github_url: dbData.github_url || "",
-  live_url: dbData.live_url || "",
+  github_url: (dbData.github_url ?? dbData.githubUrl) || "",
+  live_url: (dbData.live_url ?? dbData.liveUrl) || "",
   category: dbData.category,
   featured: dbData.featured || false,
   duration: dbData.duration || "",
-  image: dbData.image,
+  image: dbData.image ?? dbData.imageUrl,
   published: dbData.published !== false,
   details: {
-    problem: dbData.problem_statement || "",
+    problem: (dbData.problem_statement ?? dbData.problemStatement) || "",
     solution: dbData.solution || "",
     challenges: dbData.challenges || "",
     technologies: dbData.technologies || [],
@@ -56,15 +56,14 @@ const transformFromDatabase = (dbData: any): ProjectData => ({
 const transformToDatabase = (projectData: Partial<ProjectData>): any => ({
   title: projectData.title,
   description: projectData.description,
-  short_description: projectData.short_description,
+  shortDescription: projectData.short_description,
   technologies: projectData.technologies || [],
-  github_url: projectData.github_url || "",
-  live_url: projectData.live_url || "",
+  githubUrl: projectData.github_url || "",
+  liveUrl: projectData.live_url || "",
   category: projectData.category,
   featured: projectData.featured || false,
   duration: projectData.duration || "",
-  image: projectData.image,
-  problem_statement: projectData.details?.problem || "",
+  problemStatement: projectData.details?.problem || "",
   solution: projectData.details?.solution || "",
   challenges: projectData.details?.challenges || "",
   features: projectData.details?.features || [],
@@ -85,22 +84,16 @@ export const projectsDataService = {
     const dbData = transformToDatabase(project)
     const formData = new FormData()
 
-    Object.keys(dbData).forEach(key => {
-      const value = dbData[key]
-      if (value !== undefined && value !== null) {
-        if (Array.isArray(value)) {
-          value.forEach(v => formData.append(key, String(v)))
-        } else if (typeof value === 'boolean') {
-          formData.append(key, value.toString())
-        } else {
-          formData.append(key, String(value))
-        }
-      }
-    })
+    formData.append(
+      "data",
+      new Blob([JSON.stringify(dbData)], { type: "application/json" }),
+    )
 
-    if (imageFile) {
-      formData.append('imageFile', imageFile)
+    if (!imageFile) {
+      throw new Error("Project image is required")
     }
+
+    formData.append("image", imageFile)
 
     await api.post("/api/add-project", formData)
   },

@@ -26,6 +26,26 @@ export function ProjectForm({
   handleImageUpload,
   handleImageRemove,
 }: ProjectFormProps) {
+  const suggestedCategories = [
+    "Web App",
+    "Mobile App",
+    "Frontend",
+    "Backend",
+    "Full Stack",
+    "API",
+    "Open Source",
+    "Tooling",
+    "Automation",
+    "ML/AI",
+  ]
+
+  const activeCategoryNames = new Set(
+    activeCategories.map((category) => String(category.name)),
+  )
+  const filteredSuggestedCategories = suggestedCategories.filter(
+    (category) => !activeCategoryNames.has(category),
+  )
+
   return (
     <div className="space-y-6">
       <div className="grid md:grid-cols-2 gap-4">
@@ -48,11 +68,24 @@ export function ProjectForm({
             required
           >
             <option value="">Select a category</option>
-            {activeCategories.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.icon} {category.name}
-              </option>
-            ))}
+            {activeCategories.length > 0 && (
+              <optgroup label="Saved categories">
+                {activeCategories.map((category) => (
+                  <option key={category.id} value={category.name}>
+                    {category.icon} {category.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {filteredSuggestedCategories.length > 0 && (
+              <optgroup label="Suggested categories">
+                {filteredSuggestedCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </optgroup>
+            )}
           </select>
         </div>
         <div>
