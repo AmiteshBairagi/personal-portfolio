@@ -26,7 +26,7 @@ const Footer = () => {
   }
 
   return (
-    <footer className="bg-dark-900 text-white relative overflow-hidden">
+    <footer className="bg-white dark:bg-dark-900 text-slate-700 dark:text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-hero-pattern opacity-5"></div>
 
@@ -47,7 +47,7 @@ const Footer = () => {
                 </div>
                 <span className="text-2xl font-bold gradient-text">DevPortfolio</span>
               </div>
-              <p className="text-gray-300 mb-6 max-w-md">
+              <p className="text-slate-600 dark:text-gray-300 mb-6 max-w-md">
                 Passionate full-stack developer creating digital solutions that make a difference. Let's build something
                 amazing together.
               </p>
@@ -62,7 +62,7 @@ const Footer = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.1, y: -2 }}
-                    className="w-10 h-10 bg-dark-800 hover:bg-primary-500 rounded-lg flex items-center justify-center text-gray-300 hover:text-white transition-all duration-300"
+                    className="w-10 h-10 bg-slate-100 dark:bg-dark-800 hover:bg-primary-500 rounded-lg flex items-center justify-center text-slate-500 dark:text-gray-300 hover:text-white transition-all duration-300"
                   >
                     <social.icon className="w-5 h-5" />
                   </motion.a>
@@ -82,7 +82,7 @@ const Footer = () => {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-gray-300 hover:text-primary-400 transition-colors duration-300"
+                      className="text-slate-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
                     >
                       {link.name}
                     </Link>
@@ -98,7 +98,7 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <h3 className="text-lg font-semibold mb-4">Get In Touch</h3>
-              <div className="space-y-2 text-gray-300">
+              <div className="space-y-2 text-slate-600 dark:text-gray-300">
                 <p>amitesh.bairagi29@gmail.com</p>
                 <p>+91 70*383*6*6</p>
                 <p>Kolkata, INDIA</p>
@@ -108,13 +108,13 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-dark-700">
+        <div className="border-t border-slate-200 dark:border-dark-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                className="flex items-center space-x-2 text-gray-300 text-sm"
+                className="flex items-center space-x-2 text-slate-600 dark:text-gray-300 text-sm"
               >
                 <span>© 2025 DevPortfolio. Made with</span>
                 <Heart className="w-4 h-4 text-red-500 fill-current" />
@@ -126,7 +126,7 @@ const Footer = () => {
                   onClick={scrollToTop}
                   variant="ghost"
                   size="sm"
-                  className="text-gray-300 hover:text-white hover:bg-dark-800"
+                  className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-dark-800"
                 >
                   <ArrowUp className="w-4 h-4 mr-2" />
                   Back to Top
@@ -134,7 +134,7 @@ const Footer = () => {
               </motion.div>
               <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="mt-4 md:mt-0">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white hover:bg-dark-800 ml-4">
+                  <Button variant="ghost" size="sm" className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-dark-800 ml-4">
                     <Shield className="w-4 h-4 mr-2" />
                     Admin Login
                   </Button>

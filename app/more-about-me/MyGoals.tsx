@@ -34,7 +34,7 @@ export default function GoalsMasonry() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-400 max-w-2xl mx-auto"
+          className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
         >
           Continuous learning and building are at the core of my journey. Here’s what I’m actively striving to achieve.
         </motion.p>
@@ -57,7 +57,7 @@ export default function GoalsMasonry() {
             <div className="absolute -inset-[1px] bg-gradient-to-br from-emerald-500/20 via-cyan-500/20 to-purple-500/20 rounded-3xl blur-md group-hover:blur-xl transition-all duration-500 opacity-0 group-hover:opacity-100"></div>
             
             {/* Main Card */}
-            <div className="relative h-full bg-slate-900/80 backdrop-blur-xl border border-slate-700/60 p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-500 overflow-hidden">
+            <div className="relative h-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-700/60 p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-500 overflow-hidden">
               
               {/* Top abstract circle */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-bl-full -mr-8 -mt-8 transition-all duration-500 group-hover:bg-emerald-500/20"></div>
@@ -72,13 +72,13 @@ export default function GoalsMasonry() {
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-emerald-300 transition-colors">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-emerald-500 dark:group-hover:text-emerald-300 transition-colors">
                 {goal.title}
               </h3>
               
               <div className="h-px w-12 bg-emerald-500/50 mb-4 group-hover:w-24 transition-all duration-500"></div>
 
-              <p className="text-slate-300 leading-relaxed font-light">
+              <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-light">
                 {goal.description}
               </p>
             </div>

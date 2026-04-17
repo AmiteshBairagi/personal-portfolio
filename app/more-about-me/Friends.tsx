@@ -61,7 +61,7 @@ export default function Friends() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-400 max-w-2xl mx-auto"
+          className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
         >
           The amazing people who have been part of my journey through different phases of life.
         </motion.p>
@@ -77,7 +77,7 @@ export default function Friends() {
             variants={containerVariants}
           >
             <div className="flex items-center gap-4 mb-8">
-              <h3 className="text-2xl font-semibold text-white tracking-wide">
+              <h3 className="text-2xl font-semibold text-slate-900 dark:text-white tracking-wide">
                 {group.title}
               </h3>
               <div className="h-px bg-gradient-to-r from-cyan-500/50 to-transparent flex-1"></div>
@@ -94,12 +94,12 @@ export default function Friends() {
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
                   
                   {/* Card Content */}
-                  <div className="relative bg-slate-900/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-700/50 flex flex-col items-center hover:-translate-y-2 transition-transform duration-300">
+                  <div className="relative bg-white dark:bg-slate-900/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex flex-col items-center hover:-translate-y-2 transition-transform duration-300">
                     
                     {/* Avatar Wrap */}
                     <div className="relative w-32 h-32 mb-6">
                       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-400 to-purple-500 animate-spin-slow" style={{ padding: "3px" }}>
-                        <div className="w-full h-full bg-slate-900 rounded-full"></div>
+                        <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full"></div>
                       </div>
                       
                       <div className="absolute inset-[3px] rounded-full overflow-hidden">
@@ -112,10 +112,10 @@ export default function Friends() {
                       </div>
                     </div>
 
-                    <h4 className="text-xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">
+                    <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors">
                       {friend.name}
                     </h4>
-                    <p className="text-sm font-medium text-cyan-500/80 bg-cyan-500/10 px-3 py-1 rounded-full">
+                    <p className="text-sm font-medium text-cyan-600 dark:text-cyan-500/80 bg-cyan-500/10 px-3 py-1 rounded-full">
                       {friend.role}
                     </p>
                   </div>

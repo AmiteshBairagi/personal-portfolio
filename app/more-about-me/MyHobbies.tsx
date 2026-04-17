@@ -41,7 +41,7 @@ export default function MyHobbies() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-400 max-w-2xl mx-auto"
+          className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
         >
           Beyond the code, this is how I like to unwind, express creativity, and keep myself moving.
         </motion.p>

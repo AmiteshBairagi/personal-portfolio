@@ -54,13 +54,24 @@ export default function MoreAboutMe() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-slate-900 text-white pb-12 px-6 relative">
+      <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white pb-12 px-6 relative">
         <Navbar />
-        <div className="pt-28 md:pt-24"></div>
+        <div className="pt-20 md:pt-16"></div>
+
+        <div className="max-w-6xl mx-auto mb-4">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 hover:border-cyan-400/60 transition-colors bg-white/90 dark:bg-slate-900/90 shadow-sm backdrop-blur"
+            aria-label="Back to home"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Back to Home
+          </Link>
+        </div>
 
       {/* Tabs - Horizontally Scrollable */}
       <div className="relative mb-10">
-        <div className="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+        <div className="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6 lg:justify-center">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -69,7 +80,7 @@ export default function MoreAboutMe() {
                 ${
                   activeTab === tab
                     ? "bg-cyan-500 text-white border-cyan-500"
-                    : "border-slate-600 text-slate-300 hover:border-cyan-400 hover:text-cyan-400"
+                    : "border-slate-200 text-slate-600 hover:border-cyan-400 hover:text-cyan-500 dark:border-slate-600 dark:text-slate-300 dark:hover:border-cyan-400 dark:hover:text-cyan-400"
                 }`}
             >
               {tab}
@@ -82,7 +93,7 @@ export default function MoreAboutMe() {
           animate={{ x: [0, 8, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ChevronRight className="w-5 h-5 text-cyan-400" />
+          <ChevronRight className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
         </motion.div>
       </div>
 

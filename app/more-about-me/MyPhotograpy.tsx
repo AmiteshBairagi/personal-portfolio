@@ -84,7 +84,7 @@ export default function MyPhotography() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-400 max-w-2xl mx-auto"
+          className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto"
         >
           Capturing fleeting moments and distinct perspectives. A visual diary of the world through my lens.
         </motion.p>
@@ -104,7 +104,7 @@ export default function MyPhotography() {
             className="break-inside-avoid relative overflow-hidden rounded-2xl group cursor-pointer shadow-lg shadow-black/20"
           >
             {/* Image Wrapper for Ken Burns Effect */}
-            <div className="overflow-hidden bg-slate-800">
+            <div className="overflow-hidden bg-slate-100 dark:bg-slate-800">
               <Image
                 src={photo.src}
                 alt={photo.alt}

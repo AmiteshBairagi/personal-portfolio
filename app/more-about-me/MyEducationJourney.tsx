@@ -61,7 +61,7 @@ export default function MyEducationJourney() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-slate-400"
+          className="text-slate-600 dark:text-slate-400"
         >
           A timeline of my academic background and major certifications.
         </motion.p>
@@ -88,7 +88,7 @@ export default function MyEducationJourney() {
               >
                 {/* Node */}
                 <div
-                  className={`absolute left-[-40px] md:left-1/2 md:-translate-x-1/2 w-12 h-12 rounded-full p-1 bg-slate-900 border-2 border-slate-700 shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10 hidden md:flex`}
+                  className={`absolute left-[-40px] md:left-1/2 md:-translate-x-1/2 w-12 h-12 rounded-full p-1 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 shadow-[0_0_20px_rgba(0,0,0,0.2)] dark:shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10 hidden md:flex`}
                 >
                   <div
                     className={`w-full h-full rounded-full shadow-lg flex items-center justify-center bg-gradient-to-br ${item.color}`}
@@ -98,7 +98,7 @@ export default function MyEducationJourney() {
                 </div>
 
                 {/* Mobile Icon (absolute positioned over the line for mobile) */}
-                <div className="absolute left-[-34px] w-10 h-10 rounded-full md:hidden flex items-center justify-center bg-gradient-to-br z-10 shadow-lg border-2 border-slate-900 overflow-hidden">
+                <div className="absolute left-[-34px] w-10 h-10 rounded-full md:hidden flex items-center justify-center bg-gradient-to-br z-10 shadow-lg border-2 border-white dark:border-slate-900 overflow-hidden">
                   <div className={`absolute inset-0 bg-gradient-to-br ${item.color}`}></div>
                   <div className="relative z-10 scale-75">{item.icon}</div>
                 </div>
@@ -109,23 +109,23 @@ export default function MyEducationJourney() {
                     isEven ? "md:pr-12 text-left md:text-right" : "md:pl-12 text-left"
                   }`}
                 >
-                  <div className="group relative bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-6 rounded-2xl shadow-xl hover:-translate-y-1 hover:shadow-cyan-500/20 transition-all duration-300 overflow-hidden">
+                  <div className="group relative bg-white dark:bg-slate-800/40 backdrop-blur-md border border-slate-200 dark:border-slate-700/50 p-6 rounded-2xl shadow-xl hover:-translate-y-1 hover:shadow-cyan-500/20 transition-all duration-300 overflow-hidden">
                     {/* Abstract background flare */}
                     <div className="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-full blur-3xl group-hover:from-cyan-400/20 transition-all duration-500"></div>
 
                     <div className="relative z-10">
-                      <span className="inline-block px-3 py-1 bg-slate-900/60 border border-slate-700 text-cyan-400 text-xs font-semibold rounded-full mb-4 shadow-inner">
+                      <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 text-cyan-500 dark:text-cyan-400 text-xs font-semibold rounded-full mb-4 shadow-inner">
                         {item.duration}
                       </span>
-                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1 group-hover:text-cyan-500 dark:group-hover:text-cyan-300 transition-colors">
                         {item.title}
                       </h3>
-                      <h4 className="text-md font-medium text-slate-400 mb-3 flex items-center gap-2 md:justify-end">
+                      <h4 className="text-md font-medium text-slate-600 dark:text-slate-400 mb-3 flex items-center gap-2 md:justify-end">
                         <span className="md:hidden inline-block w-2 h-2 rounded-full bg-cyan-500"></span>
                         {item.institution}
                         <span className="hidden md:inline-block w-2 h-2 rounded-full bg-cyan-500"></span>
                       </h4>
-                      <p className="text-slate-300 text-sm leading-relaxed">
+                      <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                         {item.description}
                       </p>
                     </div>
