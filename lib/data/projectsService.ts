@@ -11,6 +11,7 @@ export interface ProjectData {
   category: string
   featured: boolean
   duration: string
+  teamSize?: string
   image?: string
   problem_statement?: string
   solution?: string
@@ -63,11 +64,39 @@ const transformToDatabase = (projectData: Partial<ProjectData>): any => ({
   category: projectData.category,
   featured: projectData.featured || false,
   duration: projectData.duration || "",
+  teamSize: projectData.teamSize || "",
   problemStatement: projectData.details?.problem || "",
   solution: projectData.details?.solution || "",
   challenges: projectData.details?.challenges || "",
   features: projectData.details?.features || [],
 })
+
+const transformToUpdateRequest = (projectData: Partial<ProjectData>): Record<string, unknown> => {
+  const payload: Record<string, unknown> = {
+    title: projectData.title,
+    description: projectData.description,
+    shortDescription: projectData.short_description,
+    technologies: projectData.technologies,
+    githubUrl: projectData.github_url,
+    liveUrl: projectData.live_url,
+    category: projectData.category,
+    featured: projectData.featured,
+    duration: projectData.duration,
+    teamSize: projectData.teamSize,
+    solution: projectData.solution ?? projectData.details?.solution,
+    challenges: projectData.challenges ?? projectData.details?.challenges,
+    features: projectData.features ?? projectData.details?.features,
+  }
+
+  Object.keys(payload).forEach((key) => {
+    const value = payload[key]
+    if (value === undefined || value === null) {
+      delete payload[key]
+    }
+  })
+
+  return payload
+}
 
 export const projectsDataService = {
   async getProjects(): Promise<ProjectData[]> {
@@ -99,24 +128,16 @@ export const projectsDataService = {
   },
 
   async updateProject(id: string, updates: Partial<ProjectData>, imageFile?: File): Promise<void> {
-    const dbData = transformToDatabase(updates)
+    const updatePayload = transformToUpdateRequest(updates)
     const formData = new FormData()
 
-    Object.keys(dbData).forEach(key => {
-      const value = dbData[key]
-      if (value !== undefined && value !== null) {
-        if (Array.isArray(value)) {
-          value.forEach(v => formData.append(key, String(v)))
-        } else if (typeof value === 'boolean') {
-          formData.append(key, value.toString())
-        } else {
-          formData.append(key, String(value))
-        }
-      }
-    })
+    formData.append(
+      "body",
+      new Blob([JSON.stringify(updatePayload)], { type: "application/json" }),
+    )
 
     if (imageFile) {
-      formData.append('imageFile', imageFile)
+      formData.append("image", imageFile)
     }
 
     await api.put(`/api/update-project/${id}`, formData)

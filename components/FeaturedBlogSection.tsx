@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react"
+import { Calendar, Clock, ArrowRight, BookOpen, WifiOff } from "lucide-react"
 import Link from "next/link"
 import { useBlogRealTime } from "@/hooks/use-blog-real-time"
 
