@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Award, Calendar, Building, X, Globe, } from "lucide-react"
+import { Award, Calendar, Building, X, Globe, Eye } from "lucide-react"
 import { useDynamicModalPosition } from "@/hooks/use-dynamic-modal-position"
 import useCertifications from "@/hooks/useCertifications"
 import type { CertificationItem } from "@/lib/data/certificationService"
@@ -22,10 +22,7 @@ const CertificationsSection = () => {
   const displayedCerts = certificationsData.slice(0, 11)
   const { isReady } = useDynamicModalPosition(!!selectedCert)
 
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const closeModal = () => {
     setSelectedCert(null)
   }
 
@@ -103,7 +100,7 @@ const CertificationsSection = () => {
                     <img
                       src={cert.image || "/placeholder.svg"}
                       alt={cert.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -152,6 +149,11 @@ const CertificationsSection = () => {
                       </Badge>
                     )} */}
                   </div>
+
+                  <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400 pt-1">
+                    <Eye className="w-3 h-3" />
+                    <span>Click to view details</span>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
@@ -179,11 +181,11 @@ const CertificationsSection = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 bg-black/80 backdrop-blur-md"
-                onClick={handleBackdropClick}
+                onPointerDown={closeModal}
               />
 
               {/* Modal Container */}
-              <motion.div
+                <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{
                   opacity: isReady ? 1 : 0,
@@ -197,7 +199,7 @@ const CertificationsSection = () => {
                   stiffness: 300,
                   opacity: { duration: 0.2 },
                 }}
-                className="relative w-full max-w-4xl max-h-[120vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+                className="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                 onClick={handleModalClick}
                 style={{
                   minHeight: "400px",
@@ -206,61 +208,65 @@ const CertificationsSection = () => {
               >
                 {/* Close Button */}
                 <button
-                  onClick={() => setSelectedCert(null)}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors backdrop-blur-sm"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    closeModal()
+                  }}
+                  aria-label="Close modal"
+                  className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors backdrop-blur-sm"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
                 {/* Header with Certificate Image */}
-                <div className="relative h-48 sm:h-56 lg:h-64 bg-gradient-to-br from-primary-500/20 via-purple-500/20 to-pink-500/20 overflow-hidden flex-shrink-0">
-                  {/* Background Pattern */}
+                <div className="relative h-56 sm:h-64 lg:h-72 overflow-hidden flex-shrink-0">
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/30 to-black/50 pointer-events-none" />
                   <div
-                    className="absolute inset-0 opacity-10 bg-repeat"
+                    className="absolute inset-0 opacity-10 bg-repeat pointer-events-none"
                     style={{
                       backgroundImage:
                         "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23000' fillOpacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
                     }}
                   />
 
-                  {/* Certificate Visual */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {selectedCert.image && selectedCert.image !== "/placeholder.svg?height=400&width=600" ? (
-                      <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 rounded-2xl overflow-hidden border border-white/30 shadow-2xl">
-                        <img
-                          src={selectedCert.image || "/placeholder.svg"}
-                          alt={selectedCert.title}
-                          className="w-full h-full object-cover"
-                        />
+                  <div className="relative z-10 h-full px-5 sm:px-8 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    {/* Left: Title + Meta */}
+                    <div className="text-center sm:text-left max-w-xl">
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                        {selectedCert.title}
+                      </h2>
+                      <div className="mt-2 flex items-center justify-center sm:justify-start gap-2 text-white/80">
+                        <Building className="w-4 h-4" />
+                        <span className="text-sm sm:text-base font-medium">{selectedCert.issuer}</span>
                       </div>
-                    ) : (
-                      <div className="relative">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
-                          <Award className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-white" />
-                        </div>
-                        {/* Floating elements */}
-                        <div className="absolute -top-2 -right-2 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-yellow-400 rounded-full animate-pulse"></div>
-                        <div className="absolute -bottom-2 -left-2 w-3 h-3 sm:w-4 sm:h-4 bg-blue-400 rounded-full animate-bounce"></div>
+                      <div className="mt-3 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <Badge className="bg-white/15 text-white border border-white/20">{selectedCert.date}</Badge>
+                        <Badge className="bg-white/15 text-white border border-white/20">{selectedCert.level}</Badge>
+                        {selectedCert.featured && (
+                          <Badge className="bg-primary-500 text-white border-0">Featured</Badge>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
 
+                    {/* Right: Image Box */}
+                    <div className="w-full sm:w-[300px] lg:w-[360px] h-36 sm:h-44 lg:h-48 rounded-2xl bg-white/10 border border-white/20 shadow-2xl overflow-hidden flex items-center justify-center">
+                      {selectedCert.image && selectedCert.image !== "/placeholder.svg?height=400&width=600" ? (
+                        <img
+                          src={selectedCert.image}
+                          alt={selectedCert.title}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <Award className="w-14 h-14 text-white/80" />
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto min-h-0">
                   <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
-                    {/* Title and Issuer */}
-                    <div className="text-center space-y-2">
-                      <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                        {selectedCert.title}
-                      </h2>
-                      <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300">
-                        <Building className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="text-base sm:text-lg font-medium">{selectedCert.issuer}</span>
-                      </div>
-                    </div>
-
                     {/* Certificate Details Grid */}
                     <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                       {/* Left Column */}

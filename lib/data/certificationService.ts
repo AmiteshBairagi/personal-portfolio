@@ -21,28 +21,48 @@ export interface CertificationItem {
   updated_at?: string
 }
 
+interface CertificationApiItem {
+  id: string
+  title: string
+  issuer: string
+  date: string
+  credentialId: string
+  imageUrl: string
+  imagePublicId?: string
+  description: string
+  skills: string[]
+  verificationUrl: string
+  featured?: boolean
+  validUntil: string
+  level: "Professional" | "Associate" | "Expert"
+  examScore?: string
+  displayOrder?: number
+  createdAt?: string
+  updatedAt?: string
+}
+
 export const certificationService = {
   async getData(): Promise<CertificationItem[]> {
     try {
-      const { data } = await api.get<CertificationItem[]>("/api/get-all-certifications")
+      const { data } = await api.get<CertificationApiItem[]>("/api/get-all-certifications")
 
       const transformedData: CertificationItem[] = (data || []).map((item) => ({
         id: item.id,
         title: item.title,
         issuer: item.issuer,
         date: item.date,
-        credential_id: item.credential_id,
-        image: item.image || "/placeholder.svg?height=400&width=600",
+        credential_id: item.credentialId,
+        image: item.imageUrl || "/placeholder.svg?height=400&width=600",
         description: item.description,
         skills: item.skills || [],
-        verification_url: item.verification_url,
+        verification_url: item.verificationUrl,
         featured: item.featured || false,
-        valid_until: item.valid_until,
+        valid_until: item.validUntil,
         level: item.level,
-        exam_score: item.exam_score || "",
-        display_order: item.display_order || 0,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
+        exam_score: item.examScore || "",
+        display_order: item.displayOrder || 0,
+        created_at: item.createdAt,
+        updated_at: item.updatedAt,
       }))
 
       return transformedData
@@ -58,20 +78,27 @@ export const certificationService = {
   ): Promise<{ success: boolean; error?: string; data?: CertificationItem }> {
     try {
       const formData = new FormData()
-      
-      Object.keys(item).forEach(key => {
-        const value = item[key as keyof typeof item]
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            value.forEach(v => formData.append(key, v))
-          } else {
-            formData.append(key, String(value))
-          }
-        }
-      })
+
+      const payload = {
+        ...item,
+        credentialId: item.credential_id,
+        verificationUrl: item.verification_url,
+        validUntil: item.valid_until,
+        examScore: item.exam_score,
+        displayOrder: item.display_order,
+      }
+
+      delete (payload as Partial<CertificationItem>).credential_id
+      delete (payload as Partial<CertificationItem>).verification_url
+      delete (payload as Partial<CertificationItem>).valid_until
+      delete (payload as Partial<CertificationItem>).exam_score
+      delete (payload as Partial<CertificationItem>).display_order
+      delete (payload as Partial<CertificationItem>).image
+
+      formData.append("body", new Blob([JSON.stringify(payload)], { type: "application/json" }))
 
       if (imageFile) {
-        formData.append('imageFile', imageFile)
+        formData.append("image", imageFile)
       }
 
       const { data } = await api.post<CertificationItem>("/api/add-certification", formData)
@@ -93,19 +120,26 @@ export const certificationService = {
       
       const { created_at, updated_at, ...updateData } = updates
 
-      Object.keys(updateData).forEach(key => {
-        const value = updateData[key as keyof typeof updateData]
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            value.forEach(v => formData.append(key, v))
-          } else {
-            formData.append(key, String(value))
-          }
-        }
-      })
+      const payload = {
+        ...updateData,
+        credentialId: updateData.credential_id,
+        verificationUrl: updateData.verification_url,
+        validUntil: updateData.valid_until,
+        examScore: updateData.exam_score,
+        displayOrder: updateData.display_order,
+      }
+
+      delete (payload as Partial<CertificationItem>).credential_id
+      delete (payload as Partial<CertificationItem>).verification_url
+      delete (payload as Partial<CertificationItem>).valid_until
+      delete (payload as Partial<CertificationItem>).exam_score
+      delete (payload as Partial<CertificationItem>).display_order
+      delete (payload as Partial<CertificationItem>).image
+
+      formData.append("body", new Blob([JSON.stringify(payload)], { type: "application/json" }))
 
       if (imageFile) {
-        formData.append('imageFile', imageFile)
+        formData.append("image", imageFile)
       }
 
       await api.put(`/api/update-certification/${id}`, formData)
@@ -148,7 +182,7 @@ export const certificationService = {
 
   async searchItems(query: string): Promise<CertificationItem[]> {
     try {
-      const { data } = await api.get<CertificationItem[]>("/api/certifications", {
+      const { data } = await api.get<CertificationApiItem[]>("/api/certifications", {
         params: { search: query },
       })
 
@@ -157,18 +191,18 @@ export const certificationService = {
         title: item.title,
         issuer: item.issuer,
         date: item.date,
-        credential_id: item.credential_id,
-        image: item.image || "/placeholder.svg?height=400&width=600",
+        credential_id: item.credentialId,
+        image: item.imageUrl || "/placeholder.svg?height=400&width=600",
         description: item.description,
         skills: item.skills || [],
-        verification_url: item.verification_url,
+        verification_url: item.verificationUrl,
         featured: item.featured || false,
-        valid_until: item.valid_until,
+        valid_until: item.validUntil,
         level: item.level,
-        exam_score: item.exam_score || "",
-        display_order: item.display_order || 0,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
+        exam_score: item.examScore || "",
+        display_order: item.displayOrder || 0,
+        created_at: item.createdAt,
+        updated_at: item.updatedAt,
       }))
     } catch (error) {
       console.error("Error searching certifications:", error)
@@ -178,7 +212,7 @@ export const certificationService = {
 
   async getFeaturedItems(): Promise<CertificationItem[]> {
     try {
-      const { data } = await api.get<CertificationItem[]>("/api/certifications", {
+      const { data } = await api.get<CertificationApiItem[]>("/api/certifications", {
         params: { featured: true },
       })
 
@@ -187,18 +221,18 @@ export const certificationService = {
         title: item.title,
         issuer: item.issuer,
         date: item.date,
-        credential_id: item.credential_id,
-        image: item.image || "/placeholder.svg?height=400&width=600",
+        credential_id: item.credentialId,
+        image: item.imageUrl || "/placeholder.svg?height=400&width=600",
         description: item.description,
         skills: item.skills || [],
-        verification_url: item.verification_url,
+        verification_url: item.verificationUrl,
         featured: item.featured || false,
-        valid_until: item.valid_until,
+        valid_until: item.validUntil,
         level: item.level,
-        exam_score: item.exam_score || "",
-        display_order: item.display_order || 0,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
+        exam_score: item.examScore || "",
+        display_order: item.displayOrder || 0,
+        created_at: item.createdAt,
+        updated_at: item.updatedAt,
       }))
     } catch (error) {
       console.error("Error fetching featured certifications:", error)
