@@ -51,27 +51,27 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-slate-900 pt-20">
+      <div className="min-h-screen bg-white dark:bg-slate-900 pt-20">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center mb-12">
             <div className="animate-pulse">
-              <div className="h-12 bg-slate-700 rounded w-64 mx-auto mb-4"></div>
-              <div className="h-6 bg-slate-700 rounded w-96 mx-auto"></div>
+              <div className="h-12 bg-slate-200 dark:bg-slate-700 rounded w-64 mx-auto mb-4"></div>
+              <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-96 mx-auto"></div>
             </div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="bg-slate-800/50 border-slate-700/50 animate-pulse">
-                <div className="h-48 bg-slate-700 rounded-t-lg"></div>
+              <Card key={i} className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 animate-pulse">
+                <div className="h-48 bg-slate-200 dark:bg-slate-700 rounded-t-lg"></div>
                 <CardHeader>
-                  <div className="h-4 bg-slate-700 rounded w-3/4 mb-2"></div>
-                  <div className="h-6 bg-slate-700 rounded w-full"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="h-3 bg-slate-700 rounded"></div>
-                    <div className="h-3 bg-slate-700 rounded w-5/6"></div>
-                    <div className="h-3 bg-slate-700 rounded w-4/5"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-4/5"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -83,7 +83,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
         <motion.div>
@@ -118,7 +118,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   selectedCategory === category
                     ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 border-cyan-400"
-                    : "bg-slate-800/50 text-slate-400 border-slate-700/50 hover:bg-slate-800 hover:text-slate-200 border"
+                    : "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200 hover:text-slate-800 dark:bg-slate-800/50 dark:text-slate-400 dark:border-slate-700/50 dark:hover:bg-slate-800 dark:hover:text-slate-200 border"
                 }`}
               >
                 {category}
@@ -142,11 +142,11 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
           transition={{ delay: 0.2 }}
           className="mb-12 flex flex-col md:flex-row gap-4 items-center justify-between"
         >
-          <div className="text-slate-400 text-sm">
-            Showing <span className="text-cyan-400 font-semibold">{filteredPosts.length}</span> articles
+          <div className="text-slate-600 dark:text-slate-400 text-sm">
+            Showing <span className="text-cyan-500 dark:text-cyan-400 font-semibold">{filteredPosts.length}</span> articles
           </div>
           
-          <Card className="bg-slate-800/50 border-slate-700/50 w-full lg:w-1/3">
+          <Card className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 w-full lg:w-1/3">
             <CardContent className="p-2">
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex-1">
@@ -156,7 +156,7 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                       placeholder="Search articles..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-slate-700/50 border-slate-600 text-white focus:border-cyan-500"
+                      className="pl-10 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 dark:bg-slate-700/50 dark:border-slate-600 dark:text-white"
                     />
                   </div>
                 </div>
@@ -169,17 +169,17 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="bg-slate-800/50 border-slate-700/50 animate-pulse">
-                <div className="h-48 bg-slate-700 rounded-t-lg"></div>
+              <Card key={i} className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 animate-pulse">
+                <div className="h-48 bg-slate-200 dark:bg-slate-700 rounded-t-lg"></div>
                 <CardHeader>
-                  <div className="h-4 bg-slate-700 rounded w-3/4 mb-2"></div>
-                  <div className="h-6 bg-slate-700 rounded w-full"></div>
+                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-full"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <div className="h-3 bg-slate-700 rounded"></div>
-                    <div className="h-3 bg-slate-700 rounded w-5/6"></div>
-                    <div className="h-3 bg-slate-700 rounded w-4/5"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-5/6"></div>
+                    <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded w-4/5"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -187,10 +187,10 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
           </div>
         ) : filteredPosts.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-            <Card className="bg-slate-800/50 border-slate-700/50 p-12 text-center">
-              <BookOpen className="w-16 h-16 text-slate-500 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">No Articles Found</h3>
-              <p className="text-slate-400 mb-6">
+            <Card className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 p-12 text-center">
+              <BookOpen className="w-16 h-16 text-slate-400 dark:text-slate-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No Articles Found</h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6">
                 {searchTerm || selectedCategory !== "All"
                   ? "Try adjusting your search or filter criteria"
                   : "No articles available at the moment"}
@@ -218,23 +218,23 @@ export default function BlogPageClient({ categories, initialCategory, initialSea
                 transition={{ delay: 0.4 + index * 0.1 }}
               >
                 <Link href={`/blogs/${post.slug}`} className="block h-full">
-                  <Card className="bg-slate-800/50 border-slate-700/50 hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50 cursor-pointer">
+                  <Card className="bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all duration-300 group h-full hover:border-cyan-500/50 cursor-pointer">
 
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
-                        <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">{post.category}</Badge>
+                        <Badge className="bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30">{post.category}</Badge>
                         <div className="flex items-center text-sm text-slate-500">
                           <Clock className="w-4 h-4 mr-1" />
                           {post.readTime} min read
                         </div>
                       </div>
-                      <CardTitle className="text-xl text-white group-hover:text-cyan-400 transition-colors line-clamp-2">
+                      <CardTitle className="text-xl text-slate-900 dark:text-white group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors line-clamp-2">
                         {post.title}
                       </CardTitle>
                     </CardHeader>
 
                     <CardContent className="flex-1 flex flex-col">
-                      <p className="text-slate-400 mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
+                      <p className="text-slate-600 dark:text-slate-400 mb-4 line-clamp-3 flex-1">{post.excerpt}</p>
 
                       <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
                         <div className="flex items-center">
