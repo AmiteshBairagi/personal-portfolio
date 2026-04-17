@@ -117,7 +117,7 @@ const Navbar = () => {
                 variant="ghost"
                 className="h-8 px-3 rounded-full bg-cyan-50 text-slate-900 border border-cyan-200 hover:bg-cyan-100 hover:shadow-md dark:bg-gradient-to-r dark:from-gray-900 dark:via-primary-700 dark:to-gray-700 dark:text-white dark:border-transparent dark:hover:from-gray-900 dark:hover:via-primary-700 dark:hover:to-gray-700 hover:scale-[1.02]"
               >
-                CV
+                ✌𝓒𝓥✌
               </Button>
             </Link>
           </div>
