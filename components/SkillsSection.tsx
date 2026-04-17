@@ -89,7 +89,9 @@ const SkillsSection = () => {
           <div className="lg:col-span-1">
             <div className="relative">
               <div className="flex flex-row lg:flex-col gap-1 lg:gap-2 lg:space-y-2 lg:space-x-0 sticky top-24 pb-2 lg:pb-0 overflow-x-auto lg:overflow-x-visible no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0">
-                <div className="hidden lg:block bg-gradient-to-r from-gray-900 via-primary-700 to-gray-700 rounded-md font-semibold text-xs lg:text-base h-[40px] p-2 pl-6">Select Category</div>
+                <div className="hidden lg:block bg-gradient-to-r from-slate-100 via-cyan-50 to-slate-200 dark:from-gray-900 dark:via-primary-700 dark:to-gray-700 rounded-md font-semibold text-xs lg:text-base h-[40px] p-2 pl-6 text-slate-900 dark:text-white">
+                  Select Category
+                </div>
                 {categories.map((category) => (
                   <motion.button
                     key={category}

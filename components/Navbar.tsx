@@ -14,7 +14,7 @@ const navItems = [
   { name: "Projects", href: "#projects" },
   { name: "Skills", href: "#skills" },
   { name: "Certifications", href: "#certifications" },
-  { name: "Blog", href: "#blog" },
+  { name: "Blog", href: "/blogs" },
   { name: "Contact", href: "#contact" },
   { name: "Stats", href: "/stats" },
 ];
@@ -52,17 +52,17 @@ const Navbar = () => {
               >
                 <span style={{ color: "#FF0000" }}>𝒜</span>
                 <span style={{ color: "#FF7F00" }}>𝓂</span>
-                <span style={{ color: "#FFFF00" }}>𝒾</span>
+                <span style={{ color: "#1b797d" }}>𝒾</span>
                 <span style={{ color: "#00FF00" }}>𝓉</span>
                 <span style={{ color: "#0000FF" }}>𝑒</span>
-                <span style={{ color: "#4B0082" }}>𝓈</span>
+                <span style={{ color: "#8a61a8" }}>𝓈</span>
                 <span style={{ color: "#9400D3" }}>𝒽</span>
                 <span style={{ color: "#FF0000" }}> </span>
                 <span style={{ color: "#FF7F00" }}>𝐵</span>
-                <span style={{ color: "#FFFF00" }}>𝒶</span>
+                <span style={{ color: "#5e5e05" }}>𝒶</span>
                 <span style={{ color: "#00FF00" }}>𝒾</span>
                 <span style={{ color: "#0000FF" }}>𝓇</span>
-                <span style={{ color: "#4B0082" }}>𝒶</span>
+                <span style={{ color: "#593b6f" }}>𝒶</span>
                 <span style={{ color: "#9400D3" }}>𝑔</span>
                 <span style={{ color: "#FF0000" }}>𝒾</span>
               </span>
@@ -73,7 +73,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-0.5">
             {navItems.map((item) => (
               <Link key={item.name} href={item.href}>
-                <div className="relative px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-white transition-all duration-300 group">
+                <div className="relative px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-dark-800/60 transition-all duration-300 group">
                   {item.name}
                   <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-primary-400 to-accent-400 rounded-full group-hover:w-3/4 transition-all duration-300" />
                 </div>
@@ -137,7 +137,7 @@ const Navbar = () => {
               href={item.href}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <div className="px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-white hover:bg-primary-500/10 hover:pl-5 transition-all duration-300">
+              <div className="px-3 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-primary-500/10 hover:pl-5 transition-all duration-300">
                 {item.name}
               </div>
             </Link>
