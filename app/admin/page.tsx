@@ -261,8 +261,8 @@ function AdminContent() {
           </div>
 
           {/* Mobile Navigation (Horizontal scrollable) */}
-          <div className="md:hidden absolute top-0 left-0 right-0 z-20 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 shadow-sm">
-            <TabsList className="flex overflow-x-auto scrollbar-hide flex-row justify-start items-center gap-2 p-3 bg-transparent rounded-none h-auto w-full border-0 min-w-max">
+          <div className="md:hidden absolute top-0 left-0 right-0 z-20 bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 shadow-sm overflow-x-auto scrollbar-hide overscroll-x-contain">
+            <TabsList className="flex flex-nowrap justify-start items-center gap-2 p-3 bg-transparent rounded-none h-auto w-max border-0">
               {adminTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
